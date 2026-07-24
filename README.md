@@ -147,7 +147,9 @@ Detalle robusto: el clúster de teléfonos pierde el líder Raft transitoriament
 
 ## Hallazgos estadísticos
 
-*El corazón educacional del proyecto.* Batería sobre 779 premios mayores de 24 años (sorteos 1138–2287), con corrección FDR de Benjamini–Hochberg — porque con 10 tests, algún p < 0.05 aparece solo, y un informe sin esa corrección mentiría.
+*El corazón educacional del proyecto.* Batería de 10 pruebas sobre el premio mayor a lo largo de 24 años (sorteos 1138–2287), con corrección FDR de Benjamini–Hochberg — porque con 10 tests, algún p < 0.05 aparece solo, y un informe sin esa corrección mentiría.
+
+Dos series alimentan la batería, y conviene no confundirlas: las pruebas de **dígitos** (último, decenas, centenas, millares, últimos dos y deriva temporal) usan las **797 lecturas del canal NOTA**, que publica los cuatro dígitos finales del mayor en texto plano; las que necesitan el **número completo** (Kolmogorov–Smirnov, rachas, autocorrelación y repeticiones exactas) usan los **779 mayores** reconstruidos por entero. De ahí que el esperado por dígito sea 79.7 y no 77.9.
 
 ### ✅ 9 de 10 pruebas: compatible con un sorteo justo
 
