@@ -1,0 +1,11 @@
+gawk -f AnalizaGanadores.awk "C:\Users\Ariel Mairena\Google Drive\Casa\Loteria Nacional\Resultados\EstadisticasLoteria.txt"
+
+# Verificar que numeros no pudieron ser identificados, y necesitan actualizarlos manualmente.
+gawk -F"|" "{if(!$5){cnt++}}END{print cnt}" EstadisticasLoteria.txt
+gawk -F"|" "{if(!$5){print $1,$4}}" EstadisticasLoteria.txt > NoFound.txt
+
+# Agrupacion de premios ordinarios con montos de premios altos.
+gawk -F"|" "{if($5>=20000 && $3~/Ordinario/){Premio[$3,$5]++}}END{for (a in Premio){print a, Premio[a]}}" EstadisticasLoteria.txt
+gawk -F"|" "{if($5>=20000 && $3~/Ordinario/){print $0}}" EstadisticasLoteria.txt > PremiosAltosOrdinarios.txt
+
+gawk -v"Sorteo=1864" -f ObtieneNumerosGanadores.awk "C:\Users\Ariel Mairena\Google Drive\Casa\Loteria Nacional\Temporal\1864 Vj.txt"

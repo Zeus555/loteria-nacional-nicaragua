@@ -1,0 +1,541 @@
+<template>
+  <style>
+    /* ---- Cobalt Grid fonts (Google-hosted woff2; latin + latin-ext) ---- */
+    @font-face {
+      font-family: "Newsreader";
+      font-style: normal;
+      font-weight: 400;
+      src: url(https://fonts.gstatic.com/s/newsreader/v26/cY9VfjOCX1hbuyalUrK49dLafXjalZCsZBsgBgbNJYQ.woff2) format("woff2");
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: "Newsreader";
+      font-style: normal;
+      font-weight: 400;
+      src: url(https://fonts.gstatic.com/s/newsreader/v26/cY9VfjOCX1hbuyalUrK49dLafXjalZCsZBsgBgbDJYQraA.woff2) format("woff2");
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    @font-face {
+      font-family: "Hanken Grotesk";
+      font-style: normal;
+      font-weight: 600;
+      src: url(https://fonts.gstatic.com/s/hankengrotesk/v12/ieVn2YZDLWuGJpnzaiwFXS9tYtpd59A.woff2) format("woff2");
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: "Hanken Grotesk";
+      font-style: normal;
+      font-weight: 600;
+      src: url(https://fonts.gstatic.com/s/hankengrotesk/v12/ieVn2YZDLWuGJpnzaiwFXS9tYtpT59CjCQ.woff2) format("woff2");
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    @font-face {
+      font-family: "DM Mono";
+      font-style: normal;
+      font-weight: 400;
+      src: url(https://fonts.gstatic.com/s/dmmono/v16/aFTU7PB1QTsUX8KYthqQBA.woff2) format("woff2");
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: "DM Mono";
+      font-style: normal;
+      font-weight: 400;
+      src: url(https://fonts.gstatic.com/s/dmmono/v16/aFTU7PB1QTsUX8KYthSQBLyM.woff2) format("woff2");
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+
+    /* ---- frame root (the container; NO background here — ground is a clip) ---- */
+    #root {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      container-type: size;
+      color: #1f2be0;
+    }
+
+    /* ---- ground layer: paper + permanent graph grid + hairlines + chrome ---- */
+    .f07eq-ground {
+      position: absolute;
+      inset: 0;
+      background-color: #f0ebde;
+      background-image:
+        linear-gradient(to right, rgba(31, 43, 224, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(31, 43, 224, 0.1) 1px, transparent 1px);
+      background-size: 2cqw 2cqw;
+    }
+    .f07eq-hairline {
+      position: absolute;
+      left: 4cqw;
+      right: 4cqw;
+      height: 1.5px;
+      background: #1f2be0;
+    }
+    .f07eq-hairline-top { top: 3cqw; }
+    .f07eq-hairline-bot { bottom: 3cqw; }
+    .f07eq-chrome {
+      position: absolute;
+      bottom: 1.1cqw;
+      font-family: "DM Mono", monospace;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: #1f2be0;
+    }
+    .f07eq-chrome-l { left: 4cqw; }
+    .f07eq-chrome-r { right: 4cqw; }
+
+    /* ---- content layer ---- */
+    .f07eq-content {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* topbar */
+    .f07eq-top {
+      position: absolute;
+      left: 4cqw;
+      right: 4cqw;
+      top: 4.5cqw;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .f07eq-kicker {
+      font-family: "Hanken Grotesk", sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0;
+      margin-bottom: 0.9cqw;
+    }
+    .f07eq-headline {
+      font-family: "Newsreader", serif;
+      font-weight: 400;
+      font-size: 3.2cqw;
+      line-height: 1;
+      letter-spacing: -0.005em;
+      white-space: nowrap;
+    }
+    .f07eq-word {
+      display: inline-block;
+      opacity: 0;
+      will-change: transform;
+    }
+    .f07eq-counter {
+      display: flex;
+      align-items: baseline;
+      gap: 0.7cqw;
+      opacity: 0;
+    }
+    .f07eq-counter-label {
+      font-family: "Hanken Grotesk", sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .f07eq-counter-wrap {
+      display: flex;
+      align-items: baseline;
+      justify-content: flex-end;
+      width: 9.5cqw; /* fixed width — no layout shift as the value steps */
+      font-family: "Newsreader", serif;
+      font-weight: 400;
+      font-size: 4.6cqw;
+      line-height: 0.95;
+      letter-spacing: -0.008em;
+      font-variant-numeric: tabular-nums;
+    }
+    #f07eq-count-num {
+      display: inline-block;
+      font-variant-numeric: tabular-nums;
+      transform-origin: center 80%;
+    }
+    .f07eq-counter-of {
+      font-size: 2.2cqw;
+      color: #5560e5;
+    }
+    .f07eq-rule {
+      position: absolute;
+      left: 4cqw;
+      right: 4cqw;
+      top: 12.2cqw;
+      height: 1.5px;
+      background: #1f2be0;
+      transform-origin: left center;
+      transform: scaleX(0);
+    }
+
+    /* the 5x2 test-card grid */
+    .f07eq-grid {
+      position: absolute;
+      left: 4cqw;
+      right: 4cqw;
+      top: 13.9cqw;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-auto-rows: 13.3cqw;
+      gap: 1cqw;
+    }
+    .f07eq-card {
+      position: relative;
+      opacity: 0;
+      will-change: transform;
+    }
+    .f07eq-card-in {
+      position: absolute;
+      inset: 0;
+      background: #f0ebde;
+      border: 1px solid rgba(31, 43, 224, 0.18);
+      padding: 1cqw;
+      display: flex;
+      flex-direction: column;
+    }
+    .f07eq-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .f07eq-ord {
+      font-family: "DM Mono", monospace;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: #5560e5;
+    }
+    .f07eq-card-name {
+      margin-top: auto;
+      font-family: "Newsreader", serif;
+      font-weight: 400;
+      font-size: 1.35cqw;
+      line-height: 1.1;
+      letter-spacing: -0.005em;
+      text-transform: uppercase;
+    }
+    .f07eq-card-p {
+      margin-top: 0.5cqw;
+      align-self: flex-start;
+      font-family: "DM Mono", monospace;
+      font-size: 0.95cqw;
+      letter-spacing: 0.05em;
+      transform-origin: left bottom;
+    }
+    .f07eq-seal,
+    .f07eq-warn {
+      width: 2.7cqw;
+      height: 2.7cqw;
+    }
+    .f07eq-seal rect,
+    .f07eq-seal path {
+      fill: none;
+      stroke: #1f2be0;
+      stroke-linecap: square;
+      stroke-linejoin: miter;
+    }
+    .f07eq-seal rect { stroke-width: 2.5; }
+    .f07eq-seal path { stroke-width: 4; }
+    .f07eq-warn path,
+    .f07eq-warn line {
+      fill: none;
+      stroke: #1f2be0;
+      stroke-linecap: square;
+      stroke-linejoin: miter;
+    }
+    .f07eq-warn path { stroke-width: 3; }
+    .f07eq-warn line { stroke-width: 3.5; }
+    .f07eq-warn rect {
+      fill: #1f2be0;
+      fill-opacity: 0;
+    }
+    /* full-cobalt alarm border overlay on the anomalous card */
+    .f07eq-warn-frame {
+      position: absolute;
+      inset: 0;
+      border: 0.16cqw solid #1f2be0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* verdict band (hard-cut) */
+    .f07eq-verdict {
+      position: absolute;
+      left: 4cqw;
+      top: 42.7cqw;
+      display: flex;
+      align-items: baseline;
+      gap: 1.4cqw;
+      opacity: 0;
+    }
+    .f07eq-verdict-num {
+      font-family: "Newsreader", serif;
+      font-weight: 400;
+      font-size: 3cqw;
+      line-height: 0.95;
+      letter-spacing: -0.008em;
+      font-variant-numeric: tabular-nums;
+    }
+    .f07eq-verdict-sep {
+      width: 3cqw;
+      height: 1.5px;
+      background: #1f2be0;
+      align-self: center;
+    }
+    .f07eq-verdict-txt {
+      font-family: "Hanken Grotesk", sans-serif;
+      font-weight: 600;
+      font-size: 1.15cqw;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+  </style>
+
+  <div id="root" data-composition-id="07-equidad" data-start="0" data-duration="9.4" data-width="1920" data-height="1080">
+    <!-- ground: full-bleed clip on the lowest track -->
+    <div class="clip f07eq-ground" data-start="0" data-duration="9.4" data-track-index="0">
+      <div class="f07eq-hairline f07eq-hairline-top"></div>
+      <div class="f07eq-hairline f07eq-hairline-bot"></div>
+      <div class="f07eq-chrome f07eq-chrome-l">BATER&Iacute;A DE EQUIDAD &middot; CORRECCI&Oacute;N FDR</div>
+      <div class="f07eq-chrome-r f07eq-chrome">007</div>
+    </div>
+
+    <!-- content -->
+    <div class="clip f07eq-content" data-start="0" data-duration="9.4" data-track-index="1">
+      <div class="f07eq-top">
+        <div>
+          <div class="f07eq-kicker">La bater&iacute;a de equidad</div>
+          <div class="f07eq-headline">
+            <span class="f07eq-word">10</span>
+            <span class="f07eq-word">PRUEBAS</span>
+            <span class="f07eq-word">&middot;</span>
+            <span class="f07eq-word">779</span>
+            <span class="f07eq-word">PREMIOS</span>
+            <span class="f07eq-word">MAYORES</span>
+            <span class="f07eq-word">&middot;</span>
+            <span class="f07eq-word">24</span>
+            <span class="f07eq-word">A&Ntilde;OS</span>
+          </div>
+        </div>
+        <div class="f07eq-counter">
+          <span class="f07eq-counter-label">Selladas</span>
+          <span class="f07eq-counter-wrap"><span id="f07eq-count-num">0</span><span class="f07eq-counter-of">/10</span></span>
+        </div>
+      </div>
+      <div class="f07eq-rule"></div>
+
+      <div class="f07eq-grid" id="f07eq-grid">
+        <div class="f07eq-card"><div class="f07eq-card-in">
+          <div class="f07eq-card-top"><span class="f07eq-ord">01</span>
+            <svg class="f07eq-seal" viewBox="0 0 40 40"><rect x="3" y="3" width="34" height="34"></rect><path d="M 11 21 L 18 28 L 30 12"></path></svg>
+          </div>
+          <div class="f07eq-card-name">KS global</div>
+          <div class="f07eq-card-p">p &gt; 0.05</div>
+        </div></div>
+        <div class="f07eq-card"><div class="f07eq-card-in">
+          <div class="f07eq-card-top"><span class="f07eq-ord">02</span>
+            <svg class="f07eq-seal" viewBox="0 0 40 40"><rect x="3" y="3" width="34" height="34"></rect><path d="M 11 21 L 18 28 L 30 12"></path></svg>
+          </div>
+          <div class="f07eq-card-name">Rachas</div>
+          <div class="f07eq-card-p">p &gt; 0.05</div>
+        </div></div>
+        <div class="f07eq-card"><div class="f07eq-card-in">
+          <div class="f07eq-card-top"><span class="f07eq-ord">03</span>
+            <svg class="f07eq-seal" viewBox="0 0 40 40"><rect x="3" y="3" width="34" height="34"></rect><path d="M 11 21 L 18 28 L 30 12"></path></svg>
+          </div>
+          <div class="f07eq-card-name">Autocorrelaci&oacute;n</div>
+          <div class="f07eq-card-p">p &gt; 0.05</div>
+        </div></div>
+        <div class="f07eq-card"><div class="f07eq-card-in">
+          <div class="f07eq-card-top"><span class="f07eq-ord">04</span>
+            <svg class="f07eq-seal" viewBox="0 0 40 40"><rect x="3" y="3" width="34" height="34"></rect><path d="M 11 21 L 18 28 L 30 12"></path></svg>
+          </div>
+          <div class="f07eq-card-name">Repeticiones</div>
+          <div class="f07eq-card-p">p &gt; 0.05</div>
+        </div></div>
+        <div class="f07eq-card"><div class="f07eq-card-in">
+          <div class="f07eq-card-top"><span class="f07eq-ord">05</span>
+            <svg class="f07eq-seal" viewBox="0 0 40 40"><rect x="3" y="3" width="34" height="34"></rect><path d="M 11 21 L 18 28 L 30 12"></path></svg>
+          </div>
+          <div class="f07eq-card-name">Deriva temporal</div>
+          <div class="f07eq-card-p">p &gt; 0.05</div>
+        </div></div>
+        <div class="f07eq-card"><div class="f07eq-card-in">
+          <div class="f07eq-card-top"><span class="f07eq-ord">06</span>
+            <svg class="f07eq-seal" viewBox="0 0 40 40"><rect x="3" y="3" width="34" height="34"></rect><path d="M 11 21 L 18 28 L 30 12"></path></svg>
+          </div>
+          <div class="f07eq-card-name">Millares</div>
+          <div class="f07eq-card-p">p &gt; 0.05</div>
+        </div></div>
+        <div class="f07eq-card"><div class="f07eq-card-in">
+          <div class="f07eq-card-top"><span class="f07eq-ord">07</span>
+            <svg class="f07eq-seal" viewBox="0 0 40 40"><rect x="3" y="3" width="34" height="34"></rect><path d="M 11 21 L 18 28 L 30 12"></path></svg>
+          </div>
+          <div class="f07eq-card-name">Centenas</div>
+          <div class="f07eq-card-p">p &gt; 0.05</div>
+        </div></div>
+        <div class="f07eq-card"><div class="f07eq-card-in">
+          <div class="f07eq-card-top"><span class="f07eq-ord">08</span>
+            <svg class="f07eq-seal" viewBox="0 0 40 40"><rect x="3" y="3" width="34" height="34"></rect><path d="M 11 21 L 18 28 L 30 12"></path></svg>
+          </div>
+          <div class="f07eq-card-name">Decenas</div>
+          <div class="f07eq-card-p">p &gt; 0.05</div>
+        </div></div>
+        <div class="f07eq-card"><div class="f07eq-card-in">
+          <div class="f07eq-card-top"><span class="f07eq-ord">09</span>
+            <svg class="f07eq-seal" viewBox="0 0 40 40"><rect x="3" y="3" width="34" height="34"></rect><path d="M 11 21 L 18 28 L 30 12"></path></svg>
+          </div>
+          <div class="f07eq-card-name">&Uacute;ltimos-dos</div>
+          <div class="f07eq-card-p">p &gt; 0.05</div>
+        </div></div>
+        <div class="f07eq-card" id="f07eq-card-warn"><div class="f07eq-card-in" id="f07eq-warn-inner">
+          <div class="f07eq-card-top"><span class="f07eq-ord">10</span>
+            <svg class="f07eq-warn" viewBox="0 0 40 40"><path d="M 20 4 L 37.5 35 L 2.5 35 Z"></path><line x1="20" y1="14" x2="20" y2="25"></line><rect x="18.4" y="28.5" width="3.2" height="3.2"></rect></svg>
+          </div>
+          <div class="f07eq-card-name">&Uacute;ltimo d&iacute;gito</div>
+          <div class="f07eq-card-p" id="f07eq-warn-p">p = 0.0008</div>
+          <div class="f07eq-warn-frame" id="f07eq-warn-frame"></div>
+        </div></div>
+      </div>
+
+      <div class="f07eq-verdict" id="f07eq-verdict">
+        <span class="f07eq-verdict-num">9 / 10</span>
+        <span class="f07eq-verdict-sep"></span>
+        <span class="f07eq-verdict-txt">Compatible con un sorteo justo</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      window.__timelines = window.__timelines || {};
+      window.__timelines["07-equidad"] = tl;
+
+      /* ---------- Scene 1 (0.0-1.6s): per-word headline reveal + topbar ---------- */
+      tl.fromTo(
+        ".f07eq-kicker",
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
+        0.05
+      );
+      tl.fromTo(
+        ".f07eq-word",
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.45, ease: "power3.out", stagger: 0.09 },
+        0.25
+      );
+      tl.fromTo(
+        ".f07eq-rule",
+        { scaleX: 0 },
+        { scaleX: 1, duration: 0.6, ease: "power2.out" },
+        0.85
+      );
+      tl.fromTo(
+        ".f07eq-counter",
+        { opacity: 0, y: 14 },
+        { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" },
+        1.1
+      );
+
+      /* ---------- Scene 2 (1.6-6.0s): staggered cascade + SVG self-draw seals ---------- */
+      var cards = gsap.utils.toArray(".f07eq-card");
+      cards.forEach(function (card, i) {
+        // short-path slide directly into its slot (grid-card-assemble, dense form)
+        tl.fromTo(
+          card,
+          { opacity: 0, y: 26, scale: 0.97 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "power2.out" },
+          1.6 + i * 0.26
+        );
+      });
+
+      // measure real path lengths and hide strokes (svg-path-draw)
+      var sealSvgs = gsap.utils.toArray(".f07eq-seal");
+      sealSvgs.forEach(function (svg) {
+        ["rect", "path"].forEach(function (sel) {
+          var el = svg.querySelector(sel);
+          var len = el.getTotalLength() * 1.05;
+          el.style.strokeDasharray = String(len);
+          el.style.strokeDashoffset = String(len);
+        });
+      });
+      var warnSvg = document.querySelector(".f07eq-warn");
+      ["path", "line"].forEach(function (sel) {
+        var el = warnSvg.querySelector(sel);
+        var len = el.getTotalLength() * 1.05;
+        el.style.strokeDasharray = String(len);
+        el.style.strokeDashoffset = String(len);
+      });
+
+      // seals land in three waves; counter steps with every seal (value-scaled)
+      var countNum = document.getElementById("f07eq-count-num");
+      var sealTimes = [2.6, 2.9, 3.2, 3.7, 4.0, 4.3, 4.8, 5.1, 5.4];
+      sealTimes.forEach(function (t, j) {
+        var svg = sealSvgs[j];
+        tl.to(
+          svg.querySelector("rect"),
+          { strokeDashoffset: 0, duration: 0.25, ease: "power2.out" },
+          t
+        );
+        tl.to(
+          svg.querySelector("path"),
+          { strokeDashoffset: 0, duration: 0.3, ease: "power2.out" },
+          t + 0.18
+        );
+        // counter increment + scale pop (grows in place, no overshoot: it's data)
+        tl.set(countNum, { textContent: String(j + 1) }, t + 0.2);
+        tl.fromTo(
+          countNum,
+          { scale: 1.22 },
+          { scale: 1, duration: 0.28, ease: "power3.out" },
+          t + 0.2
+        );
+      });
+
+      /* ---------- Scene 3 (6.0-7.6s): the tenth card refuses the seal ---------- */
+      tl.fromTo(
+        "#f07eq-warn-frame",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.25, ease: "power1.out" },
+        6.0
+      );
+      tl.to(warnSvg.querySelector("path"), { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, 6.05);
+      tl.to(warnSvg.querySelector("line"), { strokeDashoffset: 0, duration: 0.2, ease: "power2.out" }, 6.32);
+      tl.to(warnSvg.querySelector("rect"), { fillOpacity: 1, duration: 0.15, ease: "power1.out" }, 6.5);
+      // p-value flips to full-ink chip (riso hard flip) + settles from a pop
+      tl.set("#f07eq-warn-p", { backgroundColor: "#1F2BE0", color: "#F0EBDE", paddingLeft: "0.3cqw", paddingRight: "0.3cqw" }, 6.4);
+      tl.fromTo(
+        "#f07eq-warn-p",
+        { scale: 1.28 },
+        { scale: 1, duration: 0.35, ease: "power3.out" },
+        6.4
+      );
+
+      // subtle jitter (sine-wave-loop, onUpdate form) on an inner wrapper —
+      // never on the entry-tweened card, so transforms compose instead of clash.
+      var warnInner = document.getElementById("f07eq-warn-inner");
+      var phase = { p: 0 };
+      var CYCLES = 4.6;
+      tl.to(
+        phase,
+        {
+          p: Math.PI * 2 * CYCLES,
+          duration: 2.3,
+          ease: "none",
+          onUpdate: function () {
+            var x = Math.sin(phase.p) * 1.7 + Math.sin(phase.p * 3.13) * 0.8;
+            var r = Math.sin(phase.p * 2.07) * 0.25;
+            warnInner.style.transform = "translateX(" + x + "px) rotate(" + r + "deg)";
+          },
+        },
+        6.7
+      );
+
+      /* ---------- Scene 4 (7.6-9.0s): verdict lands by hard-cut; warn card stays alive ---------- */
+      tl.set("#f07eq-verdict", { opacity: 1 }, 7.6);
+
+      // keep the timeline exactly 9s
+      tl.set({}, {}, 9);
+    })();
+  </script>
+</template>

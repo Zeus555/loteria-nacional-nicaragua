@@ -1,0 +1,121 @@
+{
+ "sorteos": 836,
+ "destacados_media": 6.38,
+ "bandas": [
+  {
+   "gap_max": 1,
+   "pares_de_sorteos": 775,
+   "observado": 0,
+   "esperado": 0.6,
+   "p_value": 1.0
+  },
+  {
+   "gap_max": 2,
+   "pares_de_sorteos": 1541,
+   "observado": 1,
+   "esperado": 1.19,
+   "p_value": 0.6963
+  },
+  {
+   "gap_max": 5,
+   "pares_de_sorteos": 3788,
+   "observado": 5,
+   "esperado": 2.93,
+   "p_value": 0.1734
+  },
+  {
+   "gap_max": 10,
+   "pares_de_sorteos": 7389,
+   "observado": 6,
+   "esperado": 5.69,
+   "p_value": 0.5031
+  }
+ ],
+ "casos": [
+  {
+   "gap": 2,
+   "numero": "31014",
+   "primero": {
+    "sorteo": 2280,
+    "tipo": "Ordinario",
+    "monto": 80000.0
+   },
+   "segundo": {
+    "sorteo": 2282,
+    "tipo": "Ordinario",
+    "monto": 500000.0
+   }
+  },
+  {
+   "gap": 3,
+   "numero": "22052",
+   "primero": {
+    "sorteo": 1903,
+    "tipo": "QUINTO",
+    "monto": 150000.0
+   },
+   "segundo": {
+    "sorteo": 1906,
+    "tipo": "QUINTO",
+    "monto": 60000.0
+   }
+  },
+  {
+   "gap": 4,
+   "numero": "15304",
+   "primero": {
+    "sorteo": 1191,
+    "tipo": "Ordinario",
+    "monto": 40000.0
+   },
+   "segundo": {
+    "sorteo": 1195,
+    "tipo": "SEGUNDO",
+    "monto": 40000.0
+   }
+  },
+  {
+   "gap": 4,
+   "numero": "23562",
+   "primero": {
+    "sorteo": 1930,
+    "tipo": "SEXTO",
+    "monto": 40000.0
+   },
+   "segundo": {
+    "sorteo": 1934,
+    "tipo": "SEXTO",
+    "monto": 40000.0
+   }
+  },
+  {
+   "gap": 5,
+   "numero": "05919",
+   "primero": {
+    "sorteo": 2243,
+    "tipo": "Ordinario",
+    "monto": 150000.0
+   },
+   "segundo": {
+    "sorteo": 2248,
+    "tipo": "MAYOR",
+    "monto": null
+   }
+  },
+  {
+   "gap": 9,
+   "numero": "20862",
+   "primero": {
+    "sorteo": 1734,
+    "tipo": "QUINTO",
+    "monto": null
+   },
+   "segundo": {
+    "sorteo": 1743,
+    "tipo": "Ordinario",
+    "monto": 150000.0
+   }
+  }
+ ],
+ "emblema_con_mayor": 1
+}

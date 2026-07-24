@@ -1,0 +1,46 @@
+# --- No versionar ---
+
+# Área de trabajo temporal (170 MB, regenerable)
+Temporal/
+
+# Logs de corridas diarias (regenerables; la auditoría vive en la tabla `corrida`)
+Log/
+
+# Zip de respaldo puntual (153 MB — supera el límite de 100 MB de GitHub)
+*.zip
+
+# Artefactos de Python / Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Dataset MNIST del experimento de 2017 (descargable)
+Modelo Predictivo/MNIST_data/
+
+# Copias .bak de resultados
+*.bak
+*.bak2
+
+# Node / HyperFrames (el video: se versiona la fuente y el MP4 final, no las dependencias)
+node_modules/
+videos/**/.hyperframes/
+videos/**/snapshots/
+videos/**/capture/.cache/
+
+# Estado local del agente
+.claude/
+
+# Ficheros del sistema
+Thumbs.db
+Desktop.ini
+
+# Volcados de depuracion del scraper (2019): son copias del HTML del sitio de la
+# Loteria Nacional e incluyen SU clave de Google Maps y cabeceras de sesion.
+# Se conservan en disco pero no se publican.
+Script/salida.txt
+Script/salidaloteria.txt
+Script/LoteriaSalida.txt
+
+# Andamiaje del agente dentro del proyecto de video
+videos/**/CLAUDE.md
+videos/**/AGENTS.md

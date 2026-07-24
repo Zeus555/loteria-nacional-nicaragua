@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<title>Lotería Nacional :: Nicaragua</title>
+		<link href="https://stackpath.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet">
+		<script src="//code.jquery.com/jquery-1.12.4.min.js"></script>
+		<script src="js/form.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
+		<script src="js/fastclick.js"></script>
+		<link rel="icon" href="images/logo2.png">
+		<link rel="stylesheet" href="css/lightbox.css">
+		<script src="js/lightbox.js"></script>
+		
+		<script src="ref_Angular/angular.js"></script>
+		<script src="ref_Angular/angular-sanitize.js"></script>
+		<script src="ref_Angular/angular-animate.js"></script>
+		<script src="ref_Angular/ui-bootstrap-tpls.js"></script>
+		<script src="ref_Angular/angular-storage.js"></script>
+		<script src="ref_Angular/ui-router.js"></script>
+		<script src="ref_Angular/angular-jwt.js"></script>
+		<script src="ref_Angular/angular-locale_es-es.js"></script>
+		<script src="ref_Angular/smart-table.js"></script>
+		<script src="ref_Angular/aes.js"></script>
+		<script data-ad-client="ca-pub-2224001164407244" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+		<link rel="stylesheet" type="text/css" href="ref_Angular/StyleCus.css">
+
+		<meta property="og:title" content="Lotería Nacional" />
+		<meta property="og:type" content="article" />
+		<meta property="og:url" content="https://www.loterianacional.com.ni/" />
+		<meta property="og:image" content="https://www.loterianacional.com.ni/images/logo2.png" />
+		<meta property="og:description" content="Lotería Nacional de Nicaragua" />
+		
+		<script type="application/javascript">
+			window.addEventListener('load', function() {
+				FastClick.attach(document.getElementById('navbar-toggle'));
+			});
+		</script>
+		<!-- Google Analytics -->
+		<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+		ga('create', 'UA-85621586-1', 'auto');
+		ga('send', 'pageview');
+		</script>
+		<!-- End Google Analytics -->
+	</head>
+	<body>
+		<link rel="stylesheet" href="css/animation.css">
+		<link rel="stylesheet" href="css/main.css?v=26">
+		<link rel="stylesheet" href="css/mobile.css?v=1">
+
+		<script src="js/main.js?v=5"></script>
+
+		<style>
+			#slide, .navbar, #submenu > div, #busqueda_sorteo, #dialog, #dialog2, .colour {
+				background: linear-gradient(270deg, #37afff,#9ad367,#fbb879,#fe215e);
+				background-size: 1000% 1000%;
+				animation: animLoteria 60s ease infinite;
+			}
+
+			.navbar {
+				border-bottom: 1px solid rgb(255,255,255,0.5) !important;
+			}
+
+							body {
+					background: linear-gradient(#6cc0e4, #fff) fixed;
+				}
+						
+		</style>
+		
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-body" id="dialog">
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+				<script>
+
+		</script>
+<nav class="navbar navbar-default" role="navigation" style="z-index: 100 !important">
+			<div class="container">
+				<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+
+					<a class="navbar-brand noajax" href="index"><img src="images/logo2.png" id="logo" alt="" style="width: 200px; margin-top: -10px"></a>
+		</div>
+
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse navbar-ex1-collapse">
+			
+			<ul class="nav navbar-nav">
+						<li><a class="noajax" href="index">Inicio</a></li>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle noajax" data-toggle="dropdown">Acerca de <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+																	<li><a href="page?id=1">Instituci&oacute;n</a></li>
+																	<li><a href="page?id=3">Entrega de Utilidades</a></li>
+																	<li><a href="page?id=2">Junta Directiva</a></li>
+																	<li><a href="page?id=9">Calendario</a></li>
+																	<li><a href="page?id=19">Concesionarios</a></li>
+																
+							</ul>
+						</li>
+						<li><a href="noticias">Noticias</a></li>
+						<li><a href="sucursales">Sucursales</a></li>
+						<li><a href="galerias">Galerías</a></li>
+						<li><a href="videos">Videos</a></li>
+												<li style="padding-right: 5px"><a href="contacto">Contáctenos</a></li>
+						</ul>
+						<ul class="nav navbar-nav navbar-right hidden-xs hidden-sm">
+						<li style="background: url(images/trans3.png); margin-right: 1px"><a href="https://www.youtube.com/channel/UC7Ag0dXw5oUVVuY6s0NMj6w/videos" class="noajax"><img src="images/youtube.png" alt="Youtube"></a></li>
+						
+						<li style="background: url(images/trans3.png); margin-right: 1px"><a href="https://www.facebook.com/LoteriaNacionaldeNicaragua" class="noajax"><img src="images/facebook.png" alt="Facebook"></a></li>
+						
+						<li style="background: url(images/trans3.png)"><a href="https://twitter.com/loterianic" class="noajax"><img src="images/twitter.png" alt="Twitter"></a></li>
+
+						
+				</ul>
+		</div><!-- /.navbar-collapse -->
+	</div>
+</nav>		
+		<div id="header">
+			<div class="container" id="headercar" style=" background: url(imagen?i=71f02d5ec79cb9c50568f0c2b1f8b7e9.png) no-repeat; background-position: top center; background-size: cover;  margin: auto; ">
+				
+				<div class="text-center">
+					<div class="row text-center" >
+						<div class="hidden-sm hidden-xs col-md-4">
+							
+							<div class="text-center">
+							   
+							</div>
+
+						</div>
+						<div class="col-sm-12 col-md-8">
+
+									<div id="busqueda" style="border: 1px solid white; z-index: 10 !important">
+
+		<div class="text-center" id="busqueda_sorteo">
+			RESULTADOS DE SORTEOS
+		</div>
+
+		<style>
+			
+			#buscar > div > div {
+				padding-top: 5px;
+				padding-bottom: 5px;
+			}
+
+		</style>
+
+		<form action="consulta?r=3960" 
+			  id="buscar" 
+			  role="form" >
+			
+				<div class="row">
+					<div class="col-sm-8 col-md-3">
+						<input type="number" step="1" min="0" max="99999" id="billete" 
+							   name="billete" placeholder="NO. DE BILLETE" class="form-control" autofocus>	
+					</div>
+					
+					<div class="col-sm-4 col-md-3">
+						<select id="vigesimos" name="vigesimos" class="form-control">
+							<option value="20">BILLETE ENTERO</option>
+															<option value="1">1 Vigésimo</option>
+															<option value="2">2 Vigésimos</option>
+															<option value="3">3 Vigésimos</option>
+															<option value="4">4 Vigésimos</option>
+															<option value="5">5 Vigésimos</option>
+															<option value="6">6 Vigésimos</option>
+															<option value="7">7 Vigésimos</option>
+															<option value="8">8 Vigésimos</option>
+															<option value="9">9 Vigésimos</option>
+															<option value="10">10 Vigésimos</option>
+															<option value="11">11 Vigésimos</option>
+															<option value="12">12 Vigésimos</option>
+															<option value="13">13 Vigésimos</option>
+															<option value="14">14 Vigésimos</option>
+															<option value="15">15 Vigésimos</option>
+															<option value="16">16 Vigésimos</option>
+															<option value="17">17 Vigésimos</option>
+															<option value="18">18 Vigésimos</option>
+															<option value="19">19 Vigésimos</option>
+													</select>
+					</div>
+
+					<div class="col-sm-12 col-md-3">
+						<select name="sorteo" id="sorteo" class="form-control">
+							<option value="0">SORTEO</option>
+															<option selected>2015</option>
+															<option >2014</option>
+															<option >2013</option>
+															<option >2012</option>
+															<option >2011</option>
+															<option >2010</option>
+															<option >2009</option>
+															<option >2008</option>
+															<option >2007</option>
+															<option >2006</option>
+															<option >2005</option>
+													</select>
+					</div>
+					
+					<div class="col-sm-12 col-md-1">
+						<div class="lds-css ng-scope lds-heart" style="display:  none">
+<div class="lds-spinner" style="width:100%;height:100%"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+</div>
+						<button class="btn btn-primary" type="submit" id="subm" style="color: red; font-style: italic; background: white; text-shadow: none; border: 1px solid #DE491A !important">Buena Suerte!</button>
+					</div>
+				</div>
+		</form>
+
+	</div>																	
+								<div id="submenu">
+	<div class="row">
+		<div class="col-sm-6 col-md-3"><a href="sorteos">Sorteos</a></div>
+		<div class="col-sm-6 col-md-3"><a href="calendario">Calendario</a></div>
+		<div class="col-sm-6 col-md-3"><a href="raspadita">Raspadita</a></div>
+		<div class="col-sm-6 col-md-3"><a href="preguntas">Puntos de Venta</a></div>
+	</div>
+</div>	
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+				
+		<div id="main">
+
+
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" style="width: 95%; position: relative; margin: auto; min-height: 550px; ">
+    <div class="modal-content" style="width: 100%; min-height: 550px; ">
+      <div class="modal-body" id="dialog2">
+      	<iframe src="" frameborder="0" style="width: 100%; height: 550px" id="ifrsorteos"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+	
+	$(function(){
+		$('#sorteos .lnk').click(function(){
+			$('#ifrsorteos').attr('src', $(this).data('link'));
+			$('#myModal2').modal({show:true});
+		})
+	})
+
+</script>
+
+<div class="container con" id="sorteos">
+	
+	<h1 class="titulo">SORTEOS</h1>
+		<div class="row">
+					<div class="col-sm-12 col-md-4">
+				<div class="row" style="background: url(images/trans2.png); padding: 10px; margin: 10px; border-radius: 6px">
+				<div  class="lnk" data-link="docs/bfbb65bfb6d59229f54afce0f4c732e6.pdf" >
+					<div><span class="numero">2015</span></div>
+
+					<div class="info_fechas">
+						<div><b>Fecha:</b> Martes, 22 de Diciembre del 2020</div>
+					</div>
+
+					<img src="imagen?i=ea23f90bec3a5f269c8e6eeb388d0eaa.jpg&width=500" style="width: 100%">
+
+					<div class="text-right">
+						<div class="info">
+							<span class="precio"><b>Precio:</b> C$600</span>
+													</div>
+					</div>
+
+				</div>
+			</div></div>
+					<div class="col-sm-12 col-md-4">
+				<div class="row" style="background: url(images/trans2.png); padding: 10px; margin: 10px; border-radius: 6px">
+				<div  class="lnk" data-link="docs/e0ffcd9de740a3a4e7308eb1f8ca42ec856.pdf" >
+					<div><span class="numero">2014</span></div>
+
+					<div class="info_fechas">
+						<div><b>Fecha:</b> Mi&eacute;rcoles, 09 de Diciembre del 2020</div>
+					</div>
+
+					<img src="imagen?i=5a910bdc5a776d7842f59f542cf920d9.jpg&width=500" style="width: 100%">
+
+					<div class="text-right">
+						<div class="info">
+							<span class="precio"><b>Precio:</b> C$800</span>
+													</div>
+					</div>
+
+				</div>
+			</div></div>
+					<div class="col-sm-12 col-md-4">
+				<div class="row" style="background: url(images/trans2.png); padding: 10px; margin: 10px; border-radius: 6px">
+				<div  class="lnk" data-link="docs/5d7bce7bdf01cce6df8af5315ab4a1fe.pdf" >
+					<div><span class="numero">2013</span></div>
+
+					<div class="info_fechas">
+						<div><b>Fecha:</b> Martes, 01 de Diciembre del 2020</div>
+					</div>
+
+					<img src="imagen?i=1d3b82fb9e17440e830fde9418dfdd87.jpg&width=500" style="width: 100%">
+
+					<div class="text-right">
+						<div class="info">
+							<span class="precio"><b>Precio:</b> C$800</span>
+															&bull;
+								<span class="ganador"><b>Ganador:</b> 10717</span>
+								&bull;
+								<span class="sucursal">Chinandega</span>
+													</div>
+					</div>
+
+				</div>
+			</div></div>
+		</div><div class="row">			<div class="col-sm-12 col-md-4">
+				<div class="row" style="background: url(images/trans2.png); padding: 10px; margin: 10px; border-radius: 6px">
+				<div  class="lnk" data-link="docs/830ca71b3232ebbc12daf378d081ac8f.pdf" >
+					<div><span class="numero">2012</span></div>
+
+					<div class="info_fechas">
+						<div><b>Fecha:</b> Martes, 24 de Noviembre del 2020</div>
+					</div>
+
+					<img src="imagen?i=6907cac384d60acfbcdd7d2f6156c960.jpg&width=500" style="width: 100%">
+
+					<div class="text-right">
+						<div class="info">
+							<span class="precio"><b>Precio:</b> C$600</span>
+													</div>
+					</div>
+
+				</div>
+			</div></div>
+					<div class="col-sm-12 col-md-4">
+				<div class="row" style="background: url(images/trans2.png); padding: 10px; margin: 10px; border-radius: 6px">
+				<div  class="lnk" data-link="docs/04addf722f46408aea06aebca609ee60.pdf" >
+					<div><span class="numero">2011</span></div>
+
+					<div class="info_fechas">
+						<div><b>Fecha:</b> Martes, 17 de Noviembre del 2020</div>
+					</div>
+
+					<img src="imagen?i=3481e7ec63e6fc53b11c65885dc9edbb.jpg&width=500" style="width: 100%">
+
+					<div class="text-right">
+						<div class="info">
+							<span class="precio"><b>Precio:</b> C$600</span>
+													</div>
+					</div>
+
+				</div>
+			</div></div>
+					<div class="col-sm-12 col-md-4">
+				<div class="row" style="background: url(images/trans2.png); padding: 10px; margin: 10px; border-radius: 6px">
+				<div  class="lnk" data-link="docs/a1f357dfb500456cdb4b2acd89b0c7a5.pdf" >
+					<div><span class="numero">2010</span></div>
+
+					<div class="info_fechas">
+						<div><b>Fecha:</b> Martes, 10 de Noviembre del 2020</div>
+					</div>
+
+					<img src="imagen?i=0661bebbc97d2ac1a986075a2899d4b5.jpg&width=500" style="width: 100%">
+
+					<div class="text-right">
+						<div class="info">
+							<span class="precio"><b>Precio:</b> C$600</span>
+															&bull;
+								<span class="ganador"><b>Ganador:</b> 58728</span>
+								&bull;
+								<span class="sucursal">Tipitapa</span>
+													</div>
+					</div>
+
+				</div>
+			</div></div>
+		</div><div class="row">			<div class="col-sm-12 col-md-4">
+				<div class="row" style="background: url(images/trans2.png); padding: 10px; margin: 10px; border-radius: 6px">
+				<div  class="lnk" data-link="docs/8e03240d5fc93f245e10cedfeb88319b.pdf" >
+					<div><span class="numero">2009</span></div>
+
+					<div class="info_fechas">
+						<div><b>Fecha:</b> Martes, 03 de Noviembre del 2020</div>
+					</div>
+
+					<img src="imagen?i=050edb166c82ed7d6077fbefee28a248.jpg&width=500" style="width: 100%">
+
+					<div class="text-right">
+						<div class="info">
+							<span class="precio"><b>Precio:</b> C$600</span>
+															&bull;
+								<span class="ganador"><b>Ganador:</b> 26707</span>
+								&bull;
+								<span class="sucursal">Matagalpa</span>
+													</div>
+					</div>
+
+				</div>
+			</div></div>
+					<div class="col-sm-12 col-md-4">
+				<div class="row" style="background: url(images/trans2.png); padding: 10px; margin: 10px; border-radius: 6px">
+				<div  class="lnk" data-link="docs/1d4735f5a37ecef9ac90c5ddfc39582d.pdf" >
+					<div><span class="numero">2008</span></div>
+
+					<div class="info_fechas">
+						<div><b>Fecha:</b> Martes, 27 de Octubre del 2020</div>
+					</div>
+
+					<img src="imagen?i=7dbf6a771f57414013989de1ada7e875.jpg&width=500" style="width: 100%">
+
+					<div class="text-right">
+						<div class="info">
+							<span class="precio"><b>Precio:</b> C$600</span>
+													</div>
+					</div>
+
+				</div>
+			</div></div>
+					<div class="col-sm-12 col-md-4">
+				<div class="row" style="background: url(images/trans2.png); padding: 10px; margin: 10px; border-radius: 6px">
+				<div  class="lnk" data-link="docs/bfa4d58059a1bbed471af90dc836f2ba.pdf" >
+					<div><span class="numero">2007</span></div>
+
+					<div class="info_fechas">
+						<div><b>Fecha:</b> Martes, 20 de Octubre del 2020</div>
+					</div>
+
+					<img src="imagen?i=4ca997a69276a8e2faf835143066dd55.jpg&width=500" style="width: 100%">
+
+					<div class="text-right">
+						<div class="info">
+							<span class="precio"><b>Precio:</b> C$600</span>
+															&bull;
+								<span class="ganador"><b>Ganador:</b> 33424</span>
+								&bull;
+								<span class="sucursal">Jinotepe</span>
+													</div>
+					</div>
+
+				</div>
+			</div></div>
+		</div><div class="row">		</div>
+</div>
+
+
+				<div class="text-center">
+				<ul class="pagination">
+										<li class="active"><a  href="/sorteos?id=0&p=1">1</a></li>
+										<li ><a  href="/sorteos?id=0&p=2">2</a></li>
+									</ul>
+			</div>
+			</div> <!-- end #main -->
+
+<script>
+	jQuery(document).ready(function() {
+  
+  var btn = $('#backtotop');
+
+  $(window).scroll(function() {
+    if ($(window).scrollTop() > 300) {
+      btn.addClass('show');
+    } else {
+      btn.removeClass('show');
+    }
+  });
+
+  btn.on('click', function(e) {
+    e.preventDefault();
+    $('html, body').animate({scrollTop:0}, '300');
+  });
+
+});
+
+</script>
+
+<div class="container con">
+	<br />
+		<div id="enlaces">
+			<div id="enlaces2" class="colour">
+				<div class="row">
+					<div class="col-sm-4 col-md-4" style="text-align: left; color: white">
+						<div style="font-size: 30px; font-family: 'Simply Rounded'">Lotería Nacional</div>
+						<div><b>Direcci&oacute;n:</b><br />Camino de oriente, Frente al BAC</div>
+						<div><b>Teléfono:</b><br /></div>
+					</div>
+					<div class="col-sm-8 col-md-8">
+							<a href="http://www.nicaraguacompra.gob.ni/" class="noajax">
+		<img src="imagen.php?i=788d667b73d7e32c095268c3afd80fe3.png&height=100">
+	</a>
+	<a href="#" class="noajax">
+		<img src="imagen.php?i=5e3ded51f234798a2464db864ac7179a.png&height=100">
+	</a>
+	<a href="#" class="noajax">
+		<img src="imagen.php?i=5d603439c40075c8b36c28706eaca877.png&height=100">
+	</a>
+		
+					</div>
+				</div>
+			</div>
+			<div id="enlaces3" class="colour">	<a href="http://www.loto.ni/" class="noajax">
+		<img src="imagen.php?i=27c35ff793a98046505dd8127a3c73ec.png&height=100">
+	</a>
+	<a href="http://www.ind.gob.ni/" class="noajax">
+		<img src="imagen.php?i=e7f948a3ac140684806c406c6d9043d5.png&height=100">
+	</a>
+	<a href="http://www.mifamilia.gob.ni/" class="noajax">
+		<img src="imagen.php?i=57634b87509dddb15cca8ad574c389cf2576.png&height=100">
+	</a>
+	<a href="https://nuevaya.com.ni/" class="noajax">
+		<img src="imagen.php?i=32e561827650a181f43327daca62f0fb.png&height=100">
+	</a>
+					<button style="color: white; font-weight: bold; border: 0; position: fixed; bottom: 30px; right: 20px; display: none" class="btn colour" id="backtotop" onclick="$('html, body').stop().animate({scrollTop:0}, 500);"><img src="images/uparrow.png" style="width: 16px; position: relative; top: -2px" alt=""> SUBIR</button>
+			</div>
+		</div>
+
+
+		<div id="copyright" class="container">
+			&copy; Todos los derechos reservados. Loter&iacute;a Nacional 2021.
+		</div>
+	</div>
+	</body>
+</html>

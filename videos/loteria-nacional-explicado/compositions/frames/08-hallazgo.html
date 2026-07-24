@@ -1,0 +1,653 @@
+<template>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400&family=Hanken+Grotesk:wght@400;600&family=DM+Mono:wght@400;500&display=block");
+  </style>
+  <style>
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+    }
+
+    /* ---------- ground (full-bleed clip, track 0) ---------- */
+    .h8-ground {
+      position: absolute;
+      inset: 0;
+      background-color: #f0ebde;
+      background-image:
+        linear-gradient(to right, rgba(31, 43, 224, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(31, 43, 224, 0.1) 1px, transparent 1px);
+      background-size: 38.4px 38.4px;
+    }
+    .h8-hairline {
+      position: absolute;
+      left: 77px;
+      right: 77px;
+      height: 2px;
+      background: #1f2be0;
+    }
+    .h8-hairline-top {
+      top: 58px;
+    }
+    .h8-hairline-bottom {
+      top: 1022px;
+    }
+    .h8-chrome {
+      position: absolute;
+      top: 990px;
+      font-family: "DM Mono", monospace;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: #1f2be0;
+    }
+    .h8-chrome-left {
+      left: 77px;
+    }
+    .h8-chrome-right {
+      right: 77px;
+    }
+
+    /* ---------- zoom stage (track 1) ---------- */
+    .h8-stage {
+      position: absolute;
+      inset: 0;
+    }
+    .h8-zoom-outer {
+      position: absolute;
+      inset: 0;
+      transform-origin: 50% 50%;
+      will-change: transform;
+    }
+    .h8-zoom-inner {
+      position: absolute;
+      inset: 0;
+      will-change: transform;
+    }
+
+    /* headline block */
+    .h8-kicker {
+      position: absolute;
+      left: 96px;
+      top: 100px;
+      font-family: "Hanken Grotesk", Arial, sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #1f2be0;
+      opacity: 0;
+    }
+    .h8-headline {
+      position: absolute;
+      left: 94px;
+      top: 130px;
+      font-family: "Newsreader", Georgia, serif;
+      font-weight: 400;
+      font-size: 60px;
+      line-height: 1.05;
+      letter-spacing: -0.005em;
+      text-transform: uppercase;
+      color: #1f2be0;
+      white-space: nowrap;
+    }
+    .h8-headline span {
+      display: inline-block;
+      opacity: 0;
+    }
+
+    /* chart */
+    .h8-axis-svg {
+      position: absolute;
+      left: 76px;
+      top: 280px;
+      width: 1104px;
+      height: 530px;
+      overflow: visible;
+    }
+    .h8-axis-svg path {
+      fill: none;
+      stroke: #1f2be0;
+      stroke-width: 2.2;
+      stroke-linecap: square;
+    }
+    .h8-bars {
+      position: absolute;
+      left: 96px;
+      top: 340px;
+      width: 1064px;
+      height: 440px;
+      display: flex;
+      align-items: flex-end;
+    }
+    .h8-slot {
+      position: relative;
+      flex: 1 1 0;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+    .h8-bar {
+      width: 64px;
+      background: #1f2be0;
+      opacity: 0.82;
+      transform-origin: bottom center;
+    }
+    .h8-count {
+      position: absolute;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-family: "DM Mono", monospace;
+      font-size: 19px;
+      letter-spacing: 0.04em;
+      color: #1f2be0;
+      opacity: 0;
+    }
+    .h8-digits {
+      position: absolute;
+      left: 96px;
+      top: 796px;
+      width: 1064px;
+      display: flex;
+    }
+    .h8-digits span {
+      flex: 1 1 0;
+      text-align: center;
+      font-family: "DM Mono", monospace;
+      font-size: 24px;
+      letter-spacing: 0.05em;
+      color: #1f2be0;
+      opacity: 0;
+    }
+    .h8-expected {
+      position: absolute;
+      left: 96px;
+      top: 464px;
+      width: 1064px;
+      height: 3px;
+      background: repeating-linear-gradient(90deg, #1f2be0 0 14px, transparent 14px 26px);
+      transform: scaleX(0);
+      transform-origin: left center;
+    }
+    .h8-expected-label {
+      position: absolute;
+      left: 900px;
+      top: 430px;
+      width: 260px;
+      text-align: right;
+      font-family: "DM Mono", monospace;
+      font-size: 21px;
+      letter-spacing: 0.05em;
+      color: #1f2be0;
+      opacity: 0;
+    }
+
+    /* percent count-ups (counting-dynamic-scale) */
+    .h8-pct {
+      position: absolute;
+      left: 50%;
+      margin-left: -110px;
+      width: 220px;
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      font-family: "Newsreader", Georgia, serif;
+      font-weight: 400;
+      color: #1f2be0;
+      opacity: 0;
+    }
+    .h8-pct .h8-pct-num {
+      display: inline-block;
+      font-size: 66px;
+      line-height: 1;
+      letter-spacing: -0.008em;
+      font-variant-numeric: tabular-nums;
+      transform-origin: center center;
+    }
+    .h8-pct .h8-pct-suf {
+      display: inline-block;
+      font-size: 40px;
+      margin-left: 4px;
+      opacity: 0;
+    }
+    .h8-target {
+      position: absolute;
+      left: 628px;
+      top: 320px;
+      width: 532px;
+      height: 480px;
+      pointer-events: none;
+    }
+
+    /* ---------- stamps overlay (track 2) ---------- */
+    .h8-stamps {
+      position: absolute;
+      left: 0;
+      top: 118px;
+      width: 1920px;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+    .h8-stamp {
+      background: #f0ebde;
+      border: 2px solid #1f2be0;
+      padding: 12px 26px;
+      font-family: "DM Mono", monospace;
+      font-size: 25px;
+      letter-spacing: 0.06em;
+      color: #1f2be0;
+      opacity: 0;
+    }
+
+    /* ---------- verdict overlay (track 3, kinetic-beat-slam) ---------- */
+    .h8-verdict {
+      position: absolute;
+      left: 340px;
+      top: 400px;
+      width: 1240px;
+      height: 330px;
+      background: #f0ebde;
+      border: 2.5px solid #1f2be0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      opacity: 0;
+    }
+    .h8-v1 {
+      font-family: "Newsreader", Georgia, serif;
+      font-weight: 400;
+      font-size: 50px;
+      letter-spacing: -0.005em;
+      line-height: 1.05;
+      text-transform: uppercase;
+      color: #1f2be0;
+      opacity: 0;
+    }
+    .h8-v2 {
+      position: relative;
+      font-family: "Newsreader", Georgia, serif;
+      font-weight: 400;
+      font-size: 104px;
+      line-height: 0.96;
+      letter-spacing: -0.008em;
+      text-transform: uppercase;
+      color: #1f2be0;
+      opacity: 0;
+    }
+    .h8-v2-sweep {
+      position: absolute;
+      left: -12px;
+      right: -12px;
+      top: 8%;
+      bottom: 0;
+      background: rgba(31, 43, 224, 0.16);
+      transform: scaleX(0);
+      transform-origin: left center;
+      z-index: 0;
+    }
+    .h8-v2-text {
+      position: relative;
+      z-index: 1;
+    }
+    .h8-qr {
+      position: absolute;
+      right: 14px;
+      top: 14px;
+      width: 56px;
+      height: 56px;
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      box-shadow: 0 0 0 2px #f0ebde;
+    }
+    .h8-qr i {
+      display: block;
+    }
+    .h8-qr i.on {
+      background: #1f2be0;
+    }
+    .h8-qr i.off {
+      background: rgba(31, 43, 224, 0.1);
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="08-hallazgo"
+    data-start="0"
+    data-duration="10.5"
+    data-width="1920"
+    data-height="1080"
+  >
+    <!-- track 0 · full-bleed ground -->
+    <div class="clip h8-ground" data-start="0" data-duration="10.5" data-track-index="0">
+      <div class="h8-hairline h8-hairline-top"></div>
+      <div class="h8-hairline h8-hairline-bottom"></div>
+      <div class="h8-chrome h8-chrome-left">FIG. 08 &middot; DISTRIBUCI&Oacute;N DEL &Uacute;LTIMO D&Iacute;GITO</div>
+      <div class="h8-chrome h8-chrome-right">08 / 10</div>
+    </div>
+
+    <!-- track 1 · zoomable stage: headline + histogram -->
+    <div class="clip h8-stage" data-start="0" data-duration="10.5" data-track-index="1">
+      <div class="h8-zoom-outer" id="h8-zoom-outer">
+        <div class="h8-zoom-inner" id="h8-zoom-inner">
+          <div class="h8-kicker" id="h8-kicker">Premio mayor &middot; 1,247 sorteos</div>
+          <div class="h8-headline" id="h8-headline">
+            <span>EL</span> <span>&Uacute;LTIMO</span> <span>D&Iacute;GITO</span> <span>DEL</span>
+            <span>MAYOR</span>
+          </div>
+
+          <svg class="h8-axis-svg" viewBox="0 0 1104 530" xmlns="http://www.w3.org/2000/svg">
+            <path id="h8-axis-y" d="M 20 500 L 20 40" />
+            <path id="h8-axis-x" d="M 20 500 L 1084 500" />
+          </svg>
+
+          <div class="h8-bars" id="h8-bars">
+            <div class="h8-slot">
+              <span class="h8-count" style="bottom: 339px">81</span>
+              <div class="h8-bar" style="height: 327px"></div>
+            </div>
+            <div class="h8-slot">
+              <span class="h8-count" style="bottom: 258px">61</span>
+              <div class="h8-bar" style="height: 246px"></div>
+            </div>
+            <div class="h8-slot">
+              <span class="h8-count" style="bottom: 343px">82</span>
+              <div class="h8-bar" style="height: 331px"></div>
+            </div>
+            <div class="h8-slot">
+              <span class="h8-count" style="bottom: 327px">78</span>
+              <div class="h8-bar" style="height: 315px"></div>
+            </div>
+            <div class="h8-slot">
+              <span class="h8-count" style="bottom: 335px">80</span>
+              <div class="h8-bar" style="height: 323px"></div>
+            </div>
+            <div class="h8-slot">
+              <span class="h8-count" style="bottom: 416px">100</span>
+              <div class="h8-bar h8-culprit" style="height: 404px"></div>
+              <div class="h8-pct" id="h8-pct5" style="bottom: 452px">
+                <span class="h8-pct-num" id="h8-pct5-num">+0</span
+                ><span class="h8-pct-suf">%</span>
+              </div>
+            </div>
+            <div class="h8-slot">
+              <span class="h8-count" style="bottom: 262px">62</span>
+              <div class="h8-bar" style="height: 250px"></div>
+            </div>
+            <div class="h8-slot">
+              <span class="h8-count" style="bottom: 343px">82</span>
+              <div class="h8-bar" style="height: 331px"></div>
+            </div>
+            <div class="h8-slot">
+              <span class="h8-count" style="bottom: 262px">62</span>
+              <div class="h8-bar" style="height: 250px"></div>
+            </div>
+            <div class="h8-slot">
+              <span class="h8-count" style="bottom: 452px">109</span>
+              <div class="h8-bar h8-culprit" style="height: 440px"></div>
+              <div class="h8-pct" id="h8-pct9" style="bottom: 488px">
+                <span class="h8-pct-num" id="h8-pct9-num">+0</span
+                ><span class="h8-pct-suf">%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="h8-expected" id="h8-expected"></div>
+          <div class="h8-expected-label" id="h8-expected-label">ESPERADO &asymp; 80</div>
+
+          <div class="h8-digits" id="h8-digits">
+            <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span
+            ><span>6</span><span>7</span><span>8</span><span>9</span>
+          </div>
+
+          <div class="h8-target" id="h8-target"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- track 2 · rigor stamps (fixed overlay, unaffected by the zoom) -->
+    <div class="clip h8-stamps" data-start="5.8" data-duration="4.7" data-track-index="2">
+      <div class="h8-stamp" id="h8-stamp1">&chi;&sup2; = 28.4</div>
+      <div class="h8-stamp" id="h8-stamp2">p = 0.0008</div>
+      <div class="h8-stamp" id="h8-stamp3">ESTABLE 24 A&Ntilde;OS</div>
+    </div>
+
+    <!-- track 3 · verdict seal -->
+    <div class="clip h8-verdict" data-start="7.3" data-duration="3.2" data-track-index="3">
+      <div class="h8-qr" id="h8-qr"></div>
+      <div class="h8-v1" id="h8-v1">Sesgo f&iacute;sico de la t&oacute;mbola &mdash;</div>
+      <div class="h8-v2" id="h8-v2">
+        <span class="h8-v2-sweep" id="h8-v2-sweep"></span>
+        <span class="h8-v2-text">NO FRAUDE.</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    window.__timelines = window.__timelines || {};
+    (async () => {
+      try {
+        await document.fonts.ready;
+      } catch (e) {}
+
+      /* --- QR mosaic: deterministic hand-authored 8x8 pattern --- */
+      const qrPattern =
+        "1110011110100101101101010001111011110001010110110100101111100111";
+      const qrHost = document.getElementById("h8-qr");
+      for (let i = 0; i < 64; i++) {
+        const cell = document.createElement("i");
+        cell.className = qrPattern[i] === "1" ? "on" : "off";
+        qrHost.appendChild(cell);
+      }
+
+      /* --- svg-path-draw setup: measured lengths, never guessed --- */
+      const axisY = document.getElementById("h8-axis-y");
+      const axisX = document.getElementById("h8-axis-x");
+      [axisY, axisX].forEach((p) => {
+        const len = p.getTotalLength();
+        p.style.strokeDasharray = `${len}`;
+        p.style.strokeDashoffset = `${len}`;
+      });
+
+      /* --- coordinate-target-zoom: measure the real laid-out center, bake once --- */
+      const W = 1920,
+        H = 1080;
+      const r = document.getElementById("h8-target").getBoundingClientRect();
+      const offX = r.left + r.width / 2 - W / 2;
+      const offY = r.top + r.height / 2 - H / 2;
+      const counterX = -offX;
+      const counterY = -offY;
+      const maxScale = Math.min((0.88 * W) / r.width, (0.88 * H) / r.height);
+      const ZOOM_SCALE = Math.min(1.5, maxScale);
+
+      const tl = gsap.timeline({ paused: true });
+
+      /* ================= Scene 1 (0.0-2.2) — frame + axis self-draw, headline ================= */
+      tl.fromTo(
+        "#h8-kicker",
+        { opacity: 0, y: 14 },
+        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
+        0.1
+      );
+      tl.fromTo(
+        "#h8-headline span",
+        { opacity: 0, y: 36 },
+        { opacity: 1, y: 0, duration: 0.55, ease: "power3.out", stagger: 0.09 },
+        0.2
+      );
+      tl.to(axisY, { strokeDashoffset: 0, duration: 0.6, ease: "power2.out" }, 0.35);
+      tl.to(axisX, { strokeDashoffset: 0, duration: 0.8, ease: "power2.out" }, 0.8);
+      tl.fromTo(
+        "#h8-digits span",
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.35, ease: "power2.out", stagger: 0.05 },
+        1.45
+      );
+
+      /* ================= Scene 2 (2.2-5.0) — bars rise, expected line, culprits tint ========== */
+      tl.fromTo(
+        ".h8-bar",
+        { scaleY: 0 },
+        { scaleY: 1, duration: 0.7, ease: "power3.out", stagger: 0.08 },
+        2.2
+      );
+      tl.fromTo(
+        ".h8-count",
+        { opacity: 0 },
+        { opacity: 0.55, duration: 0.4, ease: "power1.out", stagger: 0.06 },
+        2.75
+      );
+      tl.to("#h8-expected", { scaleX: 1, duration: 0.8, ease: "power2.out" }, 3.3);
+      tl.fromTo(
+        "#h8-expected-label",
+        { opacity: 0, y: 8 },
+        { opacity: 1, y: 0, duration: 0.45, ease: "power1.out" },
+        3.85
+      );
+      /* the two culprit bars go full ink, the rest fall back to ~40% */
+      tl.to(
+        ".h8-bar:not(.h8-culprit)",
+        { opacity: 0.38, duration: 0.55, ease: "power2.inOut" },
+        4.25
+      );
+      tl.to(".h8-culprit", { opacity: 1, duration: 0.55, ease: "power2.inOut" }, 4.25);
+
+      /* ================= Scene 3 (5.0-7.4) — zoom-to-target + count-ups + stamps ============= */
+      /* outer scales, inner counter-translates: same position, duration AND ease */
+      tl.to(
+        "#h8-zoom-outer",
+        { scale: ZOOM_SCALE, duration: 1.4, ease: "power3.inOut" },
+        5.0
+      );
+      tl.to(
+        "#h8-zoom-inner",
+        { x: counterX, y: counterY, duration: 1.4, ease: "power3.inOut" },
+        5.0
+      );
+
+      /* counting-dynamic-scale — both stats as one chord: same start, ease, duration */
+      const COUNT_DUR = 1.2;
+      const s5 = { value: 0 };
+      const s9 = { value: 0 };
+      const n5 = document.getElementById("h8-pct5-num");
+      const n9 = document.getElementById("h8-pct9-num");
+      tl.fromTo(
+        ".h8-pct",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.3, ease: "power1.out" },
+        5.4
+      );
+      tl.to(
+        s9,
+        {
+          value: 37,
+          duration: COUNT_DUR,
+          ease: "power3.out",
+          onUpdate: () => {
+            n9.textContent = "+" + Math.round(s9.value);
+          },
+        },
+        5.5
+      );
+      tl.fromTo(
+        n9,
+        { scale: 0.55 },
+        { scale: 1, duration: COUNT_DUR, ease: "power3.out" },
+        5.5
+      );
+      tl.to(
+        s5,
+        {
+          value: 25,
+          duration: COUNT_DUR,
+          ease: "power3.out",
+          onUpdate: () => {
+            n5.textContent = "+" + Math.round(s5.value);
+          },
+        },
+        5.5
+      );
+      tl.fromTo(
+        n5,
+        { scale: 0.55 },
+        { scale: 1, duration: COUNT_DUR, ease: "power3.out" },
+        5.5
+      );
+      /* suffix lands AFTER the count — its own beat */
+      tl.fromTo(
+        ".h8-pct-suf",
+        { y: 18 },
+        { opacity: 1, y: 0, duration: 0.35, ease: "back.out(1.7)" },
+        5.5 + COUNT_DUR
+      );
+
+      /* rigor stamps arrive in a row, each on its beat */
+      tl.fromTo(
+        "#h8-stamp1",
+        { opacity: 0, y: 26 },
+        { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" },
+        6.15
+      );
+      tl.fromTo(
+        "#h8-stamp2",
+        { opacity: 0, y: 26 },
+        { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" },
+        6.55
+      );
+      tl.fromTo(
+        "#h8-stamp3",
+        { opacity: 0, y: 26 },
+        { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" },
+        6.95
+      );
+
+      /* ================= Scene 4 (7.4-10.0) — verdict seal (kinetic-beat-slam, contained) ===== */
+      const PULSE = 0.55;
+      const B0 = 7.5; /* beat grid: B0, B0+PULSE, B0+2*PULSE */
+
+      /* chart recedes under the seal (persists to end — not an exit) */
+      tl.to(".h8-stage", { opacity: 0.45, duration: 0.6, ease: "power2.inOut" }, 7.4);
+      tl.fromTo(
+        ".h8-verdict",
+        { opacity: 0, scale: 0.97 },
+        { opacity: 1, scale: 1, duration: 0.35, ease: "power3.out" },
+        7.35
+      );
+      /* distinct entrances per phrase: scale+blur slam, then side snap */
+      tl.fromTo(
+        "#h8-v1",
+        { opacity: 0, scale: 1.45, filter: "blur(14px)" },
+        { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.5, ease: "power4.out" },
+        B0
+      );
+      tl.fromTo(
+        "#h8-v2",
+        { opacity: 0, x: -260 },
+        { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" },
+        B0 + PULSE
+      );
+      /* highlight sweep across NO FRAUDE on the third beat */
+      tl.to(
+        "#h8-v2-sweep",
+        { scaleX: 1, duration: 0.55, ease: "power2.inOut" },
+        B0 + 2 * PULSE
+      );
+      /* QR patch ticks in — finale punctuation, then a quiet hold */
+      tl.fromTo(
+        ".h8-qr i",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.05, ease: "none", stagger: 0.006 },
+        B0 + 2 * PULSE + 0.3
+      );
+
+      window.__timelines["08-hallazgo"] = tl;
+    })();
+  </script>
+</template>

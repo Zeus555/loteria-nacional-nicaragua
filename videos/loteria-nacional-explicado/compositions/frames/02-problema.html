@@ -1,0 +1,361 @@
+<template>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Hanken+Grotesk:wght@400;600&family=DM+Mono&display=swap');
+
+    #root {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      container-type: size;
+    }
+
+    /* ---------- ground (full-bleed clip, never on #root) ---------- */
+    .f02-bg {
+      position: absolute;
+      inset: 0;
+      background-color: #F0EBDE;
+      background-image:
+        linear-gradient(to right, rgba(31, 43, 224, 0.10) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(31, 43, 224, 0.10) 1px, transparent 1px);
+      background-size: 2cqw 2cqw;
+      transform-origin: 50% 50%;
+    }
+
+    /* ---------- frame furniture ---------- */
+    .f02-furniture {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .f02-hairline {
+      position: absolute;
+      left: 4cqw;
+      right: 4cqw;
+      height: 0.12cqw;
+      background: #1F2BE0;
+    }
+    .f02-hairline-top { top: 3cqw; }
+    .f02-hairline-bottom { bottom: 3cqw; }
+    .f02-kicker {
+      position: absolute;
+      top: 4.1cqw;
+      left: 4cqw;
+      display: flex;
+      align-items: baseline;
+      gap: 1cqw;
+      color: #1F2BE0;
+    }
+    .f02-kicker-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78cqw;
+      letter-spacing: 0.06em;
+    }
+    .f02-kicker-label {
+      font-family: 'Hanken Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 0.83cqw;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    /* ---------- PDF ficha (supporting) ---------- */
+    .f02-ficha {
+      position: absolute;
+      top: 10cqh;
+      right: 6cqw;
+      width: 10cqw;
+      color: #1F2BE0;
+      text-align: center;
+    }
+    .f02-ficha-doc { position: relative; }
+    .f02-ficha-doc svg { display: block; width: 100%; height: auto; }
+    .f02-ficha-doc path,
+    .f02-ficha-doc line {
+      fill: none;
+      stroke: #1F2BE0;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .f02-scribble {
+      position: absolute;
+      left: -12%;
+      top: 34%;
+      width: 124%;
+      height: 30%;
+      transform: rotate(-9deg);
+    }
+    .f02-scribble path {
+      fill: none;
+      stroke: #1F2BE0;
+      stroke-width: 7;
+      stroke-linecap: round;
+    }
+    .f02-ficha-label {
+      margin-top: 0.7cqw;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78cqw;
+      letter-spacing: 0.05em;
+    }
+    .f02-badge {
+      display: inline-block;
+      margin-top: 0.9cqw;
+      padding: 0.35cqw 0.8cqw;
+      border: 0.12cqw solid #1F2BE0;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78cqw;
+      letter-spacing: 0.08em;
+      opacity: 0;
+    }
+
+    /* ---------- type beats ---------- */
+    .f02-beat {
+      position: absolute;
+      left: 4cqw;
+      right: 4cqw;
+      top: 44cqh;
+      text-align: center;
+      color: #1F2BE0;
+    }
+    .f02-ord {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78cqw;
+      letter-spacing: 0.08em;
+      opacity: 0.7;
+      margin-bottom: 1.4cqw;
+    }
+    .f02-phrase {
+      font-family: 'Newsreader', serif;
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.005em;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      column-gap: 0.28em;
+    }
+    .f02-phrase span { display: inline-block; }
+    .f02-b1 .f02-phrase { font-size: 5.7cqw; }
+    .f02-b2 .f02-phrase { font-size: 6.8cqw; }
+    .f02-b3 .f02-phrase { font-size: 5.0cqw; }
+    .f02-b4-inner { transform-origin: 50% 50%; }
+    .f02-b4 .f02-phrase { font-size: 6.2cqw; line-height: 1.1; }
+    .f02-b4 .f02-phrase + .f02-phrase { margin-top: 0.4cqw; }
+    .f02-glow-word {
+      display: inline-block;
+      transform-origin: 50% 50%;
+      text-shadow: 0 0 0 rgba(31, 43, 224, 0);
+    }
+    .f02-b3-inner { transform-origin: 50% 50%; }
+  </style>
+
+  <div id="root" data-composition-id="02-problema" data-width="1920" data-height="1080" data-start="0" data-duration="8.5">
+
+    <!-- ground -->
+    <div id="f02-bg" class="clip f02-bg" data-start="0" data-duration="8.5" data-track-index="0"></div>
+
+    <!-- furniture: hairlines + kicker -->
+    <div class="clip f02-furniture" data-start="0" data-duration="8.5" data-track-index="1">
+      <div class="f02-hairline f02-hairline-top"></div>
+      <div class="f02-hairline f02-hairline-bottom"></div>
+      <div class="f02-kicker" id="f02-kicker">
+        <span class="f02-kicker-num">02</span>
+        <span class="f02-kicker-label">El problema</span>
+      </div>
+    </div>
+
+    <!-- PDF ficha: draws itself, then degrades -->
+    <div class="clip f02-ficha" data-start="0" data-duration="8.5" data-track-index="2">
+      <div class="f02-ficha-doc" id="f02-ficha-doc">
+        <svg viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+          <path id="f02-doc-outline" d="M 8 6 L 78 6 L 112 40 L 112 144 L 8 144 Z" />
+          <path id="f02-doc-fold" d="M 78 6 L 78 40 L 112 40" />
+          <line id="f02-doc-l1" x1="24" y1="70" x2="96" y2="70" />
+          <line id="f02-doc-l2" x1="24" y1="92" x2="96" y2="92" />
+          <line id="f02-doc-l3" x1="24" y1="114" x2="72" y2="114" />
+        </svg>
+        <svg class="f02-scribble" viewBox="0 0 240 60" preserveAspectRatio="none">
+          <path id="f02-scr-1" d="M4,30 Q22,10 40,30 Q58,50 76,30 Q94,10 112,30 Q130,50 148,30 Q166,10 184,30 Q202,50 220,30 Q230,20 236,26" />
+          <path id="f02-scr-2" d="M10,42 Q40,22 70,40 Q100,56 130,38 Q160,22 190,40 Q210,50 232,38" />
+        </svg>
+      </div>
+      <div class="f02-ficha-label">Lista-2287.pdf</div>
+      <div><span class="f02-badge" id="f02-badge">0 BYTES</span></div>
+    </div>
+
+    <!-- Beat 1 : 0.0-1.8 -->
+    <div class="clip f02-beat f02-b1" data-start="0" data-duration="1.8" data-track-index="3">
+      <div class="f02-ord f02-b1-ord">01 / 04</div>
+      <div class="f02-phrase">
+        <span class="f02-b1-w">Cada</span>
+        <span class="f02-b1-w">semana:</span>
+        <span class="f02-b1-w">un</span>
+        <span class="f02-b1-w">PDF</span>
+        <span class="f02-b1-w">oficial.</span>
+      </div>
+    </div>
+
+    <!-- Beat 2 : 1.8-3.6 -->
+    <div class="clip f02-beat f02-b2" data-start="1.8" data-duration="1.8" data-track-index="3">
+      <div class="f02-ord f02-b2-ord">02 / 04</div>
+      <div class="f02-phrase">
+        <span class="f02-b2-w">Los</span>
+        <span class="f02-b2-w">enlaces</span>
+        <span class="f02-b2-w">mueren.</span>
+      </div>
+    </div>
+
+    <!-- Beat 3 : 3.6-5.6 (hard cut in) -->
+    <div class="clip f02-beat f02-b3" data-start="3.6" data-duration="2" data-track-index="3">
+      <div class="f02-b3-inner" id="f02-b3-inner">
+        <div class="f02-ord">03 / 04</div>
+        <div class="f02-phrase">
+          <span>Las</span><span>descargas</span><span>fallan</span><span>en</span><span>silencio.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Beat 4 : 5.6-8.0 (max weight, arrival + hold) -->
+    <div class="clip f02-beat f02-b4" data-start="5.6" data-duration="2.9" data-track-index="3">
+      <div class="f02-b4-inner" id="f02-b4-inner">
+        <div class="f02-ord">04 / 04</div>
+        <div class="f02-phrase">
+          <span>Y</span><span>los</span><span>reclamos</span><span>populares&hellip;</span>
+        </div>
+        <div class="f02-phrase">
+          <span class="f02-glow-word" id="f02-nadie">nadie</span><span>los</span><span>verifica.</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      window.__timelines["02-problema"] = tl;
+
+      /* ---------- macro move: slow grid push across the whole shot ---------- */
+      tl.fromTo("#f02-bg", { scale: 1 }, { scale: 1.03, duration: 8, ease: "none" }, 0);
+
+      /* ---------- furniture ---------- */
+      tl.fromTo("#f02-kicker", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" }, 0.1);
+
+      /* =========================================================
+         Scene 1 (0.0-1.8): beat 1 per-word staggered reveal
+         + ficha SVG self-draw (svg-path-draw)
+         ========================================================= */
+      tl.fromTo(".f02-b1-ord", { opacity: 0 }, { opacity: 0.7, duration: 0.3, ease: "power1.out" }, 0.12);
+
+      var b1Words = gsap.utils.toArray(".f02-b1-w");
+      b1Words.forEach(function (w, i) {
+        tl.fromTo(w,
+          { y: 44, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" },
+          0.15 + i * 0.09);
+      });
+
+      /* ficha self-draw: measured lengths, staggered ~75% overlap */
+      var drawIds = ["#f02-doc-outline", "#f02-doc-fold", "#f02-doc-l1", "#f02-doc-l2", "#f02-doc-l3"];
+      var drawStarts = [0.45, 0.85, 1.05, 1.2, 1.35];
+      var drawDurs = [0.55, 0.35, 0.25, 0.25, 0.22];
+      drawIds.forEach(function (sel, i) {
+        var p = document.querySelector(sel);
+        var len = p.getTotalLength() * 1.05;
+        p.style.strokeDasharray = String(len);
+        p.style.strokeDashoffset = String(len);
+        tl.to(sel, { strokeDashoffset: 0, duration: drawDurs[i], ease: "power2.out" }, drawStarts[i]);
+      });
+      tl.fromTo(".f02-ficha-label", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power1.out" }, 1.3);
+
+      /* =========================================================
+         Seam S1->S2 (waterfall cut, cut-catalog):
+         beat-1 words rip left (power4.in) with early fades
+         ========================================================= */
+      b1Words.forEach(function (w, i) {
+        var t0 = 1.5 + i * 0.022;
+        tl.to(w, { x: -230, duration: 0.34, ease: "power4.in" }, t0);
+        tl.to(w, { opacity: 0, duration: 0.18, ease: "power1.in" }, t0);
+      });
+      tl.to(".f02-b1-ord", { opacity: 0, duration: 0.15, ease: "power1.in" }, 1.6);
+
+      /* =========================================================
+         Scene 2 (1.8-3.6): beat 2 waterfall entry (mirrored back half)
+         + ficha degrades: dims and gets marker-scribbled out
+         ========================================================= */
+      var b2Words = gsap.utils.toArray(".f02-b2-w");
+      /* pre-set so un-started words never sit visible at rest */
+      gsap.set(b2Words, { x: 230, opacity: 0 });
+      var d = 0, gap = 0.05;
+      b2Words.forEach(function (w) {
+        tl.fromTo(w,
+          { x: 230, opacity: 0.35 },
+          { x: 0, opacity: 1, duration: 0.3, ease: "power4.out", immediateRender: false },
+          1.82 + d);
+        d += gap;
+        gap *= 0.84;
+      });
+      tl.fromTo(".f02-b2-ord", { opacity: 0 }, { opacity: 0.7, duration: 0.25, ease: "power1.out" }, 1.9);
+
+      /* ficha degrade: dim + scribble strike (css-marker-patterns, scribble mode) */
+      tl.to("#f02-ficha-doc svg:first-child", { opacity: 0.35, duration: 0.4, ease: "power1.inOut" }, 2.0);
+      tl.to(".f02-ficha-label", { opacity: 0.4, duration: 0.4, ease: "power1.inOut" }, 2.0);
+      ["#f02-scr-1", "#f02-scr-2"].forEach(function (sel, i) {
+        var p = document.querySelector(sel);
+        var len = p.getTotalLength();
+        gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
+        tl.to(sel, { strokeDashoffset: 0, duration: 0.55, ease: "power1.inOut" }, 2.15 + i * 0.4);
+      });
+
+      /* =========================================================
+         Scene 3 (3.6-5.6): hard-cut word-swap (discrete): beat 3 is
+         gated in instantly by its clip window - no smear, no tween.
+         Badge "0 bytes" stamps in on its cue.
+         ========================================================= */
+      tl.fromTo("#f02-badge",
+        { opacity: 0, scale: 1.18 },
+        { opacity: 1, scale: 1, duration: 0.2, ease: "power2.out" },
+        4.4);
+
+      /* pre-cut recede (inverse zoom-through exit): beat 3 pulls away */
+      tl.to("#f02-b3-inner", { scale: 0.85, filter: "blur(10px)", duration: 0.2, ease: "power3.in" }, 5.4);
+      tl.to("#f02-b3-inner", { opacity: 0.15, duration: 0.2, ease: "none" }, 5.4);
+
+      /* =========================================================
+         Scene 4 (5.6-8.0): beat 4 arrives oversized (inverse
+         zoom-through entry), then "nadie" gets the cobalt keyword
+         glow (asr-keyword-glow envelope). Quiet hold to the end -
+         no exit: the root crossfade owns it.
+         ========================================================= */
+      tl.fromTo("#f02-b4-inner",
+        { scale: 1.22, opacity: 0.15, filter: "blur(10px)" },
+        { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.55, ease: "expo.out" },
+        5.62);
+
+      /* keyword glow: single linear driver, ASR envelope on "nadie" */
+      var nadieEl = document.getElementById("f02-nadie");
+      var GLOW_START = 0.85, GLOW_END = 1.35;   /* local to the 5.6s window */
+      var ATTACK = 0.22, RELEASE = 0.45, REST = 0.28;
+      var MAX_BLUR = 26, MAX_SCALE = 0.1;
+      var glowDriver = { t: 0 };
+      tl.to(glowDriver, {
+        t: 2.4,
+        duration: 2.4,
+        ease: "none",
+        onUpdate: function () {
+          var t = glowDriver.t;
+          var env;
+          if (t < GLOW_START) env = 0;
+          else if (t < GLOW_END) env = Math.min((t - GLOW_START) / ATTACK, 1);
+          else if (t < GLOW_END + RELEASE) env = 1 - ((t - GLOW_END) / RELEASE) * (1 - REST);
+          else env = REST;
+          nadieEl.style.textShadow = "0 0 " + (MAX_BLUR * env) + "px rgba(31,43,224," + (0.85 * env) + ")";
+          nadieEl.style.transform = "scale(" + (1 + MAX_SCALE * env) + ")";
+        }
+      }, 5.6);
+    })();
+  </script>
+</template>

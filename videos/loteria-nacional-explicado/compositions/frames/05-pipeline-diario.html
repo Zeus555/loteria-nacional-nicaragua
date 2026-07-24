@@ -1,0 +1,491 @@
+<template>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Hanken+Grotesk:wght@400;600&family=DM+Mono:wght@400;500&display=block");
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+    }
+
+    /* ── full-bleed ground: paper + permanent graph grid + hairlines + chrome ── */
+    .f05-ground {
+      position: absolute;
+      inset: 0;
+      background-color: #f0ebde;
+      background-image:
+        linear-gradient(to right, rgba(31, 43, 224, 0.1) 0 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(31, 43, 224, 0.1) 0 1px, transparent 1px);
+      background-size: 2cqw 2cqw;
+    }
+    .f05-hairline {
+      position: absolute;
+      left: 4cqw;
+      right: 4cqw;
+      height: 0.12cqw;
+      background: #1f2be0;
+    }
+    .f05-hairline-top {
+      top: 3cqw;
+    }
+    .f05-hairline-bottom {
+      bottom: 3cqw;
+    }
+    .f05-chrome {
+      position: absolute;
+      bottom: 3.55cqw;
+      font-family: "DM Mono", monospace;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: #1f2be0;
+    }
+    .f05-chrome-left {
+      left: 4cqw;
+    }
+    .f05-chrome-right {
+      right: 4cqw;
+    }
+
+    /* ── content layer ── */
+    .f05-stage {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* vertical catalogue title on the left margin */
+    .f05-vtitle {
+      position: absolute;
+      left: 7.5cqw;
+      top: 13cqw;
+      writing-mode: vertical-rl;
+      font-family: "DM Mono", monospace;
+      font-size: 1.6cqw;
+      letter-spacing: 0.42em;
+      color: #1f2be0;
+      text-transform: uppercase;
+      white-space: pre;
+    }
+
+    /* kicker above the panel */
+    .f05-kicker {
+      position: absolute;
+      left: 24cqw;
+      top: 5.4cqw;
+      font-family: "Hanken Grotesk", sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #1f2be0;
+    }
+
+    /* ── receipt panel (60% asymmetric, left margin reserved for vtitle) ── */
+    .f05-panel {
+      position: absolute;
+      left: 24cqw;
+      top: 8cqw;
+      width: 58cqw;
+      background: #f0ebde;
+      border: 0.12cqw solid #1f2be0;
+    }
+    .f05-panel-head {
+      display: flex;
+      align-items: baseline;
+      padding: 1.15cqw 1.6cqw 1cqw;
+      border-bottom: 0.12cqw solid #1f2be0;
+      font-family: "DM Mono", monospace;
+      font-size: 1.3cqw;
+      letter-spacing: 0.05em;
+      color: #1f2be0;
+      white-space: pre;
+    }
+    .f05-type {
+      white-space: pre;
+    }
+    .f05-cursor {
+      display: inline-block;
+      width: 0.6cqw;
+      height: 1.35cqw;
+      background: #1f2be0;
+      vertical-align: -0.14cqw;
+      margin-left: 0.1cqw;
+    }
+
+    .f05-rows {
+      padding: 0.3cqw 1.6cqw 0.2cqw;
+    }
+    .f05-row {
+      display: grid;
+      grid-template-columns: 3.1cqw 1fr 2.6cqw;
+      align-items: center;
+      column-gap: 1.1cqw;
+      padding: 0.62cqw 0;
+      border-bottom: 1px solid rgba(31, 43, 224, 0.18);
+    }
+    .f05-row:last-child {
+      border-bottom: none;
+    }
+    .f05-badge {
+      width: 2.2cqw;
+      height: 2.2cqw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 0.1cqw solid #1f2be0;
+      font-family: "DM Mono", monospace;
+      font-size: 1.05cqw;
+      color: #1f2be0;
+      background: #f0ebde;
+    }
+    .f05-name {
+      font-family: "Newsreader", serif;
+      font-weight: 400;
+      font-size: 1.62cqw;
+      line-height: 1.12;
+      color: #1f2be0;
+    }
+    .f05-sub {
+      font-family: "DM Mono", monospace;
+      font-size: 1cqw;
+      letter-spacing: 0.05em;
+      color: #5560e5;
+      margin-top: 0.18cqw;
+    }
+    .f05-checkcell {
+      width: 2.2cqw;
+      height: 2.2cqw;
+    }
+    .f05-checkcell svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .f05-check-path {
+      fill: none;
+      stroke: #1f2be0;
+      stroke-width: 2.6;
+      stroke-linecap: square;
+    }
+
+    /* progress strip at the panel foot */
+    .f05-progress {
+      display: flex;
+      align-items: center;
+      gap: 1.1cqw;
+      padding: 0.9cqw 1.6cqw 1.1cqw;
+      border-top: 0.12cqw solid #1f2be0;
+    }
+    .f05-track {
+      flex: 1;
+      height: 0.38cqw;
+      background: rgba(31, 43, 224, 0.18);
+      overflow: hidden;
+    }
+    .f05-fill {
+      width: 100%;
+      height: 100%;
+      background: #1f2be0;
+      transform: scaleX(0);
+      transform-origin: left center;
+    }
+    .f05-count {
+      font-family: "DM Mono", monospace;
+      font-size: 1.05cqw;
+      letter-spacing: 0.06em;
+      color: #1f2be0;
+      min-width: 3.2cqw;
+      text-align: right;
+      white-space: pre;
+    }
+
+    /* ── final seal + ambient glow ── */
+    .f05-stamp-stage {
+      position: absolute;
+      right: 12cqw;
+      top: 33cqw;
+      width: 22cqw;
+      height: 12cqw;
+    }
+    .f05-glow {
+      position: absolute;
+      inset: -9cqw;
+      z-index: 1;
+      background: radial-gradient(closest-side, rgba(31, 43, 224, 0.55), rgba(31, 43, 224, 0) 72%);
+      opacity: 0;
+    }
+    .f05-stamp {
+      position: absolute;
+      inset: 1.4cqw 0;
+      z-index: 2;
+      border: 0.24cqw solid #1f2be0;
+      background: #f0ebde;
+      box-shadow: 0 0 0 0.12cqw #f0ebde;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5cqw;
+      padding: 1cqw 1.4cqw;
+    }
+    .f05-stamp-main {
+      font-family: "Hanken Grotesk", sans-serif;
+      font-weight: 600;
+      font-size: 2.3cqw;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #1f2be0;
+      white-space: nowrap;
+    }
+    .f05-stamp-rule {
+      width: 100%;
+      height: 1px;
+      background: rgba(31, 43, 224, 0.18);
+    }
+    .f05-stamp-sub {
+      font-family: "DM Mono", monospace;
+      font-size: 0.95cqw;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #5560e5;
+      white-space: nowrap;
+    }
+  </style>
+
+  <div id="root" data-composition-id="05-pipeline-diario" data-start="0" data-duration="10.5" data-width="1920" data-height="1080">
+    <!-- ground -->
+    <div class="clip f05-ground" data-start="0" data-duration="10.5" data-track-index="0">
+      <div class="f05-hairline f05-hairline-top"></div>
+      <div class="f05-hairline f05-hairline-bottom"></div>
+      <div class="f05-chrome f05-chrome-left">TAREA PROGRAMADA · DIARIA · 03:00</div>
+      <div class="f05-chrome-right f05-chrome">005 / 010</div>
+    </div>
+
+    <!-- content -->
+    <div class="clip f05-stage" data-start="0" data-duration="10.5" data-track-index="1">
+      <div class="f05-vtitle" id="f05-vtitle">CADA DÍA</div>
+      <div class="f05-kicker" id="f05-kicker">PIPELINE DIARIO · 03:00 AM</div>
+
+      <div class="f05-panel" id="f05-panel">
+        <div class="f05-panel-head">
+          <span class="f05-type" id="f05-type"></span><span class="f05-cursor" id="f05-cursor"></span>
+        </div>
+
+        <div class="f05-rows" id="f05-rows">
+          <div class="f05-row">
+            <div class="f05-badge">1</div>
+            <div class="f05-name">Sincronizar</div>
+            <div class="f05-checkcell">
+              <svg viewBox="0 0 24 24"><path class="f05-check-path" d="M4.5 12.5 L10 18 L19.5 6.5" /></svg>
+            </div>
+          </div>
+          <div class="f05-row">
+            <div class="f05-badge">2</div>
+            <div class="f05-name">Extraer</div>
+            <div class="f05-checkcell">
+              <svg viewBox="0 0 24 24"><path class="f05-check-path" d="M4.5 12.5 L10 18 L19.5 6.5" /></svg>
+            </div>
+          </div>
+          <div class="f05-row">
+            <div class="f05-badge">3</div>
+            <div>
+              <div class="f05-name">Cargar</div>
+              <div class="f05-sub" id="f05-sub3">lotes de 1000 · reintentos de líder Raft</div>
+            </div>
+            <div class="f05-checkcell">
+              <svg viewBox="0 0 24 24"><path class="f05-check-path" d="M4.5 12.5 L10 18 L19.5 6.5" /></svg>
+            </div>
+          </div>
+          <div class="f05-row">
+            <div class="f05-badge">4</div>
+            <div class="f05-name">Calidad</div>
+            <div class="f05-checkcell">
+              <svg viewBox="0 0 24 24"><path class="f05-check-path" d="M4.5 12.5 L10 18 L19.5 6.5" /></svg>
+            </div>
+          </div>
+          <div class="f05-row">
+            <div class="f05-badge">5</div>
+            <div class="f05-name">Predicción</div>
+            <div class="f05-checkcell">
+              <svg viewBox="0 0 24 24"><path class="f05-check-path" d="M4.5 12.5 L10 18 L19.5 6.5" /></svg>
+            </div>
+          </div>
+          <div class="f05-row">
+            <div class="f05-badge">6</div>
+            <div class="f05-name">Espejo</div>
+            <div class="f05-checkcell">
+              <svg viewBox="0 0 24 24"><path class="f05-check-path" d="M4.5 12.5 L10 18 L19.5 6.5" /></svg>
+            </div>
+          </div>
+          <div class="f05-row">
+            <div class="f05-badge">7</div>
+            <div class="f05-name">Registro</div>
+            <div class="f05-checkcell">
+              <svg viewBox="0 0 24 24"><path class="f05-check-path" d="M4.5 12.5 L10 18 L19.5 6.5" /></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="f05-progress">
+          <div class="f05-track"><div class="f05-fill" id="f05-fill"></div></div>
+          <div class="f05-count" id="f05-count">0/7</div>
+        </div>
+      </div>
+
+      <div class="f05-stamp-stage">
+        <div class="f05-glow" id="f05-glow"></div>
+        <div class="f05-stamp" id="f05-stamp">
+          <div class="f05-stamp-main">Fin OK</div>
+          <div class="f05-stamp-rule"></div>
+          <div class="f05-stamp-sub">corrida registrada</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      window.__timelines["05-pipeline-diario"] = tl;
+
+      var INK = "#1F2BE0";
+      var INK_SOFT = "#5560E5";
+      var PAPER = "#F0EBDE";
+
+      /* ── Scene 1 (0.0–1.6s): panel + margin furniture enter; header types on ── */
+      tl.fromTo("#f05-panel", { autoAlpha: 0, y: 26 }, { autoAlpha: 1, y: 0, duration: 0.55, ease: "power3.out" }, 0);
+      tl.fromTo("#f05-vtitle", { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.12);
+      tl.fromTo("#f05-kicker", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.45, ease: "power1.out" }, 0.25);
+
+      /* slow macro drift under the whole shot */
+      tl.fromTo("#f05-panel", { scale: 1 }, { scale: 1.012, duration: 10, ease: "none" }, 0);
+
+      /* type-on with context-sensitive caret (discrete-text-sequence SEQUENCE) */
+      var SEQUENCE = [
+        { t: 0.0, text: "", color: INK },
+        { t: 0.22, text: "▶", color: INK },
+        { t: 0.34, text: "▶ Ta", color: INK },
+        { t: 0.46, text: "▶ Tarea", color: INK },
+        { t: 0.58, text: "▶ TareaDia", color: INK },
+        { t: 0.7, text: "▶ TareaDiaria", color: INK },
+        { t: 0.84, text: "▶ TareaDiaria.ps1", color: INK },
+        { t: 1.0, text: "▶ TareaDiaria.ps1 —", color: INK_SOFT },
+        { t: 1.14, text: "▶ TareaDiaria.ps1 — 03:", color: INK_SOFT },
+        { t: 1.3, text: "▶ TareaDiaria.ps1 — 03:00", color: INK_SOFT },
+      ];
+      function entryAt(time) {
+        for (var i = SEQUENCE.length - 1; i >= 0; i--) {
+          if (time >= SEQUENCE[i].t) return SEQUENCE[i];
+        }
+        return SEQUENCE[0];
+      }
+      var typeEl = document.getElementById("f05-type");
+      var cursorEl = document.getElementById("f05-cursor");
+      var driver = { t: 0 };
+      tl.to(
+        driver,
+        {
+          t: 1.6,
+          duration: 1.6,
+          ease: "none",
+          onUpdate: function () {
+            var e = entryAt(driver.t);
+            typeEl.textContent = e.text;
+            cursorEl.style.background = e.color;
+          },
+        },
+        0
+      );
+      /* deterministic square-wave blink — 2 whole cycles over the typing window */
+      var blink = { p: 0 };
+      tl.to(
+        blink,
+        {
+          p: Math.PI * 2 * 2,
+          duration: 1.6,
+          ease: "none",
+          onUpdate: function () {
+            cursorEl.style.opacity = Math.sin(blink.p) > 0 ? "1" : "0";
+          },
+        },
+        0
+      );
+      tl.to("#f05-cursor", { autoAlpha: 0, duration: 0.25, ease: "power1.in" }, 1.9);
+
+      /* ── Scene 2 (1.6–8.2s): 7 rows, one per beat; ✓ self-draw + badge flip + fill ── */
+      var rows = document.querySelectorAll("#f05-rows .f05-row");
+      var BEAT = 0.94;
+      var checkBeats = [];
+      for (var i = 0; i < rows.length; i++) {
+        var t0 = 1.6 + i * BEAT;
+        var row = rows[i];
+        var badge = row.querySelector(".f05-badge");
+        var path = row.querySelector(".f05-check-path");
+        var tCheck = t0 + 0.35;
+        checkBeats.push(tCheck + 0.3);
+
+        /* staggered reveal of the row */
+        tl.fromTo(row, { autoAlpha: 0, x: -26 }, { autoAlpha: 1, x: 0, duration: 0.4, ease: "power3.out" }, t0);
+
+        /* SVG self-draw check */
+        var len = path.getTotalLength();
+        path.style.strokeDasharray = len;
+        tl.fromTo(
+          path,
+          { strokeDashoffset: len },
+          { strokeDashoffset: 0, duration: 0.42, ease: "power2.inOut" },
+          tCheck
+        );
+
+        /* badge flip to solid cobalt */
+        tl.to(badge, { scaleY: 0, duration: 0.12, ease: "power2.in" }, tCheck);
+        tl.set(badge, { backgroundColor: INK, color: PAPER }, tCheck + 0.12);
+        tl.to(badge, { scaleY: 1, duration: 0.18, ease: "back.out(2)" }, tCheck + 0.12);
+
+        /* thin progress fill advances 1/7 → 7/7 (stat-bars-and-fills, scaleX only) */
+        tl.to("#f05-fill", { scaleX: (i + 1) / 7, duration: 0.34, ease: "power2.out" }, tCheck + 0.05);
+      }
+
+      /* row 3 sub-text lands on its own cue */
+      tl.fromTo("#f05-sub3", { autoAlpha: 0, y: 6 }, { autoAlpha: 1, y: 0, duration: 0.4, ease: "power2.out" }, 4.05);
+
+      /* n/7 counter — pure function of timeline time (seek-safe both directions) */
+      var countEl = document.getElementById("f05-count");
+      var cdrv = { t: 0 };
+      tl.to(
+        cdrv,
+        {
+          t: 10,
+          duration: 10,
+          ease: "none",
+          onUpdate: function () {
+            var n = 0;
+            for (var k = 0; k < checkBeats.length; k++) {
+              if (cdrv.t >= checkBeats[k]) n++;
+            }
+            countEl.textContent = n + "/7";
+          },
+        },
+        0
+      );
+
+      /* ── Scene 3 (8.2–10s): seal spring-pop + ambient glow bloom, then hold ── */
+      tl.fromTo(
+        "#f05-glow",
+        { opacity: 0, scale: 0.85 },
+        { opacity: 0.28, scale: 1, duration: 0.7, ease: "power2.out" },
+        8.22
+      );
+      tl.fromTo(
+        "#f05-stamp",
+        { autoAlpha: 0, scale: 0.55, rotation: -12 },
+        { autoAlpha: 1, scale: 1, rotation: -4, duration: 0.65, ease: "back.out(1.6)" },
+        8.28
+      );
+      /* quiet settle: nothing exits — hold to the cut */
+    })();
+  </script>
+</template>

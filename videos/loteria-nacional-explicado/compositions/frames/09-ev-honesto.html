@@ -1,0 +1,428 @@
+<template>
+  <div id="root" data-composition-id="09-ev-honesto" data-start="0" data-duration="9.5" data-width="1920" data-height="1080">
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400&family=Hanken+Grotesk:wght@400;600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=block");
+
+      #root {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        container-type: size;
+        font-family: "Hanken Grotesk", sans-serif;
+        color: #1f2be0;
+      }
+
+      /* ---------- ground: paper + permanent graph grid + hairlines ---------- */
+      .f09ev-bg {
+        position: absolute;
+        inset: 0;
+        background-color: #f0ebde;
+        background-image:
+          linear-gradient(rgba(31, 43, 224, 0.1) 0.06cqw, transparent 0.06cqw),
+          linear-gradient(90deg, rgba(31, 43, 224, 0.1) 0.06cqw, transparent 0.06cqw);
+        background-size: 2cqw 2cqw;
+      }
+      .f09ev-hairline {
+        position: absolute;
+        left: 4cqw;
+        right: 4cqw;
+        height: 0.12cqw;
+        background: #1f2be0;
+      }
+      .f09ev-hairline-top {
+        top: 3cqw;
+      }
+      .f09ev-hairline-bottom {
+        bottom: 3cqw;
+      }
+      .f09ev-chrome {
+        position: absolute;
+        font-family: "DM Mono", monospace;
+        font-size: 13px;
+        letter-spacing: 0.06em;
+        color: #1f2be0;
+      }
+      .f09ev-chrome-tl {
+        top: 1.35cqw;
+        left: 4cqw;
+      }
+      .f09ev-chrome-bl {
+        bottom: 3.55cqw;
+        left: 4cqw;
+      }
+      .f09ev-chrome-br {
+        bottom: 3.55cqw;
+        right: 4cqw;
+      }
+
+      /* ---------- act 1 : typographic beat ---------- */
+      .f09ev-act1 {
+        position: absolute;
+        inset: 0;
+        transform-origin: 50% 50%;
+        z-index: 2;
+      }
+      .f09ev-act1-inner {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 6cqw;
+        text-align: center;
+      }
+      .f09ev-kicker {
+        font-family: "Hanken Grotesk", sans-serif;
+        font-weight: 600;
+        font-size: 1.25cqw;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+      .f09ev-kw {
+        display: inline-block;
+        margin: 0 0.28em;
+      }
+      .f09ev-imposible {
+        font-family: "Newsreader", serif;
+        font-weight: 400;
+        font-size: 10.4cqw;
+        line-height: 0.9;
+        letter-spacing: -0.008em;
+        margin-top: 1.6cqw;
+      }
+      .f09ev-sub {
+        font-family: "DM Mono", monospace;
+        font-size: 0.95cqw;
+        letter-spacing: 0.05em;
+        margin-top: 2.4cqw;
+        color: #5560e5;
+      }
+
+      /* ---------- act 2 : ticket + EV counter ---------- */
+      .f09ev-act2 {
+        position: absolute;
+        inset: 0;
+        transform-origin: 50% 50%;
+        z-index: 3;
+      }
+      .f09ev-act2-inner {
+        position: absolute;
+        inset: 0;
+        transform-origin: 50% 50%;
+      }
+      .f09ev-glow {
+        position: absolute;
+        left: 45cqw;
+        top: 14cqw;
+        width: 42cqw;
+        height: 15cqw;
+        background: #1f2be0;
+        filter: blur(3.6cqw);
+        opacity: 0;
+      }
+      .f09ev-row {
+        position: absolute;
+        left: 4cqw;
+        right: 4cqw;
+        top: 9.5cqw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4.5cqw;
+      }
+
+      /* line-drawn ticket */
+      .f09ev-ticket {
+        border: 0.16cqw solid #1f2be0;
+        background: #f0ebde;
+        width: 24cqw;
+        padding: 1.2cqw 1.4cqw 1.5cqw;
+        flex: 0 0 auto;
+      }
+      .f09ev-ticket-tag {
+        font-family: "DM Mono", monospace;
+        font-size: 0.72cqw;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        border-bottom: 0.06cqw dashed rgba(31, 43, 224, 0.45);
+        padding-bottom: 0.7cqw;
+        margin-bottom: 1.1cqw;
+        display: flex;
+        justify-content: space-between;
+      }
+      .f09ev-digits {
+        display: flex;
+        gap: 0.7cqw;
+        justify-content: center;
+        align-items: stretch;
+      }
+      .f09ev-cell {
+        width: 3.4cqw;
+        height: 4.4cqw;
+        border: 0.1cqw solid rgba(31, 43, 224, 0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Newsreader", serif;
+        font-size: 2.6cqw;
+        color: rgba(31, 43, 224, 0.35);
+      }
+      .f09ev-cell-nine {
+        position: relative;
+        border-color: #1f2be0;
+        color: #1f2be0;
+      }
+      .f09ev-cell-nine .f09ev-nine {
+        position: relative;
+        z-index: 1;
+      }
+      .f09ev-ring {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 160%;
+        height: 150%;
+        border: 0.18cqw solid #1f2be0;
+        border-radius: 50%;
+        z-index: 2;
+        pointer-events: none;
+      }
+      .f09ev-ticket-foot {
+        font-family: "DM Mono", monospace;
+        font-size: 0.72cqw;
+        letter-spacing: 0.08em;
+        margin-top: 1.1cqw;
+        color: #5560e5;
+        text-align: right;
+      }
+
+      /* EV counter hero */
+      .f09ev-counterblock {
+        flex: 0 0 auto;
+        text-align: left;
+      }
+      .f09ev-counter {
+        font-family: "Newsreader", serif;
+        font-weight: 400;
+        font-size: 12.5cqw;
+        line-height: 0.9;
+        letter-spacing: -0.015em;
+        transform-origin: 0% 60%;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+      .f09ev-counterlabel {
+        font-family: "DM Mono", monospace;
+        font-size: 0.9cqw;
+        letter-spacing: 0.06em;
+        margin-top: 1.3cqw;
+        color: #1f2be0;
+      }
+
+      /* seal */
+      .f09ev-seal {
+        position: absolute;
+        left: 50%;
+        top: 71%;
+        margin-left: -25.5cqw;
+        width: 51cqw;
+        transform-origin: 50% 50%;
+        border: 0.16cqw solid #1f2be0;
+        box-shadow: inset 0 0 0 0.3cqw #f0ebde, inset 0 0 0 0.42cqw #1f2be0;
+        background: #f0ebde;
+        padding: 1.35cqw 2.4cqw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.8cqw;
+      }
+      .f09ev-seal-pct {
+        font-family: "Newsreader", serif;
+        font-size: 3.3cqw;
+        line-height: 1;
+        letter-spacing: -0.005em;
+        white-space: nowrap;
+      }
+      .f09ev-seal-div {
+        width: 0.12cqw;
+        height: 3cqw;
+        background: #1f2be0;
+      }
+      .f09ev-seal-txt {
+        font-family: "Hanken Grotesk", sans-serif;
+        font-weight: 600;
+        font-size: 1cqw;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        line-height: 1.5;
+        max-width: 26cqw;
+      }
+    </style>
+
+    <!-- ground -->
+    <div class="clip f09ev-bg" data-start="0" data-duration="9.5" data-track-index="0">
+      <div class="f09ev-hairline f09ev-hairline-top"></div>
+      <div class="f09ev-hairline f09ev-hairline-bottom"></div>
+      <div class="f09ev-chrome f09ev-chrome-tl">FIG. 09 / VALOR ESPERADO</div>
+      <div class="f09ev-chrome f09ev-chrome-bl">EV &middot; TERMINACI&Oacute;N 9</div>
+      <div class="f09ev-chrome f09ev-chrome-br">09</div>
+    </div>
+
+    <!-- act 1 : typographic beat -->
+    <div class="clip f09ev-act1" id="f09ev-act1" data-start="0" data-duration="3.7" data-track-index="1">
+      <div class="f09ev-act1-inner" id="f09ev-act1-inner">
+        <div class="f09ev-kicker">
+          <span class="f09ev-kw">&iquest;Predecir</span><span class="f09ev-kw">el</span><span class="f09ev-kw">n&uacute;mero</span><span class="f09ev-kw">completo?</span>
+        </div>
+        <div class="f09ev-imposible" id="f09ev-imposible">IMPOSIBLE.</div>
+        <div class="f09ev-sub" id="f09ev-sub">ning&uacute;n modelo supera al azar &mdash; y este sistema lo admite</div>
+      </div>
+    </div>
+
+    <!-- act 2 : ticket + EV count-up + seal -->
+    <div class="clip f09ev-act2" id="f09ev-act2" data-start="3.2" data-duration="6.3" data-track-index="2">
+      <div class="f09ev-act2-inner" id="f09ev-act2-inner">
+        <div class="f09ev-glow" id="f09ev-glow"></div>
+
+        <div class="f09ev-row">
+          <div class="f09ev-ticket">
+            <div class="f09ev-ticket-tag"><span>BILLETE</span><span>N&ordm; &mdash;</span></div>
+            <div class="f09ev-digits">
+              <div class="f09ev-cell">&middot;</div>
+              <div class="f09ev-cell">&middot;</div>
+              <div class="f09ev-cell">&middot;</div>
+              <div class="f09ev-cell">&middot;</div>
+              <div class="f09ev-cell f09ev-cell-nine">
+                <span class="f09ev-nine">9</span>
+                <span class="f09ev-ring" id="f09ev-ring"></span>
+              </div>
+            </div>
+            <div class="f09ev-ticket-foot">terminaci&oacute;n &rarr; 9</div>
+          </div>
+
+          <div class="f09ev-counterblock">
+            <div class="f09ev-counter" id="f09ev-counter">C$120.0</div>
+            <div class="f09ev-counterlabel" id="f09ev-counterlabel">valor esperado del premio por terminaci&oacute;n 9</div>
+          </div>
+        </div>
+
+        <div class="f09ev-seal" id="f09ev-seal">
+          <div class="f09ev-seal-pct">+35.6%</div>
+          <div class="f09ev-seal-div"></div>
+          <div class="f09ev-seal-txt">La &uacute;nica ventaja respaldada por datos</div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      (function () {
+        window.__timelines = window.__timelines || {};
+        var tl = gsap.timeline({ paused: true });
+        window.__timelines["09-ev-honesto"] = tl;
+
+        /* ---- Scene 1 (0.0-3.2s) : per-word kicker, hard-cut IMPOSIBLE, mono sub-line ---- */
+        tl.fromTo(
+          ".f09ev-kw",
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.1 },
+          0.08
+        );
+
+        /* hard-cut: instant appear + micro settle */
+        tl.fromTo("#f09ev-imposible", { opacity: 0 }, { opacity: 1, duration: 0.02, ease: "none" }, 1.0);
+        tl.fromTo(
+          "#f09ev-imposible",
+          { scale: 1.045 },
+          { scale: 1, duration: 0.22, ease: "power3.out" },
+          1.0
+        );
+
+        tl.fromTo(
+          "#f09ev-sub",
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" },
+          2.0
+        );
+
+        /* slow act-1 drift under the type */
+        tl.fromTo(
+          "#f09ev-act1-inner",
+          { scale: 1 },
+          { scale: 1.015, duration: 3.2, ease: "none" },
+          0
+        );
+
+        /* ---- Scene 2 (3.2-4.2s) : scale-swap into the ticket ---- */
+        /* outgoing: shrink + fade, power2.in */
+        tl.to("#f09ev-act1", { scale: 0.72, opacity: 0, duration: 0.4, ease: "power2.in" }, 3.2);
+        /* incoming: spring pop, back.out — overlaps the exit tail, z above via track order */
+        tl.fromTo(
+          "#f09ev-act2",
+          { scale: 0.72, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.6, ease: "back.out(1.4)" },
+          3.45
+        );
+
+        /* marker circle around the terminal 9 (css-marker-patterns, circle mode) */
+        tl.fromTo(
+          "#f09ev-ring",
+          { xPercent: -50, yPercent: -50, rotation: -5, scale: 0 },
+          { xPercent: -50, yPercent: -50, rotation: -5, scale: 1, duration: 0.55, ease: "back.out(1.7)" },
+          4.15
+        );
+
+        /* ---- Scene 3 (4.2-7.0s) : value-scaled counter C$120 -> C$162.7 ---- */
+        var counterEl = document.getElementById("f09ev-counter");
+        var cv = { v: 120 };
+        tl.fromTo(
+          cv,
+          { v: 120 },
+          {
+            v: 162.7,
+            duration: 2.2,
+            ease: "power1.inOut",
+            onUpdate: function () {
+              counterEl.textContent = "C$" + cv.v.toFixed(1);
+            }
+          },
+          4.5
+        );
+        /* the numeral grows with its value — same window, same ease */
+        tl.fromTo(
+          "#f09ev-counter",
+          { scale: 0.86 },
+          { scale: 1, duration: 2.2, ease: "power1.inOut" },
+          4.5
+        );
+        tl.fromTo(
+          "#f09ev-counterlabel",
+          { opacity: 0, y: 14 },
+          { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" },
+          4.7
+        );
+
+        /* ---- Scene 4 (7.0-9.0s) : seal spring-pop + ambient glow bloom, hold ---- */
+        tl.fromTo(
+          "#f09ev-seal",
+          { scale: 0.6, opacity: 0, rotation: -1.6 },
+          { scale: 1, opacity: 1, rotation: -1.6, duration: 0.55, ease: "back.out(1.6)" },
+          7.0
+        );
+        tl.fromTo("#f09ev-glow", { opacity: 0 }, { opacity: 0.09, duration: 1.1, ease: "power2.out" }, 7.0);
+
+        /* macro camera drift under act 2, through the hold */
+        tl.fromTo(
+          "#f09ev-act2-inner",
+          { scale: 1 },
+          { scale: 1.022, duration: 5.55, ease: "none" },
+          3.45
+        );
+
+        /* pin total length to the fixed 9s duration */
+        tl.set({}, {}, 9);
+      })();
+    </script>
+  </div>
+</template>

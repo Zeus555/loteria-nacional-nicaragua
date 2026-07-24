@@ -1,0 +1,515 @@
+<template>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400&family=Hanken+Grotesk:wght@400;600&family=DM+Mono&display=swap");
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+    }
+
+    /* ---------- ground (full-bleed clip, never on #root) ---------- */
+    .arq03-bg {
+      position: absolute;
+      inset: 0;
+      background-color: #f0ebde;
+      background-image:
+        linear-gradient(rgba(31, 43, 224, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(31, 43, 224, 0.1) 1px, transparent 1px);
+      background-size: 38px 38px;
+    }
+
+    /* ---------- scene (camera viewport) ---------- */
+    .arq03-scene {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .arq03-para {
+      position: absolute;
+      inset: 0;
+      will-change: transform;
+    }
+    .arq03-ghost {
+      position: absolute;
+      top: 230px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      opacity: 0.55;
+    }
+    .arq03-ghost-tick {
+      width: 2px;
+      height: 92px;
+      background: rgba(31, 43, 224, 0.18);
+    }
+    .arq03-ghost-num {
+      font-family: "DM Mono", monospace;
+      font-size: 15px;
+      letter-spacing: 0.08em;
+      color: rgba(31, 43, 224, 0.35);
+    }
+    .arq03-world {
+      position: absolute;
+      inset: 0;
+      will-change: transform;
+    }
+
+    /* ---------- stations ---------- */
+    .arq03-st {
+      position: absolute;
+      top: 190px;
+      height: 580px;
+      background: #f0ebde;
+      border: 2px solid #1f2be0;
+      display: flex;
+      flex-direction: column;
+      padding: 30px 40px 28px;
+    }
+    .arq03-sub {
+      font-family: "Hanken Grotesk", sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #1f2be0;
+    }
+    .arq03-iconbox {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+    }
+    .arq03-name {
+      font-family: "Newsreader", serif;
+      font-weight: 400;
+      font-size: 66px;
+      line-height: 1.02;
+      letter-spacing: -0.005em;
+      color: #1f2be0;
+      white-space: nowrap;
+    }
+    .arq03-wd {
+      display: inline-block;
+    }
+    .arq03-callout {
+      margin-top: 16px;
+      font-family: "DM Mono", monospace;
+      font-size: 21px;
+      letter-spacing: 0.05em;
+      color: #1f2be0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+    }
+    .arq03-svg {
+      display: block;
+    }
+    .arq03-svg path,
+    .arq03-svg rect,
+    .arq03-svg line {
+      fill: none;
+      stroke: #1f2be0;
+    }
+    .arq03-fillcell {
+      fill: #1f2be0;
+      stroke: none;
+    }
+
+    /* connectors (world space) */
+    .arq03-arrow {
+      position: absolute;
+      top: 450px;
+      width: 420px;
+      height: 48px;
+    }
+    .arq03-arrow path {
+      fill: none;
+      stroke: #1f2be0;
+      stroke-width: 3;
+    }
+
+    /* station 4 internals */
+    .arq03-clusterrow {
+      display: flex;
+      align-items: center;
+      gap: 52px;
+    }
+    .arq03-counterwrap {
+      width: 150px;
+      display: flex;
+      justify-content: center;
+    }
+    .arq03-counter {
+      font-family: "Newsreader", serif;
+      font-variant-numeric: tabular-nums;
+      font-weight: 400;
+      font-size: 210px;
+      line-height: 0.9;
+      letter-spacing: -0.015em;
+      color: #1f2be0;
+      display: inline-block;
+      transform-origin: center center;
+    }
+
+    /* station 5 branches */
+    .arq03-branches {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      width: 100%;
+    }
+    .arq03-branch {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      border: 1.5px solid #1f2be0;
+      padding: 12px 20px;
+    }
+    .arq03-branch-label {
+      font-family: "DM Mono", monospace;
+      font-size: 22px;
+      letter-spacing: 0.06em;
+      color: #1f2be0;
+    }
+
+    /* ---------- chrome ---------- */
+    .arq03-chrome {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .arq03-hairline {
+      position: absolute;
+      left: 77px;
+      right: 77px;
+      height: 2px;
+      background: #1f2be0;
+    }
+    .arq03-ribbon {
+      position: absolute;
+      top: 82px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-family: "DM Mono", monospace;
+      font-size: 22px;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      color: #1f2be0;
+    }
+    .arq03-pagenum {
+      position: absolute;
+      right: 77px;
+      top: 838px;
+      font-family: "DM Mono", monospace;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: #1f2be0;
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="03-arquitectura"
+    data-width="1920"
+    data-height="1080"
+    data-duration="12.5"
+  >
+    <!-- ground -->
+    <div class="arq03-bg clip" data-start="0" data-duration="12.5" data-track-index="0"></div>
+
+    <!-- scene: parallax layer + camera world -->
+    <div class="arq03-scene clip" data-start="0" data-duration="12.5" data-track-index="1">
+      <div class="arq03-para" id="arq03-para">
+        <div class="arq03-ghost" style="left: 1600px"><div class="arq03-ghost-tick"></div><div class="arq03-ghost-num">01</div></div>
+        <div class="arq03-ghost" style="left: 1980px"><div class="arq03-ghost-tick"></div><div class="arq03-ghost-num">02</div></div>
+        <div class="arq03-ghost" style="left: 2360px"><div class="arq03-ghost-tick"></div><div class="arq03-ghost-num">03</div></div>
+        <div class="arq03-ghost" style="left: 2740px"><div class="arq03-ghost-tick"></div><div class="arq03-ghost-num">04</div></div>
+        <div class="arq03-ghost" style="left: 3120px"><div class="arq03-ghost-tick"></div><div class="arq03-ghost-num">05</div></div>
+      </div>
+
+      <div class="arq03-world" id="arq03-world">
+        <!-- ── station 1 · SITIO WEB ─────────────────────────── -->
+        <div class="arq03-st" id="arq03-st1" style="left: 530px; width: 860px">
+          <div class="arq03-sub">EST. 01</div>
+          <div class="arq03-iconbox">
+            <svg class="arq03-svg" viewBox="0 0 360 300" width="340" height="284">
+              <path class="arq03-draw" id="arq03-mon-frame" d="M 30 20 H 330 V 220 H 30 Z" stroke-width="4" />
+              <path class="arq03-draw" id="arq03-mon-stand" d="M 180 220 L 180 256 M 118 256 H 242" stroke-width="4" />
+              <path class="arq03-draw arq03-mon-row" d="M 62 66 h 26 v 26 h -26 Z M 110 79 H 298" stroke-width="3" />
+              <path class="arq03-draw arq03-mon-row" d="M 62 118 h 26 v 26 h -26 Z M 110 131 H 298" stroke-width="3" />
+              <path class="arq03-draw arq03-mon-row" d="M 62 170 h 26 v 26 h -26 Z M 110 183 H 298" stroke-width="3" />
+            </svg>
+          </div>
+          <div class="arq03-name" id="arq03-name1"><span class="arq03-wd">SITIO</span> <span class="arq03-wd">WEB</span></div>
+          <div class="arq03-callout" id="arq03-callout1">lista oficial de premios</div>
+        </div>
+
+        <!-- ── station 2 · ARCHIVO ───────────────────────────── -->
+        <div class="arq03-st" id="arq03-st2" style="left: 2040px; width: 640px">
+          <div class="arq03-sub">EST. 02</div>
+          <div class="arq03-iconbox">
+            <svg class="arq03-svg" viewBox="0 0 260 320" width="230" height="284">
+              <path class="arq03-draw" id="arq03-cab-body" d="M 24 16 H 236 V 304 H 24 Z" stroke-width="4" />
+              <path class="arq03-draw" id="arq03-cab-lines" d="M 24 112 H 236 M 24 208 H 236" stroke-width="3" />
+              <path class="arq03-draw" id="arq03-cab-handles" d="M 104 62 H 156 M 104 158 H 156 M 104 254 H 156" stroke-width="3" />
+            </svg>
+          </div>
+          <div class="arq03-name" id="arq03-name2"><span class="arq03-wd">ARCHIVO</span></div>
+          <div class="arq03-callout" id="arq03-callout2">append-only · SHA-256 · nada se borra</div>
+        </div>
+
+        <!-- ── station 3 · EXTRACCIÓN DUAL ───────────────────── -->
+        <div class="arq03-st" id="arq03-st3" style="left: 3310px; width: 900px">
+          <div class="arq03-sub">EST. 03</div>
+          <div class="arq03-iconbox">
+            <svg class="arq03-svg" id="arq03-gearsvg" viewBox="0 0 380 210" width="480" height="266">
+              <g id="arq03-gearA">
+                <rect x="52" y="52" width="106" height="106" stroke-width="4" />
+                <rect x="52" y="52" width="106" height="106" stroke-width="4" transform="rotate(45 105 105)" />
+                <rect x="87" y="87" width="36" height="36" stroke-width="3" />
+              </g>
+              <g id="arq03-gearB">
+                <rect x="228" y="52" width="106" height="106" stroke-width="4" />
+                <rect x="228" y="52" width="106" height="106" stroke-width="4" transform="rotate(45 281 105)" />
+                <rect x="263" y="87" width="36" height="36" stroke-width="3" />
+              </g>
+            </svg>
+          </div>
+          <div class="arq03-name" id="arq03-name3"><span class="arq03-wd">EXTRACCIÓN</span> <span class="arq03-wd">DUAL</span></div>
+          <div class="arq03-callout" id="arq03-callout3">
+            <span>Python (pdfplumber)</span>
+            <svg width="34" height="20" viewBox="0 0 34 20" style="display: block">
+              <path d="M 4 6 H 30 M 30 6 L 23 1 M 30 14 H 4 M 4 14 L 11 19" fill="none" stroke="#1F2BE0" stroke-width="2" />
+            </svg>
+            <span>AWK (20 años)</span>
+          </div>
+        </div>
+
+        <!-- ── station 4 · CLÚSTER RQLITE ────────────────────── -->
+        <div class="arq03-st" id="arq03-st4" style="left: 4700px; width: 920px">
+          <div class="arq03-sub">EST. 04</div>
+          <div class="arq03-iconbox">
+            <div class="arq03-clusterrow">
+              <svg class="arq03-svg" viewBox="0 0 220 360" width="180" height="294">
+                <g class="arq03-phone"><rect x="8" y="8" width="56" height="100" stroke-width="3" /><line x1="24" y1="94" x2="48" y2="94" stroke-width="3" /></g>
+                <g class="arq03-phone"><rect x="82" y="8" width="56" height="100" stroke-width="3" /><line x1="98" y1="94" x2="122" y2="94" stroke-width="3" /></g>
+                <g class="arq03-phone"><rect x="156" y="8" width="56" height="100" stroke-width="3" /><line x1="172" y1="94" x2="196" y2="94" stroke-width="3" /></g>
+                <g class="arq03-phone"><rect x="8" y="130" width="56" height="100" stroke-width="3" /><line x1="24" y1="216" x2="48" y2="216" stroke-width="3" /></g>
+                <g class="arq03-phone"><rect x="82" y="130" width="56" height="100" stroke-width="3" /><line x1="98" y1="216" x2="122" y2="216" stroke-width="3" /></g>
+                <g class="arq03-phone"><rect x="156" y="130" width="56" height="100" stroke-width="3" /><line x1="172" y1="216" x2="196" y2="216" stroke-width="3" /></g>
+                <g class="arq03-phone"><rect x="8" y="252" width="56" height="100" stroke-width="3" /><line x1="24" y1="338" x2="48" y2="338" stroke-width="3" /></g>
+                <g class="arq03-phone"><rect x="82" y="252" width="56" height="100" stroke-width="3" /><line x1="98" y1="338" x2="122" y2="338" stroke-width="3" /></g>
+                <g class="arq03-phone"><rect x="156" y="252" width="56" height="100" stroke-width="3" /><line x1="172" y1="338" x2="196" y2="338" stroke-width="3" /></g>
+              </svg>
+              <div class="arq03-counterwrap">
+                <span class="arq03-counter" id="arq03-counter">0</span>
+              </div>
+            </div>
+          </div>
+          <div class="arq03-name" id="arq03-name4"><span class="arq03-wd">CLÚSTER</span> <span class="arq03-wd">RQLITE</span></div>
+          <div class="arq03-callout" id="arq03-callout4">9 nodos · Raft · teléfonos reciclados</div>
+        </div>
+
+        <!-- ── station 5 · SALIDAS ───────────────────────────── -->
+        <div class="arq03-st" id="arq03-st5" style="left: 6200px; width: 720px">
+          <div class="arq03-sub">EST. 05</div>
+          <div class="arq03-iconbox">
+            <div class="arq03-branches">
+              <div class="arq03-branch arq03-br">
+                <svg class="arq03-svg" viewBox="0 0 72 56" width="72" height="56">
+                  <rect class="arq03-fillcell" x="6" y="34" width="12" height="16" />
+                  <rect class="arq03-fillcell" x="22" y="22" width="12" height="28" />
+                  <rect class="arq03-fillcell" x="38" y="12" width="12" height="38" />
+                  <rect class="arq03-fillcell" x="54" y="26" width="12" height="24" />
+                  <line x1="2" y1="52" x2="70" y2="52" stroke-width="2" />
+                </svg>
+                <span class="arq03-branch-label">análisis</span>
+              </div>
+              <div class="arq03-branch arq03-br">
+                <svg class="arq03-svg" viewBox="0 0 72 56" width="72" height="56">
+                  <rect x="4" y="4" width="64" height="48" stroke-width="2.5" />
+                  <line x1="4" y1="20" x2="68" y2="20" stroke-width="2" />
+                  <line x1="30" y1="20" x2="30" y2="52" stroke-width="2" />
+                </svg>
+                <span class="arq03-branch-label">dashboard</span>
+              </div>
+              <div class="arq03-branch arq03-br">
+                <svg class="arq03-svg" viewBox="0 0 72 56" width="72" height="56">
+                  <path d="M 6 4 H 66 V 40 H 26 L 12 52 V 40 H 6 Z" stroke-width="2.5" />
+                  <line x1="18" y1="18" x2="54" y2="18" stroke-width="2" />
+                  <line x1="18" y1="28" x2="44" y2="28" stroke-width="2" />
+                </svg>
+                <span class="arq03-branch-label">WhatsApp</span>
+              </div>
+            </div>
+          </div>
+          <div class="arq03-name" id="arq03-name5"><span class="arq03-wd">SALIDAS</span></div>
+        </div>
+
+        <!-- connectors (draw during each pan) -->
+        <svg class="arq03-arrow" id="arq03-arrow1" style="left: 1505px" viewBox="0 0 420 48">
+          <path class="arq03-arrowpath" d="M 6 24 H 396 M 396 24 L 362 8 M 396 24 L 362 40" />
+        </svg>
+        <svg class="arq03-arrow" id="arq03-arrow2" style="left: 2785px" viewBox="0 0 420 48">
+          <path class="arq03-arrowpath" d="M 6 24 H 396 M 396 24 L 362 8 M 396 24 L 362 40" />
+        </svg>
+        <svg class="arq03-arrow" id="arq03-arrow3" style="left: 4245px" viewBox="0 0 420 48">
+          <path class="arq03-arrowpath" d="M 6 24 H 396 M 396 24 L 362 8 M 396 24 L 362 40" />
+        </svg>
+        <svg class="arq03-arrow" id="arq03-arrow4" style="left: 5700px" viewBox="0 0 420 48">
+          <path class="arq03-arrowpath" d="M 6 24 H 396 M 396 24 L 362 8 M 396 24 L 362 40" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- chrome: hairlines + ribbon + page number -->
+    <div class="arq03-chrome clip" data-start="0" data-duration="12.5" data-track-index="2">
+      <div class="arq03-hairline" style="top: 58px"></div>
+      <div class="arq03-hairline" style="top: 880px"></div>
+      <div class="arq03-ribbon" id="arq03-ribbon">LA M&Aacute;QUINA</div>
+      <div class="arq03-pagenum">003</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      var world = document.getElementById("arq03-world");
+      var para = document.getElementById("arq03-para");
+
+      /* ── virtual camera: single .world wrapper, single writer ── */
+      var cam = { x: 0 };
+      function applyCamera() {
+        world.style.transform = "translate(" + cam.x + "px, 0px)";
+        para.style.transform = "translate(" + cam.x * 0.25 + "px, 0px)";
+      }
+      applyCamera(); // seed frame 0
+
+      /* ── svg-path-draw setup: measure, never guess ── */
+      var drawEls = document.querySelectorAll(
+        ".arq03-draw, .arq03-arrowpath"
+      );
+      drawEls.forEach(function (p) {
+        var len = p.getTotalLength() * 1.05;
+        p.style.strokeDasharray = String(len);
+        p.style.strokeDashoffset = String(len);
+      });
+
+      var tl = gsap.timeline({ paused: true });
+
+      /* ════ Scene 1 (0.0–2.2s) — station 1 opens ════ */
+      tl.fromTo("#arq03-st1", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power1.out" }, 0);
+      tl.to("#arq03-mon-frame", { strokeDashoffset: 0, duration: 0.6, ease: "power2.out" }, 0.1);
+      tl.to("#arq03-mon-stand", { strokeDashoffset: 0, duration: 0.4, ease: "power2.out" }, 0.55);
+      tl.to(".arq03-mon-row", { strokeDashoffset: 0, duration: 0.45, ease: "power2.out", stagger: 0.22 }, 0.8);
+      /* per-word staggered reveal */
+      tl.fromTo(
+        "#arq03-name1 .arq03-wd",
+        { opacity: 0, y: 42 },
+        { opacity: 1, y: 0, duration: 0.55, ease: "power3.out", stagger: 0.15 },
+        0.35
+      );
+      tl.fromTo("#arq03-ribbon", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.2);
+      tl.fromTo("#arq03-callout1", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 1.55);
+
+      /* ════ Scene 2 (2.2–4.6s) — pan to ARCHIVO ════ */
+      tl.to(cam, { x: -1400, duration: 1.1, ease: "power2.inOut", onUpdate: applyCamera }, 2.2);
+      tl.to("#arq03-arrow1 .arq03-arrowpath", { strokeDashoffset: 0, duration: 0.8, ease: "none" }, 2.25);
+      tl.to("#arq03-cab-body", { strokeDashoffset: 0, duration: 0.55, ease: "power2.out" }, 3.0);
+      tl.to("#arq03-cab-lines", { strokeDashoffset: 0, duration: 0.4, ease: "power2.out" }, 3.4);
+      tl.to("#arq03-cab-handles", { strokeDashoffset: 0, duration: 0.4, ease: "power2.out" }, 3.65);
+      tl.fromTo(
+        "#arq03-name2 .arq03-wd",
+        { opacity: 0, y: 42 },
+        { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" },
+        3.35
+      );
+      tl.fromTo("#arq03-callout2", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 3.8);
+
+      /* ════ Scene 3 (4.6–7.0s) — pan to EXTRACCIÓN DUAL ════ */
+      tl.to(cam, { x: -2800, duration: 1.1, ease: "power2.inOut", onUpdate: applyCamera }, 4.6);
+      tl.to("#arq03-arrow2 .arq03-arrowpath", { strokeDashoffset: 0, duration: 0.8, ease: "none" }, 4.65);
+      tl.fromTo("#arq03-gearsvg", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power1.out" }, 5.45);
+      tl.fromTo(
+        "#arq03-name3 .arq03-wd",
+        { opacity: 0, y: 42 },
+        { opacity: 1, y: 0, duration: 0.55, ease: "power3.out", stagger: 0.15 },
+        5.75
+      );
+      tl.fromTo("#arq03-callout3", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 6.15);
+      /* svg-icon-enrichment: rotation via SVG transform ATTRIBUTE (explicit center) */
+      var gearA = document.getElementById("arq03-gearA");
+      var gearB = document.getElementById("arq03-gearB");
+      var gearState = { deg: 0 };
+      tl.to(
+        gearState,
+        {
+          deg: 150,
+          duration: 6.55,
+          ease: "none",
+          onUpdate: function () {
+            gearA.setAttribute("transform", "rotate(" + gearState.deg + " 105 105)");
+            gearB.setAttribute("transform", "rotate(" + (45 - gearState.deg) + " 281 105)");
+          },
+        },
+        5.45
+      );
+
+      /* ════ Scene 4 (7.0–9.6s) — pan to CLÚSTER RQLITE ════ */
+      tl.to(cam, { x: -4200, duration: 1.1, ease: "power2.inOut", onUpdate: applyCamera }, 7.0);
+      tl.to("#arq03-arrow3 .arq03-arrowpath", { strokeDashoffset: 0, duration: 0.8, ease: "none" }, 7.05);
+      tl.fromTo(
+        ".arq03-phone",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.35, ease: "power1.out", stagger: 0.07 },
+        7.95
+      );
+      /* counting-dynamic-scale: value + scale share position and ease */
+      var counterEl = document.getElementById("arq03-counter");
+      var countState = { value: 0 };
+      tl.to(
+        countState,
+        {
+          value: 9,
+          duration: 1.2,
+          ease: "power3.out",
+          onUpdate: function () {
+            counterEl.textContent = String(Math.round(countState.value));
+          },
+        },
+        8.1
+      );
+      tl.fromTo(counterEl, { scale: 0.55, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.2, ease: "power3.out" }, 8.1);
+      tl.fromTo(
+        "#arq03-name4 .arq03-wd",
+        { opacity: 0, y: 42 },
+        { opacity: 1, y: 0, duration: 0.55, ease: "power3.out", stagger: 0.15 },
+        8.2
+      );
+      tl.fromTo("#arq03-callout4", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 9.25);
+
+      /* ════ Scene 5 (9.6–12.0s) — final pan to SALIDAS, land + hold ════ */
+      tl.to(cam, { x: -5600, duration: 1.1, ease: "power2.inOut", onUpdate: applyCamera }, 9.6);
+      tl.to("#arq03-arrow4 .arq03-arrowpath", { strokeDashoffset: 0, duration: 0.8, ease: "none" }, 9.65);
+      tl.fromTo(
+        "#arq03-name5 .arq03-wd",
+        { opacity: 0, y: 42 },
+        { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" },
+        10.65
+      );
+      /* dynamic-content-sequencing spirit: branch cascade, hard beats */
+      tl.fromTo(".arq03-br", { opacity: 0, x: 26 }, { opacity: 1, x: 0, duration: 0.5, ease: "power2.out", stagger: 0.3 }, 10.75);
+      /* camera lands and holds — no exit (non-final frame) */
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["03-arquitectura"] = tl;
+    })();
+  </script>
+</template>

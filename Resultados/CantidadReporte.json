@@ -1,0 +1,333 @@
+{
+ "sorteos": 736,
+ "min": 457,
+ "mediana": 657.0,
+ "max": 784,
+ "cantidades_frecuentes": [
+  [
+   658,
+   290
+  ],
+  [
+   657,
+   209
+  ],
+  [
+   458,
+   164
+  ],
+  [
+   655,
+   26
+  ],
+  [
+   457,
+   16
+  ],
+  [
+   547,
+   8
+  ]
+ ],
+ "tolerancia": 15,
+ "fuera_de_tolerancia": [
+  {
+   "sorteo": 1492,
+   "tipo": "?",
+   "publicados": 458,
+   "distintos": 457,
+   "esperados": 658,
+   "desviacion": -200,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1493,
+   "tipo": "EXTRAORDINARIO",
+   "publicados": 458,
+   "distintos": 456,
+   "esperados": 658,
+   "desviacion": -200,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1540,
+   "tipo": "EXTRAORDINARIO",
+   "publicados": 458,
+   "distintos": 457,
+   "esperados": 658,
+   "desviacion": -200,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1541,
+   "tipo": "EXTRAORDINARIO",
+   "publicados": 458,
+   "distintos": 455,
+   "esperados": 658,
+   "desviacion": -200,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1588,
+   "tipo": "EXTRAORDINARIO",
+   "publicados": 658,
+   "distintos": 653,
+   "esperados": 458,
+   "desviacion": 200,
+   "causa_probable": "numeros de mas (ruido u hoja doble)"
+  },
+  {
+   "sorteo": 1593,
+   "tipo": "EXTRAORDINARIO",
+   "publicados": 658,
+   "distintos": 653,
+   "esperados": 458,
+   "desviacion": 200,
+   "causa_probable": "numeros de mas (ruido u hoja doble)"
+  },
+  {
+   "sorteo": 1595,
+   "tipo": "EXTRAORDINARIO",
+   "publicados": 658,
+   "distintos": 652,
+   "esperados": 458,
+   "desviacion": 200,
+   "causa_probable": "numeros de mas (ruido u hoja doble)"
+  },
+  {
+   "sorteo": 1577,
+   "tipo": "EXTRAORDINARIO",
+   "publicados": 658,
+   "distintos": 656,
+   "esperados": 459,
+   "desviacion": 199,
+   "causa_probable": "numeros de mas (ruido u hoja doble)"
+  },
+  {
+   "sorteo": 1901,
+   "tipo": "ORDINARIO",
+   "publicados": 458,
+   "distintos": 456,
+   "esperados": 657,
+   "desviacion": -199,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1902,
+   "tipo": "ORDINARIO",
+   "publicados": 458,
+   "distintos": 457,
+   "esperados": 657,
+   "desviacion": -199,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1904,
+   "tipo": "ORDINARIO",
+   "publicados": 458,
+   "distintos": 457,
+   "esperados": 657,
+   "desviacion": -199,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1905,
+   "tipo": "ORDINARIO",
+   "publicados": 458,
+   "distintos": 456,
+   "esperados": 657,
+   "desviacion": -199,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1906,
+   "tipo": "ORDINARIO",
+   "publicados": 458,
+   "distintos": 456,
+   "esperados": 657,
+   "desviacion": -199,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1908,
+   "tipo": "ORDINARIO",
+   "publicados": 458,
+   "distintos": 456,
+   "esperados": 657,
+   "desviacion": -199,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1909,
+   "tipo": "ORDINARIO",
+   "publicados": 458,
+   "distintos": 458,
+   "esperados": 657,
+   "desviacion": -199,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1438,
+   "tipo": "ORDINARIO",
+   "publicados": 784,
+   "distintos": 779,
+   "esperados": 658,
+   "desviacion": 126,
+   "causa_probable": "numeros de mas (ruido u hoja doble)"
+  },
+  {
+   "sorteo": 1440,
+   "tipo": "ORDINARIO",
+   "publicados": 784,
+   "distintos": 780,
+   "esperados": 658,
+   "desviacion": 126,
+   "causa_probable": "numeros de mas (ruido u hoja doble)"
+  },
+  {
+   "sorteo": 1441,
+   "tipo": "ORDINARIO",
+   "publicados": 784,
+   "distintos": 782,
+   "esperados": 658,
+   "desviacion": 126,
+   "causa_probable": "numeros de mas (ruido u hoja doble)"
+  },
+  {
+   "sorteo": 1356,
+   "tipo": "?",
+   "publicados": 547,
+   "distintos": 545,
+   "esperados": 658,
+   "desviacion": -111,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1357,
+   "tipo": "?",
+   "publicados": 547,
+   "distintos": 543,
+   "esperados": 658,
+   "desviacion": -111,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1358,
+   "tipo": "?",
+   "publicados": 547,
+   "distintos": 546,
+   "esperados": 658,
+   "desviacion": -111,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1360,
+   "tipo": "?",
+   "publicados": 547,
+   "distintos": 543,
+   "esperados": 658,
+   "desviacion": -111,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1361,
+   "tipo": "?",
+   "publicados": 547,
+   "distintos": 544,
+   "esperados": 658,
+   "desviacion": -111,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1362,
+   "tipo": "?",
+   "publicados": 547,
+   "distintos": 543,
+   "esperados": 658,
+   "desviacion": -111,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1364,
+   "tipo": "?",
+   "publicados": 547,
+   "distintos": 545,
+   "esperados": 658,
+   "desviacion": -111,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1363,
+   "tipo": "?",
+   "publicados": 547,
+   "distintos": 541,
+   "esperados": 658,
+   "desviacion": -110,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 2000,
+   "tipo": "?",
+   "publicados": 594,
+   "distintos": 590,
+   "esperados": 657,
+   "desviacion": -63,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1494,
+   "tipo": "ORDINARIO",
+   "publicados": 629,
+   "distintos": 626,
+   "esperados": 658,
+   "desviacion": -29,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1524,
+   "tipo": "EXTRAORDINARIO",
+   "publicados": 637,
+   "distintos": 633,
+   "esperados": 658,
+   "desviacion": -21,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1575,
+   "tipo": "EXTRAORDINARIO",
+   "publicados": 658,
+   "distintos": 657,
+   "esperados": 637,
+   "desviacion": 21,
+   "causa_probable": "numeros de mas (ruido u hoja doble)"
+  },
+  {
+   "sorteo": 1533,
+   "tipo": "EXTRAORDINARIO",
+   "publicados": 638,
+   "distintos": 635,
+   "esperados": 658,
+   "desviacion": -20,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  },
+  {
+   "sorteo": 1571,
+   "tipo": "EXTRAORDINARIO",
+   "publicados": 658,
+   "distintos": 653,
+   "esperados": 638,
+   "desviacion": 20,
+   "causa_probable": "numeros de mas (ruido u hoja doble)"
+  },
+  {
+   "sorteo": 1518,
+   "tipo": "ORDINARIO",
+   "publicados": 641,
+   "distintos": 638,
+   "esperados": 658,
+   "desviacion": -17,
+   "causa_probable": "faltan numeros (extraccion incompleta o pagina perdida)"
+  }
+ ],
+ "sorteos_con_duplicados": 696
+}

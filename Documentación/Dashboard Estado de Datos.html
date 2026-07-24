@@ -1,0 +1,821 @@
+<title>Lotería Nacional — Estado de Datos</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page: #f9f9f7; --surface: #fcfcfb;
+    --ink: #0b0b0b; --ink-2: #52514e; --ink-3: #898781;
+    --grid: #e1e0d9; --baseline: #c3c2b7; --ring: rgba(11,11,11,.10);
+    --s1: #2a78d6; --s1-soft: #9ec5f4; --s2: #1baf7a; --s3: #eda100;
+    --good: #0ca30c; --warn: #fab219; --serious: #ec835a; --crit: #d03b3b;
+    --good-text: #006300;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --page: #0d0d0d; --surface: #1a1a19;
+      --ink: #ffffff; --ink-2: #c3c2b7; --ink-3: #898781;
+      --grid: #2c2c2a; --baseline: #383835; --ring: rgba(255,255,255,.10);
+      --s1: #3987e5; --s1-soft: #1c5cab; --s2: #199e70; --s3: #c98500;
+      --good-text: #0ca30c;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19;
+    --ink: #ffffff; --ink-2: #c3c2b7; --ink-3: #898781;
+    --grid: #2c2c2a; --baseline: #383835; --ring: rgba(255,255,255,.10);
+    --s1: #3987e5; --s1-soft: #1c5cab; --s2: #199e70; --s3: #c98500;
+    --good-text: #0ca30c;
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --page: #f9f9f7; --surface: #fcfcfb;
+    --ink: #0b0b0b; --ink-2: #52514e; --ink-3: #898781;
+    --grid: #e1e0d9; --baseline: #c3c2b7; --ring: rgba(11,11,11,.10);
+    --s1: #2a78d6; --s1-soft: #9ec5f4; --s2: #1baf7a; --s3: #eda100;
+    --good-text: #006300;
+  }
+
+  * { box-sizing: border-box; }
+  body { background: var(--page); color: var(--ink);
+    font: 15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; margin: 0; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--ink-3); }
+  h1 { font-size: 30px; line-height: 1.15; margin: 6px 0 4px; letter-spacing: -.01em; text-wrap: balance; }
+  .sub { color: var(--ink-2); margin: 0 0 8px; max-width: 68ch; }
+  h2 { font-size: 19px; margin: 0 0 2px; letter-spacing: -.01em; }
+  .h2-note { color: var(--ink-3); font-size: 13px; margin: 0 0 14px; }
+  section { margin-top: 34px; }
+
+  .chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12px;
+    font-weight: 600; padding: 3px 10px; border-radius: 999px;
+    border: 1px solid var(--ring); background: var(--surface); color: var(--ink-2); }
+  .chip .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 10px; margin-top: 18px; }
+  .kpi { background: var(--surface); border: 1px solid var(--ring); border-radius: 10px;
+    padding: 14px 16px; }
+  .kpi .v { font-size: 26px; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; }
+  .kpi .l { font-size: 12px; color: var(--ink-2); margin-top: 4px; }
+  .kpi .d { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+
+  .card { background: var(--surface); border: 1px solid var(--ring); border-radius: 12px;
+    padding: 18px 20px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 860px) { .grid2 { grid-template-columns: 1fr; } }
+
+  ul.fixes { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  ul.fixes li { display: flex; gap: 10px; align-items: baseline; }
+  .tag { flex: none; font-size: 11px; font-weight: 700; letter-spacing: .06em;
+    text-transform: uppercase; padding: 2px 8px; border-radius: 5px; }
+  .tag.ok  { color: var(--good-text); border: 1px solid var(--good); }
+  .tag.rec { color: var(--s1); border: 1px solid var(--s1); }
+  ul.fixes .t { color: var(--ink-2); }
+  ul.fixes .t b { color: var(--ink); font-weight: 600; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 10px 0 4px;
+    font-size: 12.5px; color: var(--ink-2); }
+  .legend .it { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .sw { width: 11px; height: 11px; border-radius: 3px; flex: none; }
+  .legend b { font-variant-numeric: tabular-nums; color: var(--ink); }
+
+  .strip-box { overflow-x: auto; }
+  svg text { font-family: inherit; }
+
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th { text-align: left; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 700; padding: 6px 10px; border-bottom: 1px solid var(--grid); }
+  td { padding: 6px 10px; border-bottom: 1px solid var(--grid);
+    font-variant-numeric: tabular-nums; }
+  tr:last-child td { border-bottom: none; }
+  td.num { text-align: right; }
+
+  .qrow { display: flex; gap: 10px; align-items: baseline; padding: 7px 0;
+    border-bottom: 1px solid var(--grid); font-size: 14px; }
+  .qrow:last-child { border-bottom: none; }
+  .qrow .n { margin-left: auto; font-variant-numeric: tabular-nums; font-weight: 700; }
+  .st { flex: none; display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; }
+  .st svg { flex: none; }
+
+  .conf-bar { display: flex; height: 26px; border-radius: 6px; overflow: hidden;
+    gap: 2px; background: var(--page); margin: 12px 0 8px; }
+  .conf-bar div { min-width: 3px; }
+
+  .mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+  .mini { background: var(--surface); border: 1px solid var(--ring); border-radius: 10px; padding: 12px 14px; }
+  .mini h3 { font-size: 13px; margin: 0 0 2px; }
+  .mini .chi { font-size: 11.5px; font-variant-numeric: tabular-nums; margin-bottom: 6px; display: inline-flex; align-items: center; gap: 5px; font-weight: 700; }
+  .chi.pass { color: var(--good-text); }
+  .chi.fail { color: var(--crit); }
+
+  .honest { border-left: 3px solid var(--s1); padding: 4px 0 4px 16px; margin: 14px 0; color: var(--ink-2); }
+  .honest b { color: var(--ink); }
+
+  .next { display: flex; flex-wrap: wrap; gap: 18px; align-items: center;
+    border: 1px solid var(--ring); background: var(--surface); border-radius: 12px; padding: 16px 20px; }
+  .next .big { font-size: 34px; font-weight: 700; letter-spacing: -.02em; }
+  .next .meta { color: var(--ink-2); font-size: 13.5px; max-width: 52ch; }
+
+  .ranges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .ranges span { font-size: 12px; font-variant-numeric: tabular-nums; padding: 2px 8px;
+    border-radius: 5px; border: 1px solid var(--grid); color: var(--ink-2); }
+
+  .fases { display: grid; gap: 0; }
+  .fase { display: flex; gap: 12px; align-items: baseline; padding: 9px 2px;
+    border-bottom: 1px solid var(--grid); }
+  .fase:last-child { border-bottom: none; }
+  .fase .fid { flex: none; width: 30px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink-3); }
+  .fase .fname { font-weight: 600; }
+  .fase .fdesc { color: var(--ink-3); font-size: 13px; }
+  .fase .fst { margin-left: auto; flex: none; }
+
+  #tip { position: fixed; pointer-events: none; z-index: 10; display: none;
+    background: var(--ink); color: var(--page); font-size: 12.5px; line-height: 1.4;
+    padding: 6px 10px; border-radius: 7px; max-width: 260px;
+    font-variant-numeric: tabular-nums; }
+
+  footer { margin-top: 44px; color: var(--ink-3); font-size: 12.5px; }
+  a { color: var(--s1); }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+  /* ---------- premios por departamento ---------- */
+  .geo-wrap { display: grid; grid-template-columns: minmax(300px, 5fr) minmax(260px, 4fr); gap: 22px; align-items: start; }
+  @media (max-width: 860px) { .geo-wrap { grid-template-columns: 1fr; } }
+  .geo-map svg { width: 100%; height: auto; display: block; }
+  .geo-map path { cursor: pointer; transition: filter .15s; }
+  .geo-map path:hover { filter: brightness(1.12); }
+  .geo-hero { border-bottom: 1px solid var(--grid); padding-bottom: 12px; margin-bottom: 10px; }
+  .geo-hero .dep { font-size: 17px; font-weight: 700; letter-spacing: -.01em; }
+  .geo-hero .monto { font-size: 30px; font-weight: 700; letter-spacing: -.02em; line-height: 1.15;
+    font-variant-numeric: tabular-nums; }
+  .geo-hero .monto small { font-size: 14px; font-weight: 600; color: var(--ink-3); }
+  .geo-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 14px; margin-top: 8px; font-size: 13px; }
+  .geo-kpis .k { color: var(--ink-2); display: flex; justify-content: space-between; gap: 8px; }
+  .geo-kpis .k b { font-variant-numeric: tabular-nums; color: var(--ink); }
+  .geo-ciudades { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .geo-fila { display: grid; grid-template-columns: 112px 1fr auto; gap: 10px; align-items: center;
+    padding: 4px 6px; border-radius: 7px; font-size: 13px; cursor: pointer; border: 0; background: none;
+    width: 100%; text-align: left; color: var(--ink-2); font-family: inherit; }
+  .geo-fila:hover { background: var(--page); }
+  .geo-fila.sel { background: var(--page); color: var(--ink); font-weight: 600; }
+  .geo-fila .bar { height: 10px; border-radius: 4px; background: var(--s1); min-width: 2px; opacity: .85; }
+  .geo-fila .val { font-variant-numeric: tabular-nums; font-size: 12.5px; }
+  .geo-nota { color: var(--ink-3); font-size: 12.5px; margin: 14px 0 0; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">PRC Lotería Nacional · Nicaragua · loterianacional.com.ni</div>
+    <h1>Estado de los datos y análisis</h1>
+    <p class="sub">Todo lo que hay en el archivo, qué tan confiable es, qué falta por cargar
+      y qué dicen los números hasta ahora. Corte: <b>20 de julio de 2026</b>.</p>
+    <span class="chip"><span class="dot" style="background:var(--good)"></span>F0: ingesta reparada</span>
+    <span class="chip"><span class="dot" style="background:var(--good)"></span>F1: 485,900 premios en el clúster rqlite</span>
+    <span class="chip"><span class="dot" style="background:var(--good)"></span>F2: archivo saneado — 0 corruptos, 0 desajustes</span>
+    <span class="chip"><span class="dot" style="background:var(--good)"></span>F3: 443,521 premios extraídos de 736 sorteos</span>
+    <span class="chip"><span class="dot" style="background:var(--good)"></span>F4: conciliado — 98.9% de acuerdo, scorecard en BD</span>
+    <span class="chip"><span class="dot" style="background:var(--warn)"></span>F5: equidad 9/10 tests limpios — sesgo real en el último dígito del mayor</span>
+    <span class="chip"><span class="dot" style="background:var(--good)"></span>F6: predicción del sorteo 2288 publicada — terminación 9 (13.6%), EV +35.6%</span>
+    <span class="chip"><span class="dot" style="background:var(--good)"></span>F7: operación diaria automática + espejo en D:\Loteria Nacional — proyecto completo</span>
+  </header>
+
+  <div class="kpis">
+    <div class="kpi"><div class="v">1,033</div><div class="l">Sorteos en catálogo</div><div class="d">1138–2288 · era 2002–05 rescatada de Wayback</div></div>
+    <div class="kpi"><div class="v">785</div><div class="l">PDFs oficiales válidos</div><div class="d">289.6 MB · 0 corruptos</div></div>
+    <div class="kpi"><div class="v">223</div><div class="l">Imágenes válidas</div><div class="d">197.2 MB · 0 en 0 bytes</div></div>
+    <div class="kpi"><div class="v">502,652</div><div class="l">Premios extraídos</div><div class="d">836 sorteos · 2002–2026 · v2 + era HTML de Wayback</div></div>
+    <div class="kpi"><div class="v">C$ 4,236 M</div><div class="l">Monto histórico pagado</div><div class="d">según extracción v2 por coordenadas</div></div>
+    <div class="kpi"><div class="v">49</div><div class="l">Sorteos con PDF sin extraer</div><div class="d">37 requieren OCR + 12 parser especial</div></div>
+  </div>
+
+  <section>
+    <h2>Reparado y recuperado (19–20 de julio)</h2>
+    <p class="h2-note">La ingesta llevaba rota en silencio desde el 16 de julio; además arrastraba defectos históricos que ya quedaron cerrados.</p>
+    <div class="card">
+      <ul class="fixes">
+        <li><span class="tag ok">corregido</span><span class="t"><b>Parser reescrito:</b> cada PDF e imagen se empareja por el número de su propia URL. Elimina el corrimiento que asignaba al sorteo N la lista del sorteo N−1.</span></li>
+        <li><span class="tag rec">recuperado</span><span class="t"><b>105 PDFs y 83 imágenes</b> recuperados en total: re-descargas del sitio vivo, la API de la mediateca de WordPress (que reveló imágenes publicadas como .png/.jpeg) y Wayback Machine (era fileadmin 2008–2014: sorteos 1442–1446, 1681, 1725, 2000).</span></li>
+        <li><span class="tag ok">blindado</span><span class="t"><b>Descargas con reintento y validación de tamaño;</b> y si el sitio cambia de estructura y el listado sale vacío, el proceso termina en error visible en vez de reportar éxito.</span></li>
+        <li><span class="tag ok">verificado</span><span class="t"><b>Los 785 PDFs pasaron verificación v2 leyendo su interior: cero desajustes nombre↔contenido.</b> Los 2 "desajustes" del día anterior eran falsos positivos (notas "A VERIFICARSE" de los PDFs de 2006–2008 que anuncian el sorteo siguiente).</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Cobertura del archivo, sorteo por sorteo</h2>
+    <p class="h2-note">Cada celda es un sorteo (1356 arriba-izquierda → 2288 abajo-derecha). Pasa el cursor para ver el detalle.</p>
+    <div class="card">
+      <div class="legend" id="leyenda"></div>
+      <div class="strip-box"><div id="strip"></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>¿Dónde caen los premios? — navegación por departamento</h2>
+    <p class="h2-note">Los 4,411 premios destacados con lugar de venta publicado en 750 sorteos (2002–2026) — el mismo conjunto que anima el mapa. Tocá un departamento en el mapa o en la lista.</p>
+    <div class="card">
+      <div class="geo-wrap">
+        <div class="geo-map"><div id="mapa-nic"></div></div>
+        <div class="geo-side">
+          <div id="geo-detalle"></div>
+          <div id="geo-lista"></div>
+        </div>
+      </div>
+      <p class="geo-nota">Nota honesta: la lista oficial solo publica el lugar de venta de los premios destacados (~6 por sorteo), así que esto no cubre los premios menores ni los billetes que quedaron sin vender. De los 4,411 registros, 614 son premios mayores y 4,331 constan como vendidos. Boaco y Madriz no registran ni un solo premio destacado ubicado en 24 años.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Calidad de los datos</h2>
+    <p class="h2-note">Verificación de hoy: se leyó el número de sorteo impreso <em>dentro</em> de cada PDF y se comparó con su nombre de archivo.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3 style="margin:0 0 8px;font-size:14px">Scorecard de calidad (933 sorteos, en tabla calidad_sorteo)</h3>
+        <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Verde (score ≥90): datos completos y contrastados <span class="n">225</span></div>
+        <div class="qrow"><span class="st" style="color:var(--s3)" data-ic="w"></span> Ámbar (60–89): premios sólidos, faltan imagen/.Info históricos <span class="n">511</span></div>
+        <div class="qrow"><span class="st" style="color:var(--crit)" data-ic="x"></span> Rojo (&lt;60): sin datos — 147 faltantes + 49 sin extraer + 1 futuro <span class="n">197</span></div>
+        <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Verificación nombre↔contenido: 716 coinciden, 0 desajustes <span class="n">✓</span></div>
+        <div class="qrow"><span class="st" style="color:var(--s3)" data-ic="w"></span> Escaneados (era sorteos 1913–1997, años 2018–2020): OCR probado a 50% de precisión — <b>no se cargó</b>; pendiente transcripción asistida <span class="n">49</span></div>
+        <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> <b>Congruencia jerárquica MAYOR&gt;SEGUNDO&gt;…</b>: 719 sorteos verificados en BD, <b>0 violaciones</b> tras 5,247 correcciones con evidencia (banner del pote, cajas permutadas, montos del contraste); 24 destacados en cola de revisión <span class="n">✓</span></div>
+      </div>
+      <div class="card">
+        <h3 style="margin:0 0 8px;font-size:14px">Extracción v2 por coordenadas (444,668 filas, 736 sorteos)</h3>
+        <div class="conf-bar" id="confbar" role="img" aria-label="Confianza: 98.2% alta, 1.3% media de cajas destacadas, 0.5% sin monto"></div>
+        <div class="legend">
+          <span class="it"><span class="sw" style="background:var(--good)"></span>Cuadrícula, confianza ≥95 <b>436,886</b> (98.2%)</span>
+          <span class="it"><span class="sw" style="background:var(--warn)"></span>Cajas destacadas, confianza 70 <b>5,627</b> (1.3%)</span>
+          <span class="it"><span class="sw" style="background:var(--crit)"></span>Número sin monto emparejado <b>2,155</b> (0.5%)</span>
+        </div>
+        <p style="color:var(--ink-2);font-size:13.5px;margin:10px 0 0">Validación cruzada contra el método AWK de 2017 en los 393 sorteos que ambos cubren:
+        <b>98.90% de montos idénticos</b> en promedio tras la conciliación de la Fase 4 (1,015 montos rellenados desde el método de contraste — incluidos premios mayores cuyo monto era un gráfico en el PDF, como el máximo histórico C$36M del sorteo 1831). Quedan <b>8 sorteos</b> con acuerdo entre 93.5–94.8% y 1,147 filas sin monto (0.26%).</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Lo que dicen los números — la parte predictiva</h2>
+    <p class="h2-note">Análisis sobre los <b>442,513 premios del histórico completo</b> (736 sorteos, 2006–2026, extracción v2). El veredicto formal llega con las Fases 5 y 6; esto es lo que ya se puede afirmar.</p>
+
+    <div class="grid2" style="margin-bottom:12px">
+      <div class="card">
+        <h3 style="margin:0 0 2px;font-size:14px">El espacio real no es 00000–99999</h3>
+        <p style="color:var(--ink-2);font-size:13.5px;margin:4px 0 10px">Primera cifra de los billetes premiados: nunca hay 7, 8 ni 9 — la lotería solo emite billetes hasta donde llega la emisión de cada sorteo (~50,000–65,000). <b>Todo modelo predictivo serio debe condicionar a la emisión</b>, no al espacio completo.</p>
+        <div id="ch-p1"></div>
+      </div>
+      <div class="card">
+        <h3 style="margin:0 0 2px;font-size:14px">El exceso del 9 en la última cifra</h3>
+        <p style="color:var(--ink-2);font-size:13.5px;margin:4px 0 10px">La terminación 9 aparece <b>55,781</b> veces contra ~44,251 esperadas (<b>+26%</b>) — el patrón se sostiene en los 20 años de historia. Los números más repetidos terminan en −999. Huella del <b>plan de premios</b> (terminaciones y aproximaciones listadas como premios), no evidencia de manipulación de la tómbola.</p>
+        <div id="ch-t1"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:12px">
+      <h3 style="margin:0 0 2px;font-size:14px">Uniformidad por posición del dígito (χ², 9 grados de libertad — crítico al 5%: 16.9)</h3>
+      <p style="color:var(--ink-2);font-size:13.5px;margin:4px 0 12px">Con la muestra completa de 20 años hasta la posición 2 muestra una desviación <em>leve</em> (χ²=23.6: diferencias de ~1–2% por dígito que con 442 mil observaciones se vuelven detectables — en el subconjunto 2017 era indistinguible del azar). Las posiciones 3–5 siguen dominadas por la terminación 9. Ambas cosas apuntan al plan de premios, no a la tómbola; el veredicto limpio exige separar por tipo de premio (Fase 5).</p>
+      <div class="mini-grid" id="minis"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:12px">
+      <h3 style="margin:0 0 2px;font-size:14px">Informe de equidad — Fase 5 (¿está arreglada?)</h3>
+      <p style="color:var(--ink-2);font-size:13.5px;margin:4px 0 12px">Batería de 10 tests sobre el <b>premio mayor de 797 sorteos (2002–2026, 24 años)</b>: la nota al pie del PDF
+      ("LOS BILLETES TERMINADOS EN… GANAN") + los encabezados de la era HTML rescatada de Wayback. Corrección por comparaciones múltiples: Benjamini–Hochberg al 5%.
+      El sesgo del último dígito <b>ya existía en 2002–05</b> (el 9 fue el dígito más frecuente también ahí) y es estable en 24 años — firma de tómbola física.</p>
+      <div class="grid2">
+        <div>
+          <div class="qrow"><span class="st" style="color:var(--crit)" data-ic="x"></span> Último dígito del mayor <span class="n">χ²=24.7 · p=0.003</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Últimos dos dígitos (00–99) <span class="n">p=0.021*</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Centenas del mayor <span class="n">p=0.057</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Decenas del mayor <span class="n">p=0.089</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Millares del mayor <span class="n">p=0.955</span></div>
+        </div>
+        <div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Kolmogorov–Smirnov número/emisión <span class="n">p=0.117</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Rachas par/impar <span class="n">p=0.639</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Autocorrelación entre sorteos <span class="n">p=0.396</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Repeticiones exactas (4 vs 4.6 esperadas) <span class="n">p=1.000</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Deriva temporal (4 eras) <span class="n">p=0.109</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> <b>Ganadores repetidos en sorteos cercanos</b> (el reclamo histórico): 6 casos en ≤10 sorteos vs 5.69 esperados por azar <span class="n">p=0.503</span></div>
+        </div>
+      </div>
+      <div class="honest" style="margin-bottom:0">
+        <b>Veredicto:</b> 9 de 10 tests son compatibles con un sorteo justo — sin memoria, sin rachas, sin deriva, sin favoritismo de rango.
+        El único hallazgo que sobrevive la corrección FDR es el <b>último dígito del mayor: el 9 sale +37% y el 5 +25% sobre lo esperado</b>
+        (109 y 100 veces vs 79.7). La explicación parsimoniosa es un <b>sesgo físico de la tómbola de unidades</b> (balotas desgastadas o
+        dispositivo), no un fraude dirigido — un arreglo intencional dejaría otras huellas (deriva temporal, autocorrelación) que aquí no aparecen.
+        Implicación práctica para F6: los billetes terminados en 9 o 5 ganan el premio por terminación con más frecuencia que lo justo.
+        <span style="color:var(--ink-3)">(*p&lt;0.05 individual pero no supera FDR: consecuencia aritmética del sesgo del último dígito.)</span>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3 style="margin:0 0 8px;font-size:14px">Números completos más repetidos</h3>
+        <div style="overflow-x:auto"><table id="tbl-top"></table></div>
+        <p style="color:var(--ink-3);font-size:12.5px;margin:8px 0 0">De 100,000 números posibles aparecieron 59,876 distintos en 20 años. La sobre-representación de terminaciones −999 y −99 confirma el efecto del plan de premios.</p>
+      </div>
+      <div class="card">
+        <h3 style="margin:0 0 8px;font-size:14px">¿Se puede predecir el próximo ganador?</h3>
+        <div class="honest">
+          <b>Lo honesto, con los datos en la mano:</b> la Fase 5 ya dirimió la pregunta separando el premio mayor de la estructura del plan:
+          el sorteo se comporta como azar en 9 de 10 dimensiones, con una sola excepción real — el sesgo del último dígito hacia 9 y 5.
+          Eso significa que predecir el <em>número completo</em> sigue siendo imposible (KS, autocorrelación y rachas limpias),
+          pero la <em>terminación</em> tiene un sesgo pequeño y medible que el sistema F6 cuantificará en córdobas de valor esperado.
+        </div>
+        <p style="color:var(--ink-2);font-size:13.5px;margin:0 0 8px">Backtest walk-forward (635 sorteos evaluados, último dígito del mayor):</p>
+        <div style="overflow-x:auto"><table>
+          <thead><tr><th>Modelo</th><th style="text-align:right">Log-loss</th><th style="text-align:right">Acierto top-1</th></tr></thead>
+          <tbody>
+            <tr><td>M0 uniforme (línea base)</td><td class="num">2.3026</td><td class="num">10.4%</td></tr>
+            <tr><td><b>M1 Dirichlet histórico</b></td><td class="num">2.3056</td><td class="num"><b>13.1%</b></td></tr>
+            <tr><td>M2 Dirichlet ventana 200</td><td class="num">2.3131</td><td class="num">10.7%</td></tr>
+          </tbody>
+        </table></div>
+        <p style="color:var(--ink-2);font-size:13.5px;margin:10px 0 0">Ningún modelo supera al uniforme en log-loss (z=−0.37): la distribución del dígito
+        apenas es aprendible. Pero la <b>decisión</b> "apostar terminación 9" acierta 13.1% de las veces (vs 10% justo) y eleva el
+        <b>EV del premio por terminación de C$120 a C$162.7 por billete de C$600 (+35.6%)</b>. Esa es toda la ventaja que estos 20 años de datos
+        respaldan — ni más, ni menos.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3 style="margin:0 0 2px;font-size:14px">Estrategia de compra masiva (estilo Selbee / MIT en Cash WinFall)</h3>
+      <p style="color:var(--ink-2);font-size:13.5px;margin:4px 0 10px">¿Qué fracción de la emisión habría que comprar para <em>garantizar</em> ganar más de lo invertido?
+      La matemática es tajante: solo cubrir el <b>100%</b> garantiza algo (con menos, el mayor puede caer fuera de tu bloque), y eso es rentable únicamente si el
+      <b>payout ratio</b> del sorteo — premios totales ÷ (emisión × precio del billete) — supera el 100%. Se calculó para <b>695 sorteos</b> con precio inferido
+      de la propia nota (las terminaciones pagan 2×/4×/8×/16× el billete → masa fija del 22.5% de las ventas).</p>
+      <div class="grid2">
+        <div>
+          <div class="qrow"><span class="st" style="color:var(--crit)" data-ic="x"></span> Payout ratio mediano (la casa retiene ~49%) <span class="n">51.2%</span></div>
+          <div class="qrow"><span class="st" style="color:var(--s3)" data-ic="w"></span> Sorteos con ratio &gt; 80% en 24 años <span class="n">6</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> <b>Sorteos rentables al 100% de cobertura</b> <span class="n">1 de 695</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> El caso: <b>sorteo 1734</b> — cubrir la emisión costaba C$24.4M y pagaba C$25.5M <span class="n">+4.7%</span></div>
+        </div>
+        <div>
+          <div class="honest" style="margin:0">
+            <b>Veredicto:</b> la ventana Selbee existió <b>una vez en 24 años</b> (seguramente un acumulado), con margen de +4.7% antes de logística e impuestos —
+            comprar 40,000+ billetes físicos vía concesionarios la habría devorado. En el sorteo típico, comprar CUALQUIER fracción devuelve ~51 centavos por córdoba:
+            la compra masiva aquí no es estrategia, es donación. Lo que sí es accionable sigue siendo el sesgo de terminación (9/5, +35.6% EV en ese componente).
+            <span style="color:var(--ink-3)">Nota: los ratios están levemente subestimados (montos gráficos no extraídos) — podría haber 1-2 acumulados más rozando el 100%; detalle en CoberturaReporte.json.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3 style="margin:0 0 2px;font-size:14px">Los tres cuestionamientos públicos, contra los datos</h3>
+      <p style="color:var(--ink-2);font-size:13.5px;margin:4px 0 12px">Las tres críticas que más circulan en Nicaragua sobre la Lotería, medidas sobre 758 sorteos utilizables (2002–2026).
+      Detalle completo en <b>CuestionamientosReporte.json</b> y censo de venta del mayor en <b>VendidoMayor.csv</b>.</p>
+
+      <p style="font-size:13.5px;margin:0 0 6px"><b>1. «Un mismo número acapara varios premios la misma noche»</b> <span style="color:var(--ink-3)">(la tómbola no es excluyente)</span></p>
+      <div class="grid2" style="margin-bottom:10px">
+        <div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> El fenómeno existe y es esperable: números repetidos en el mismo sorteo, era moderna <span class="n">2,488 vs 2,418 por azar · p=0.078</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> <b>Mismo número con DOS premios destacados la misma noche: jamás ocurrió</b> (0 casos en 24 años; azar esperaba 0.27) <span class="n">p=1.000</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> El número del mayor ganando además un premio de cuadrícula <span class="n">6 vs 7.2 esperados · p=0.72</span></div>
+        </div>
+        <div class="honest" style="margin:0">
+          Con ~658 extracciones sobre ~55,000 billetes, el azar <em>predice</em> ~3.4 números repetidos por sorteo — y eso es exactamente lo que hay. La mayor "concentración" en 24 años fue
+          mayor + un premio de C$800–3,000 (sorteos 1362, 1636, 1695, 1736, 1777, 2054). El reclamo de "mayor y segundo la misma noche" no aparece ni una vez.
+          <span style="color:var(--ink-3)">(Era 2002–05 excluida de esta métrica: sus páginas listan números repetidos por estructura, no por re-extracción.)</span>
+        </div>
+      </div>
+
+      <p style="font-size:13.5px;margin:0 0 6px"><b>2. «Los premios caen en billetes no vendidos y la institución se los queda»</b></p>
+      <div class="grid2" style="margin-bottom:10px">
+        <div>
+          <div class="qrow"><span class="st" style="color:var(--s3)" data-ic="w"></span> Mayores NO vendidos (censo de los 785 PDFs + 99 HTML) <span class="n">132 de 826 · 16.0%</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Tasa estable en las tres eras: 16.5% / 16.3% / 15.7% — sin deriva, sin épocas "convenientes"</div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> 114 de esos potes se <b>acumularon al sorteo siguiente</b> (banner válido en el PDF) — el pote vuelve al público</div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Así nació el único sorteo rentable de 24 años: <b>1733 no vendido → 1734 con pote de C$9M</b> (ratio 104.7%)</div>
+        </div>
+        <div class="honest" style="margin:0">
+          Que ~1 de cada 6 mayores caiga en billete no vendido es <b>consistente con que ~16% de la emisión no se venda</b> — y la tasa no se mueve en 24 años. El pote del mayor no se retiene: se acumula
+          (183 banners adicionales resultaron plantilla rancia y se descartaron). <b>Lo no verificable:</b> el estado de venta de los premios secundarios no se publica; por simetría, ~16% de esa bolsa
+          también caería en billetes no vendidos. Ese es el núcleo cierto del reclamo — retención real, pero al ritmo de lo no vendido, no de una mano que dirige.
+        </div>
+      </div>
+
+      <p style="font-size:13.5px;margin:0 0 6px"><b>3. «Terminaciones que se ausentan por meses o caen seguidas — balotas descalibradas»</b></p>
+      <div class="grid2">
+        <div>
+          <div class="qrow"><span class="st" style="color:var(--crit)" data-ic="x"></span> <b>El sesgo de calibración es REAL</b>: último dígito del mayor — 9 salió 109 veces y 5 salió 100, vs ~80 justas <span class="n">χ²=28.4 · p=0.0008</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Sequía máxima: 71 sorteos (~1½ años) sin terminación 1 — el azar predice mediana 66, p95 90 <span class="n">p=0.35</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Misma terminación en sorteos consecutivos: 74 vs 81 esperadas (p=0.78); dos dígitos 10 vs 7.8 (p=0.26); <b>la de 4 dígitos completa: 0 veces</b></div>
+        </div>
+        <div class="honest" style="margin:0">
+          Las dos mitades del reclamo corren suertes opuestas. Las "sequías de meses" y las "rachas seguidas" son <b>exactamente lo que produce el azar</b> — año y medio sin una terminación
+          está dentro de lo normal para 797 sorteos. Pero la intuición popular de las <b>balotas descalibradas es correcta</b>: es el único hallazgo que sobrevive la corrección FDR en toda la batería,
+          estable 24 años, y ya está cuantificado en córdobas — billetes terminados en 9: <b>+35.6% de EV</b> en el premio por terminación.
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px;background:linear-gradient(135deg,#101a2e,#0d1526);border-color:#2a3c5e">
+      <h3 style="margin:0 0 2px;font-size:14px">🗺️ Mapa animado: ¿Dónde cae la suerte?</h3>
+      <p style="color:var(--ink-2);font-size:13.5px;margin:4px 0 0">Los <b>4,411 premios destacados con lugar de venta publicado</b> (2002–2026, 4,331 de ellos vendidos), animados año por año
+      sobre el mapa de departamentos, estilo Power Map: columnas 3D, línea de tiempo, ranking en vivo y filtro de premios mayores.
+      <a href="Mapa%20Premios.html" style="color:#7ab8ff"><b>Abrir el mapa animado →</b></a> Adelantos: Managua concentra el <b>44%</b> del dinero;
+      <b>Boaco y Madriz no registran un solo premio destacado con monto en 24 años</b>; el mayor verificado del 2286 cayó en Estelí.</p>
+    </div>
+
+    <div class="next" style="margin-top:12px">
+      <div>
+        <div class="eyebrow">Próximo sorteo</div>
+        <div class="big">Nº 2288</div>
+        <div style="color:var(--ink-2);font-size:13.5px">21 de julio de 2026</div>
+      </div>
+      <div class="meta">Predicción publicada en la tabla <b>prediccion</b> del clúster (consultable por WhatsApp):
+        último dígito del mayor — <b>9: 13.6%</b> · <b>5: 12.6%</b> · resto ≈9–10%. El número completo es impredecible (F5);
+        la única ventaja respaldada por datos es elegir billetes terminados en 9 o 5 para el premio por terminación.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sorteos que faltan por cargar</h2>
+    <p class="h2-note">147 sorteos sin PDF tras agotar sitio vivo, mediateca de WordPress y Wayback Machine.</p>
+    <div class="card">
+      <div class="legend">
+        <span class="it"><b>73</b>&nbsp;consecutivos 1365–1437 (2007–08: la lotería solo publicaba notas de prensa, no listas)</span>
+        <span class="it"><b>72</b>&nbsp;huecos dispersos 1448–2111 (no archivados en Wayback)</span>
+        <span class="it"><b>1</b>&nbsp;nunca publicado por la lotería: 2268 (confirmado en su mediateca)</span>
+        <span class="it"><b>1</b>&nbsp;captura de Wayback dañada: 1746</span>
+      </div>
+      <details style="margin-top:8px">
+        <summary style="cursor:pointer;color:var(--s1);font-size:13.5px">Ver los rangos completos</summary>
+        <div class="ranges" id="rangos"></div>
+      </details>
+      <p style="color:var(--ink-2);font-size:13.5px;margin:12px 0 0"><b>Era 2002–2005 rescatada (2026-07-20):</b> 100 sorteos (1138–1259) recuperados de las páginas HTML del sitio viejo en Wayback Machine,
+      con 56,368 premios y etiquetas de nivel explícitas — archivados en <em>Datos\HtmlViejo\</em> y cargados como método <em>html-viejo</em>. La tira de cobertura de arriba muestra solo 1356+;
+      antes del 1138 (año ≈2002) no existe nada archivado en línea. Lo restante requiere fuentes físicas (La Gaceta, archivo de la Lotería).</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Hoja de ruta</h2>
+    <p class="h2-note">De la propuesta aprobada el 19 de julio (ver <em>Documentación\Propuesta Modernizacion 2026-07.md</em>).</p>
+    <div class="card fases" id="fases"></div>
+  </section>
+
+  <footer>
+    Actualizado el 20 de julio de 2026 · Fuentes: archivo local <b>D:\PRC Loteria Nacional</b> (785 PDFs verificados por contenido),
+    extracción v2 por coordenadas <em>ExtraccionV2.csv</em> (444,668 filas) validada contra los métodos AWK de 2017, sitio oficial loterianacional.com.ni.
+    Datos cargados en el clúster rqlite de 9 nodos (flota Sentinel): 8 tablas, 485,900 premios, consultables también desde el chatbot de WhatsApp.
+  </footer>
+</div>
+<div id="tip" role="status"></div>
+
+<script>
+(function(){
+  "use strict";
+  var css = function(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); };
+
+  /* ---------- datos ---------- */
+  var ESTADOS = "EEEFEEEEEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEEEEEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEFEFEEEEEEEEEEEEEEEFEEEEEEEEEEEEEEEEEEEEEFEEEEEFEEFEEFEEEEEEFEEFEEEEEEFFEEEFEEEEEFEEFFFFFFFFEEEEEEEEEEEEEEEFEFEFEFFEEFFFEEEEEEEEEEEEEEEEFEEEEEEEEEEEEEEEEEEEFFEFFFFFEEFEEEFEEFFFEEEFEFEEEEEEEEEEEEEEEEEEFEEEFEFEEEEEEEEEEEEEEEEEEFEEEFFEEEEEEEEEEEEEEEEEEEEFFEEEEEEEFEEEEEEEEEEEEEFFFEEEEEEEEEEEEEFEFEFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEOEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEFPPOPPPPPPPPPPEEEEEEEEEEEEEEEEEEEEOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOEEEEEEEEEEEEEEEEOOFOOFFEFFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEFEEEEEEEEEEEEEEEEEEEA";
+  var BASE = 1356;
+  var RANGOS = ["1359","1365-1437","1448-1450","1473","1475","1491","1513","1519","1522","1525","1532","1535","1542-1543","1547","1553","1556-1563","1579","1581","1583","1585-1586","1589-1591","1608","1628-1629","1631-1635","1638","1642","1645-1647","1651","1653","1672","1676","1678","1697","1701-1702","1723-1724","1732","1746-1748","1762","1764","1766","1912","1995","1998-1999","2001-2004","2110-2111","2268"];
+  var DIG = {
+    p1:[70559,78855,78126,78989,79040,51955,4989,0,0,0],
+    p2:[44227,44798,43962,44399,44187,44035,43770,44672,43931,44532],
+    p3:[41242,40992,44061,42130,43848,45188,44074,43663,43350,53965],
+    p4:[41231,42209,44199,42474,43639,44476,43540,43846,43717,53182],
+    p5:[40929,40582,44368,41650,43429,44663,43602,44240,43269,55781]
+  };
+  var CHI2 = { p2:23.64, p3:2729.88, p4:2205.43, p5:3761.43 };
+  var FILAS = 442513;
+  var TOP = [["49949",26],["48999",26],["39959",26],["29999",25],["38999",24],["38299",24],["30899",24],["09999",24],["40495",23],["35949",23],["21999",23],["16999",23]];
+
+  var INFO = {
+    E: { label: "Extraído — premios en la base de datos", color: function(){ return css("--s1"); }, n: 736 },
+    P: { label: "PDF válido sin extraer — parser especial (1913–1925)", color: function(){ return css("--s1-soft"); }, n: 12 },
+    O: { label: "PDF escaneado — requiere OCR", color: function(){ return css("--s3"); }, n: 37 },
+    F: { label: "Sin fichero — no existe en línea", color: function(){ return css("--grid"); }, n: 147 },
+    A: { label: "Anunciado — sorteo futuro", color: function(){ return css("--s2"); }, n: 1 }
+  };
+
+  /* ---------- tooltip ---------- */
+  var tip = document.getElementById("tip");
+  function showTip(ev, html){
+    tip.innerHTML = html; tip.style.display = "block";
+    var x = ev.clientX + 14, y = ev.clientY + 14;
+    var r = tip.getBoundingClientRect();
+    if (x + r.width > innerWidth - 8) x = ev.clientX - r.width - 10;
+    if (y + r.height > innerHeight - 8) y = ev.clientY - r.height - 10;
+    tip.style.left = x + "px"; tip.style.top = y + "px";
+  }
+  function hideTip(){ tip.style.display = "none"; }
+
+  /* ---------- iconos de estado ---------- */
+  document.querySelectorAll("[data-ic]").forEach(function(el){
+    var k = el.getAttribute("data-ic");
+    var p = k === "ok" ? "M2 7l3.5 3.5L12 3" : k === "w" ? "M7 2v6M7 10.5v1.5" : "M3 3l8 8M11 3l-8 8";
+    el.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="' + p + '"/></svg>';
+  });
+
+  /* ---------- leyenda + tira de cobertura ---------- */
+  function drawLeyenda(){
+    var leyenda = document.getElementById("leyenda");
+    ["E","P","O","F","A"].forEach(function(k){
+      var s = document.createElement("span"); s.className = "it";
+      s.innerHTML = '<span class="sw" style="background:' + INFO[k].color() + '"></span>' +
+        INFO[k].label.split(" — ")[0] + " <b>" + INFO[k].n.toLocaleString("es") + "</b>";
+      leyenda.appendChild(s);
+    });
+  }
+
+  function drawStrip(){
+    var cols = 62, cell = 15, gap = 2, n = ESTADOS.length;
+    var rows = Math.ceil(n / cols);
+    var w = cols * (cell + gap) - gap, h = rows * (cell + gap) - gap;
+    var svgNS = "http://www.w3.org/2000/svg";
+    var svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+    svg.setAttribute("width", "100%");
+    svg.style.minWidth = "820px";
+    svg.style.display = "block";
+    for (var i = 0; i < n; i++){
+      var k = ESTADOS[i];
+      var r = document.createElementNS(svgNS, "rect");
+      r.setAttribute("x", (i % cols) * (cell + gap));
+      r.setAttribute("y", Math.floor(i / cols) * (cell + gap));
+      r.setAttribute("width", cell); r.setAttribute("height", cell);
+      r.setAttribute("rx", 3);
+      r.setAttribute("fill", INFO[k].color());
+      if (k === "F"){ r.setAttribute("fill-opacity", "0.55"); }
+      r.dataset.n = BASE + i; r.dataset.k = k;
+      r.addEventListener("mousemove", function(ev){
+        showTip(ev, "<b>Sorteo " + this.dataset.n + "</b><br>" + INFO[this.dataset.k].label);
+      });
+      r.addEventListener("mouseleave", hideTip);
+      svg.appendChild(r);
+    }
+    document.getElementById("strip").appendChild(svg);
+  }
+
+  /* ---------- barra de confianza ---------- */
+  function drawConfbar(){
+    var bar = document.getElementById("confbar");
+    [["--good", 98.2], ["--warn", 1.3], ["--crit", 0.5]].forEach(function(seg){
+      var d = document.createElement("div");
+      d.style.background = css(seg[0]); d.style.flexGrow = seg[1];
+      d.style.flexBasis = "0";
+      bar.appendChild(d);
+    });
+  }
+
+  /* ---------- gráfico de barras de dígitos ---------- */
+  function digitChart(hostId, counts, opts){
+    opts = opts || {};
+    var W = 420, H = 170, padL = 40, padB = 22, padT = 14;
+    var max = Math.max.apply(null, counts) * 1.12;
+    var esperado = opts.esperado;
+    var svgNS = "http://www.w3.org/2000/svg";
+    var svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+    svg.setAttribute("width", "100%"); svg.style.display = "block";
+    var plotW = W - padL - 6, plotH = H - padT - padB;
+    var bw = plotW / 10;
+
+    [0, 0.5, 1].forEach(function(f){
+      var y = padT + plotH - f * plotH;
+      var ln = document.createElementNS(svgNS, "line");
+      ln.setAttribute("x1", padL); ln.setAttribute("x2", W - 6);
+      ln.setAttribute("y1", y); ln.setAttribute("y2", y);
+      ln.setAttribute("stroke", f === 0 ? css("--baseline") : css("--grid"));
+      ln.setAttribute("stroke-width", 1);
+      svg.appendChild(ln);
+      var t = document.createElementNS(svgNS, "text");
+      t.setAttribute("x", padL - 5); t.setAttribute("y", y + 3.5);
+      t.setAttribute("text-anchor", "end");
+      t.setAttribute("font-size", "10"); t.setAttribute("fill", css("--ink-3"));
+      t.textContent = Math.round(f * max / 1000) + "k";
+      svg.appendChild(t);
+    });
+
+    counts.forEach(function(c, d){
+      var bh = c / max * plotH;
+      var x = padL + d * bw + bw * 0.14, y = padT + plotH - bh;
+      var r = document.createElementNS(svgNS, "rect");
+      r.setAttribute("x", x); r.setAttribute("y", y);
+      r.setAttribute("width", bw * 0.72); r.setAttribute("height", Math.max(bh, c > 0 ? 2 : 0));
+      r.setAttribute("rx", 3);
+      r.setAttribute("fill", css("--s1"));
+      r.dataset.d = d; r.dataset.c = c;
+      r.addEventListener("mousemove", function(ev){
+        var pct = (100 * this.dataset.c / FILAS).toFixed(2);
+        showTip(ev, "<b>Dígito " + this.dataset.d + "</b><br>" +
+          Number(this.dataset.c).toLocaleString("es") + " veces · " + pct + "%" +
+          (esperado ? "<br>esperado: " + Math.round(esperado).toLocaleString("es") : ""));
+      });
+      r.addEventListener("mouseleave", hideTip);
+      svg.appendChild(r);
+      var t = document.createElementNS(svgNS, "text");
+      t.setAttribute("x", padL + d * bw + bw / 2); t.setAttribute("y", H - 7);
+      t.setAttribute("text-anchor", "middle");
+      t.setAttribute("font-size", "10.5"); t.setAttribute("fill", css("--ink-2"));
+      t.textContent = d;
+      svg.appendChild(t);
+    });
+
+    if (esperado){
+      var y = padT + plotH - esperado / max * plotH;
+      var ln = document.createElementNS(svgNS, "line");
+      ln.setAttribute("x1", padL); ln.setAttribute("x2", W - 6);
+      ln.setAttribute("y1", y); ln.setAttribute("y2", y);
+      ln.setAttribute("stroke", css("--ink-2"));
+      ln.setAttribute("stroke-width", 1.2);
+      ln.setAttribute("stroke-dasharray", "4 3");
+      svg.appendChild(ln);
+      var t = document.createElementNS(svgNS, "text");
+      t.setAttribute("x", W - 6); t.setAttribute("y", y - 4);
+      t.setAttribute("text-anchor", "end");
+      t.setAttribute("font-size", "9.5"); t.setAttribute("fill", css("--ink-2"));
+      t.textContent = "esperado uniforme";
+      svg.appendChild(t);
+    }
+    if (opts.marca !== undefined){
+      var d = opts.marca, c = counts[d];
+      var t2 = document.createElementNS(svgNS, "text");
+      t2.setAttribute("x", padL + d * bw + bw / 2);
+      t2.setAttribute("y", padT + plotH - c / max * plotH - 5);
+      t2.setAttribute("text-anchor", "middle");
+      t2.setAttribute("font-size", "10.5"); t2.setAttribute("font-weight", "700");
+      t2.setAttribute("fill", css("--ink"));
+      t2.textContent = opts.marcaTxt;
+      svg.appendChild(t2);
+    }
+    document.getElementById(hostId).appendChild(svg);
+  }
+
+  /* ---------- mini-múltiplos posiciones 2–5 ---------- */
+  function drawMinis(){
+    var minis = document.getElementById("minis");
+    [["p2", "Posición 2"], ["p3", "Posición 3"], ["p4", "Posición 4"], ["p5", "Posición 5 (última)"]].forEach(function(par){
+      var k = par[0], chi = CHI2[k];
+      var nivel = chi < 16.92 ? "pass" : (chi < 100 ? "leve" : "fail");
+      var etiqueta = nivel === "pass" ? "compatible con azar" : (nivel === "leve" ? "desviación leve" : "desviación estructural");
+      var icono = nivel === "pass"
+        ? '<svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 7l3.5 3.5L12 3"/></svg>'
+        : '<svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 2v6M7 10.5v1.5"/></svg>';
+      var div = document.createElement("div"); div.className = "mini";
+      div.innerHTML = "<h3>" + par[1] + "</h3>" +
+        '<span class="chi ' + (nivel === "pass" ? "pass" : "fail") + '"' + (nivel === "leve" ? ' style="color:var(--s3)"' : '') + '>' +
+        icono + "χ² = " + (chi < 100 ? chi.toFixed(1) : Math.round(chi).toLocaleString("es")) + " · " + etiqueta +
+        "</span><div id=\"mini-" + k + "\"></div>";
+      minis.appendChild(div);
+      digitChart("mini-" + k, DIG[k], { esperado: FILAS / 10 });
+    });
+  }
+
+
+  /* ---------- premios por departamento ---------- */
+  var GEO = {"viewBox":"0 0 560 500.8","paths":{"Rio San Juan":"M287 424 283 456 283 458 284 459 284 461 314 473 332 462 333 461 340 457 342 459 349 462 352 461 353 463 362 467 366 471 370 472 372 470 374 469 377 467 378 470 377 473 379 473 379 475 381 476 383 477 385 479 387 480 389 480 390 481 392 482 392 484 393 485 392 487 390 488 391 489 392 490 394 490 394 492 395 491 397 492 400 492 402 492 403 494 405 494 406 493 407 494 409 495 410 494 411 493 413 493 414 491 415 492 416 493 417 494 418 495 419 496 421 497 422 499 424 499 425 501 427 500 430 499 432 500 435 497 437 496 439 496 440 495 441 493 444 494 448 492 449 491 451 491 453 491 454 490 455 488 454 486 454 484 455 481 454 480 453 479 454 478 453 477 452 475 451 474 450 473 449 474 450 475 448 475 449 474 447 473 446 472 445 471 444 469 440 463 439 462 438 461 435 461 433 461 431 461 430 462 429 460 429 458 428 457 428 455 428 453 426 453 425 454 424 453 423 454 422 455 421 456 420 455 419 454 418 455 417 456 416 457 414 457 413 456 412 455 411 454 411 452 410 451 409 452 408 453 407 452 405 452 404 451 403 452 401 452 400 451 399 450 397 449 392 440 383 435 380 434 368 421 366 419 363 418 358 414 355 414 353 411 353 406 354 404 353 401 355 400 355 398 357 398 358 396 357 393 357 391 356 389 353 386 355 377 353 377 352 372 351 371 350 370 349 369 347 370 345 370 344 368 343 369 342 368 343 367 342 366 341 365 339 365 337 365 335 365 333 365 331 365 328 365 326 365 326 367 324 367 323 368 322 369 321 370 320 371 319 372 318 373 317 374 316 375 314 375 313 376 311 376 309 376 310 377 309 378 307 379 308 380 307 381 306 382 305 383 304 384 303 385 302 386 300 386 299 385 298 386 297 387 296 388 295 389 293 390 292 391 291 392 292 393 287 424Z","Boaco":"M194 289 193 290 193 292 194 294 194 296 195 298 195 300 196 301 197 302 199 303 200 304 201 305 200 310 199 311 202 313 204 313 210 319 214 319 213 320 212 322 211 324 211 326 211 328 212 329 212 331 212 333 212 335 214 335 215 336 216 337 228 385 228 343 229 338 232 331 232 324 233 319 233 317 234 311 237 309 238 313 240 312 242 311 244 312 246 313 248 313 250 313 251 314 252 315 254 313 256 314 265 311 267 310 269 310 271 309 275 309 279 303 283 300 285 301 289 301 290 302 292 302 293 301 294 300 296 296 302 293 301 290 302 288 303 286 304 284 307 281 308 279 309 278 306 275 305 274 305 272 304 271 303 270 304 269 303 268 304 266 302 266 302 264 301 263 299 261 298 260 296 260 295 259 294 258 292 259 291 260 290 261 289 262 289 264 290 265 289 266 287 267 287 269 286 270 286 272 287 273 286 275 285 276 284 275 283 276 284 278 283 279 282 278 280 277 279 278 278 279 277 278 276 276 275 275 275 273 274 274 273 275 272 274 271 275 270 274 271 273 271 271 269 272 267 271 267 269 265 269 263 269 262 270 261 267 260 266 258 265 256 266 255 268 253 268 252 269 253 270 251 270 250 269 248 268 247 269 246 268 245 270 244 269 243 268 242 269 241 271 240 272 239 273 237 273 236 274 235 273 234 274 232 274 231 275 230 276 229 275 227 275 222 275 217 277 213 276 210 276 207 277 206 278 205 277 204 278 203 279 204 280 203 282 202 283 201 284 200 285 198 285 197 287 195 287 194 288Z","Chontales":"M349 369 349 367 348 366 349 367 351 367 352 368 356 366 358 366 355 362 352 360 350 358 346 356 341 354 335 351 335 348 334 336 331 333 332 332 331 331 330 328 327 323 327 321 328 320 329 319 327 315 326 312 322 310 321 307 320 304 318 303 320 302 321 300 321 298 321 296 322 295 321 294 319 294 318 293 318 291 317 290 316 289 317 288 316 287 316 285 315 284 313 283 312 282 312 280 310 280 309 279 307 280 304 284 303 286 302 288 301 290 302 293 296 296 294 299 295 300 294 301 292 301 291 302 289 301 285 301 283 300 279 303 275 309 271 309 269 310 267 310 265 311 256 314 255 313 252 315 251 314 250 313 248 313 246 314 244 313 242 312 240 312 239 313 237 309 234 311 233 317 233 319 232 324 232 331 229 338 228 343 228 385 287 424 292 393 291 392 292 391 293 390 294 389 296 389 297 387 298 386 299 385 300 386 302 386 303 385 304 384 305 383 306 382 307 381 308 380 307 379 308 378 309 377 310 376 312 376 313 375 315 375 316 374 317 375 318 374 318 372 319 371 321 370 322 369 323 368 324 367 326 367 326 365 328 365 330 365 332 365 334 365 336 365 338 365 340 365 341 366 342 365 343 366 342 367 343 368 345 369 344 370 347 370 349 369Z","Managua":"M194 289 193 288 191 288 186 288 185 287 186 285 179 283 177 283 175 283 173 283 173 281 169 278 166 278 165 279 164 278 163 277 160 277 158 277 156 277 155 278 154 280 152 281 151 283 150 284 150 286 150 288 149 289 148 290 149 291 149 293 151 293 152 294 151 295 150 296 155 309 137 320 136 321 131 329 133 329 135 330 134 331 134 333 132 334 131 335 130 336 131 337 129 338 128 339 127 340 126 341 125 342 123 342 122 341 120 341 119 342 117 342 116 343 117 345 118 346 119 347 118 349 115 350 116 352 119 355 121 358 121 360 121 362 122 363 127 366 130 371 132 374 133 376 132 377 134 378 137 380 141 383 142 382 141 381 140 380 141 379 142 378 143 377 144 376 146 376 147 375 147 373 148 372 149 371 150 370 151 368 152 367 152 363 154 361 155 360 156 359 158 356 161 352 164 354 170 353 171 348 167 344 172 340 175 340 177 335 180 335 183 335 184 334 185 333 187 333 189 334 199 329 201 328 200 327 203 326 204 327 205 326 206 327 207 328 211 327 211 325 212 323 213 321 214 319 210 319 204 313 202 313 199 311 200 310 201 306 200 305 199 304 198 303 197 302 196 301 195 300 195 298 194 297 194 295 193 294 193 292 193 290 194 289Z","Leon":"M159 277 159 275 159 273 160 272 159 270 160 268 159 267 160 266 160 264 159 263 159 257 159 255 159 253 157 251 156 250 152 250 151 249 150 250 148 250 147 249 146 248 143 248 142 247 142 245 143 244 142 241 143 240 143 238 144 236 140 233 139 234 138 231 138 229 138 227 137 225 136 224 136 222 131 221 127 221 124 222 123 221 122 220 119 220 119 222 112 222 111 223 110 224 108 223 108 225 107 226 108 227 109 232 111 233 111 235 112 237 113 238 114 239 115 240 114 241 114 245 115 247 116 254 116 256 115 259 110 263 108 261 106 263 103 265 101 264 100 265 98 265 99 266 99 268 100 269 97 270 96 271 93 272 92 274 93 275 92 276 91 278 89 279 88 280 87 283 87 285 87 287 85 290 83 291 83 293 82 292 79 295 78 296 75 296 74 297 72 296 71 297 69 297 67 297 65 297 65 299 66 301 68 302 69 303 70 304 72 306 74 308 75 309 76 310 84 315 91 320 96 322 99 324 102 327 103 328 104 329 105 330 106 331 105 330 106 333 105 334 106 333 107 334 107 336 108 338 108 340 110 343 111 344 112 346 113 348 114 349 116 352 115 351 117 349 119 348 119 346 118 345 117 343 118 342 120 341 122 341 123 342 125 342 126 341 127 340 128 339 129 338 130 337 131 336 131 334 133 333 134 332 135 330 133 329 131 329 136 321 137 320 155 309 151 296 151 294 150 293 149 292 148 291 149 290 149 288 149 286 150 285 151 284 150 283 151 281 154 280 154 278 156 278 158 278 159 277Z","Chinandega":"M108 224 108 221 107 220 107 218 107 216 108 215 109 213 110 212 111 210 111 208 109 208 108 207 106 204 102 201 101 200 99 200 98 199 97 200 95 200 93 200 92 201 92 203 90 204 88 204 89 206 88 207 88 209 88 211 87 212 86 213 86 215 87 216 88 217 87 218 87 220 86 221 86 223 88 224 87 225 86 226 85 227 83 228 83 231 82 232 81 233 80 232 78 233 77 234 76 235 75 236 73 237 72 236 71 235 43 237 42 238 41 239 40 240 37 241 35 242 36 243 37 244 39 244 42 244 44 244 42 245 40 245 37 245 35 245 34 246 33 245 31 245 30 244 26 243 25 242 24 241 25 242 24 240 25 239 26 240 25 238 24 237 23 236 22 235 20 232 17 231 16 229 13 229 12 228 13 227 12 226 13 225 13 227 13 225 12 228 11 231 10 232 9 233 8 234 6 235 5 236 3 237 2 239 1 241 1 243 0 244 1 246 4 249 7 251 10 253 19 258 21 260 22 262 24 262 25 263 27 265 29 268 31 269 33 271 34 272 35 274 36 275 37 277 38 278 39 280 40 281 42 282 49 286 50 287 54 289 55 291 57 293 58 294 59 296 59 298 63 300 69 304 68 302 66 301 65 299 65 297 67 297 69 297 71 297 72 296 74 297 75 296 78 296 79 295 82 293 83 292 85 290 86 287 87 286 87 284 87 280 89 280 90 278 92 276 93 275 92 274 93 272 96 271 97 270 100 269 99 268 99 266 98 265 100 265 101 264 102 265 106 263 108 261 110 263 115 259 116 256 116 254 115 248 114 245 114 241 115 240 114 239 113 238 112 237 111 235 111 233 110 232 108 228 108 226 107 225 108 224Z","Madriz":"M110 213 113 212 115 212 117 211 119 208 120 207 121 205 121 202 121 200 122 199 122 197 123 196 125 195 127 192 127 189 128 187 127 186 128 185 130 185 132 186 134 186 135 185 137 186 138 187 139 188 140 189 142 189 144 189 147 189 149 188 152 188 154 186 158 185 161 186 163 185 165 187 166 188 168 190 167 189 169 188 170 187 170 185 171 184 173 184 175 184 177 184 178 183 180 182 181 181 182 180 183 179 183 177 182 176 181 174 182 173 180 173 180 169 176 166 174 164 173 165 172 166 171 167 170 166 169 165 168 163 164 163 160 164 159 165 156 167 155 166 154 167 153 166 151 166 152 168 149 170 148 169 146 169 144 168 142 168 140 167 137 168 134 166 131 166 129 168 128 169 125 166 122 167 119 164 119 161 115 160 114 161 113 160 112 159 111 158 109 159 108 158 106 160 107 161 104 168 105 169 106 170 107 174 107 179 109 182 109 184 110 185 109 186 108 187 107 188 108 191 110 191 111 192 111 194 111 198 111 200 110 201 109 202 106 204 108 206 107 207 108 208 110 208 111 209 110 211 111 212 110 213Z","Esteli":"M157 251 159 250 160 246 161 245 163 245 164 244 167 244 168 243 168 240 171 238 176 235 175 234 176 233 177 232 178 231 179 230 178 223 174 223 169 219 168 216 167 215 162 214 165 206 164 202 163 200 162 199 164 198 164 196 165 195 164 194 165 193 166 192 167 191 168 190 166 189 165 188 163 185 161 186 158 185 154 186 152 188 149 188 147 189 145 189 143 189 142 190 141 189 140 188 138 187 137 186 135 186 133 186 131 185 128 185 127 186 128 187 127 189 127 192 125 195 123 196 122 197 122 199 121 200 121 202 121 204 120 207 119 208 117 211 115 212 113 212 110 213 108 214 107 216 107 218 107 220 108 221 108 224 110 224 111 223 112 222 119 222 119 220 122 220 123 221 124 222 127 221 131 221 136 222 136 224 137 225 138 227 138 229 138 231 139 234 140 233 144 236 144 238 143 239 142 241 143 244 142 245 142 247 143 248 146 248 147 249 148 250 150 250 151 249 152 250 156 250 157 251Z","Nueva Segovia":"M183 178 184 177 186 177 188 178 189 177 188 176 189 175 191 175 193 176 195 177 196 178 198 179 199 180 201 181 202 178 204 177 206 176 207 177 208 176 209 175 210 176 211 175 210 173 212 172 212 170 211 171 210 170 211 169 212 168 211 167 210 165 210 163 212 162 212 160 213 159 212 158 212 156 214 156 213 155 214 154 215 153 216 151 215 150 215 148 216 147 215 146 214 144 215 143 216 142 217 141 219 139 219 137 217 137 215 137 214 138 213 137 211 137 211 135 209 133 210 132 209 131 210 130 209 129 208 128 207 129 206 128 204 127 203 129 203 131 202 130 201 129 201 127 199 127 198 126 197 125 195 125 194 124 193 123 192 124 191 123 190 121 189 120 187 120 190 113 191 111 190 110 187 110 186 111 183 111 182 112 180 112 179 113 178 114 176 114 175 115 173 116 174 117 175 118 174 119 173 120 172 122 170 121 169 122 170 123 169 125 168 127 167 126 166 127 166 129 165 130 163 131 162 132 161 133 160 134 160 136 158 136 157 137 158 139 158 141 157 142 155 142 154 145 153 146 152 147 151 146 150 147 149 146 148 147 146 147 144 147 143 146 142 147 141 146 140 144 139 145 138 146 137 145 136 146 134 145 132 145 131 143 130 142 129 143 128 142 127 143 126 144 124 144 122 145 121 144 119 144 118 145 116 145 109 144 105 146 104 148 105 149 105 151 104 153 102 158 104 160 106 160 107 158 109 159 111 159 113 160 114 161 115 160 119 161 119 164 122 167 125 166 127 169 128 168 129 169 131 167 134 166 137 168 140 167 141 168 143 168 146 169 148 169 149 170 151 168 151 166 153 166 154 167 155 166 156 167 159 165 160 164 164 163 168 163 169 165 170 166 171 167 172 166 173 165 174 164 176 166 180 169 180 173 182 173 181 174 182 175 183 177Z","Matagalpa":"M290 260 289 259 288 258 287 257 285 257 284 258 283 257 283 255 282 254 282 252 283 251 283 249 283 247 283 245 282 244 283 243 283 241 283 239 282 238 283 237 284 235 285 236 286 237 287 238 287 236 288 235 288 233 289 232 290 231 291 230 292 229 293 228 294 227 293 226 292 225 291 223 292 220 293 221 295 221 294 219 294 217 296 217 296 215 292 214 290 215 289 216 288 217 287 216 286 215 285 216 284 218 282 216 281 217 279 217 278 218 276 219 275 218 273 218 272 217 271 216 270 214 269 215 268 214 267 213 266 211 264 212 262 212 260 210 259 209 258 207 257 206 256 205 255 204 254 203 253 202 252 201 251 200 250 199 249 197 248 196 247 195 243 197 242 198 237 197 236 198 234 196 233 197 232 198 231 200 230 201 231 203 232 204 228 206 227 207 225 205 223 206 221 208 220 210 221 211 213 220 210 224 207 225 205 226 204 227 202 227 202 229 202 232 200 232 200 235 197 236 195 233 193 233 193 236 192 235 190 236 189 234 187 233 185 233 184 232 183 231 182 230 181 231 180 230 178 230 177 231 176 232 176 234 175 233 176 234 171 238 168 240 168 243 167 244 164 244 163 245 161 245 160 246 159 250 157 251 159 253 159 255 159 257 159 263 160 264 160 266 159 267 160 268 159 269 160 270 160 272 159 273 159 275 159 277 162 277 164 278 165 279 166 278 169 278 172 281 173 282 175 282 176 283 178 283 186 285 185 287 186 288 191 288 193 288 194 289 195 288 197 287 198 285 200 285 201 284 202 283 203 282 204 281 204 279 204 277 206 277 207 278 210 276 213 276 217 277 222 275 227 275 229 275 230 276 231 275 232 274 234 274 235 273 236 274 237 273 239 273 240 272 241 271 242 270 243 268 244 269 245 270 246 269 247 268 249 269 250 268 250 270 252 270 252 268 254 268 256 266 257 265 260 266 261 267 262 269 263 270 264 269 266 269 267 270 268 272 270 271 271 272 272 273 270 274 271 275 272 274 273 275 274 274 275 273 275 275 276 276 277 277 277 279 279 278 280 277 281 278 282 277 282 279 284 278 283 277 283 275 285 275 286 276 287 274 286 273 285 270 287 270 287 268 289 267 290 266 289 265 288 264 289 263 290 262 290 260Z","RACCN":"M295 220 296 221 297 222 298 223 299 224 300 223 302 223 303 224 304 223 305 224 307 224 308 225 309 224 310 225 310 223 311 224 312 223 312 221 314 221 316 221 317 220 318 221 319 220 320 221 321 220 322 219 323 217 324 218 326 218 331 209 356 206 380 205 381 204 382 203 383 202 385 202 386 203 387 202 388 203 389 204 391 204 392 203 393 202 394 201 395 202 396 201 398 201 400 201 400 199 401 200 402 201 419 203 429 205 431 205 433 204 434 205 435 206 436 207 438 207 440 207 441 206 442 207 441 208 440 209 440 211 441 212 442 213 442 215 442 217 441 218 442 220 444 220 446 220 447 221 448 222 450 222 452 222 453 223 454 224 456 224 457 225 456 226 458 227 458 229 459 230 460 231 462 231 463 232 464 233 465 232 467 232 469 232 467 222 466 212 466 207 465 200 465 197 466 192 466 189 467 187 467 183 468 181 469 178 469 175 471 172 470 171 471 170 471 165 472 156 473 151 475 143 476 138 477 136 479 134 478 133 479 129 480 126 482 121 483 119 485 118 486 117 488 115 490 114 493 109 495 106 496 105 497 103 498 102 497 103 496 104 496 102 498 101 501 97 504 89 507 84 507 81 507 79 507 77 505 71 506 68 505 67 503 62 502 57 499 49 497 42 496 37 496 33 496 31 495 30 496 29 496 26 497 25 496 24 498 22 500 15 502 13 503 11 505 10 507 8 509 8 511 7 513 5 515 5 514 4 510 5 508 4 506 4 504 5 501 5 499 5 498 4 499 3 497 3 496 4 494 3 491 2 491 4 490 3 489 2 487 2 486 1 485 0 484 1 485 2 484 4 483 3 482 5 481 4 479 5 478 6 477 5 476 3 474 2 473 3 472 4 470 4 471 6 469 6 469 8 470 9 468 8 468 10 469 11 467 10 467 12 467 14 465 13 464 14 463 13 463 15 461 15 461 17 460 18 457 17 454 18 453 19 452 18 451 20 449 20 448 21 450 20 451 21 451 23 450 24 450 22 449 23 448 22 448 24 446 23 445 24 444 26 442 25 441 24 442 25 441 26 439 27 438 28 437 27 436 28 435 29 433 30 431 30 430 31 429 30 428 29 427 30 425 29 424 30 426 31 426 33 425 32 423 31 420 33 418 33 417 31 415 33 413 33 412 32 413 31 412 30 411 31 408 32 408 29 407 28 405 28 404 29 405 33 406 34 404 34 402 35 400 36 398 37 396 36 393 34 392 35 391 34 392 33 391 31 389 32 387 33 386 34 387 37 387 39 388 40 387 42 386 43 384 42 383 41 382 40 381 41 378 41 377 40 378 38 377 37 376 36 376 38 374 39 372 42 370 43 370 45 369 46 367 46 365 46 364 48 361 48 360 47 358 46 356 45 357 44 358 43 356 43 354 44 353 43 352 44 351 43 350 42 348 42 347 43 346 42 345 41 343 41 341 41 342 40 341 39 339 42 338 41 337 40 338 39 336 39 335 38 333 37 332 35 333 34 333 32 332 33 330 33 330 31 331 32 332 30 329 28 328 26 327 25 326 24 325 23 323 24 321 25 319 25 317 25 315 25 314 26 313 28 312 30 313 31 312 32 311 31 309 32 307 33 306 34 305 35 304 36 303 37 301 38 302 39 301 40 300 41 299 42 298 43 299 44 301 45 301 47 299 48 300 49 302 48 303 49 304 50 305 51 305 53 304 54 304 56 305 57 304 58 304 60 305 61 307 61 308 62 308 64 307 65 306 66 305 67 306 68 306 70 306 72 305 71 304 72 305 73 306 74 306 76 307 77 308 76 308 78 309 79 310 78 310 80 311 81 324 80 318 105 318 107 317 108 318 110 318 112 319 113 320 115 318 122 317 123 315 124 300 146 297 150 285 144 270 154 262 154 259 160 255 162 256 163 257 164 258 165 259 167 258 172 260 174 258 175 258 177 256 178 255 179 251 184 249 185 248 189 247 190 247 192 246 193 247 194 248 195 247 196 248 197 250 198 251 199 252 201 253 202 254 203 255 204 256 205 257 206 258 207 259 208 260 209 261 212 263 212 265 211 267 212 268 213 269 214 270 215 271 216 272 217 273 218 275 218 276 219 278 217 280 217 281 216 283 218 284 219 284 216 285 215 287 215 288 216 289 217 289 215 292 214 295 215 296 216 295 217 294 218 295 219Z M558 78 556 79 558 79 559 78 560 76 559 73 560 72 559 71 557 71 555 71 554 72 555 73 554 74 553 75 553 77 554 76 552 77 551 78 553 78 555 78 556 79 557 78 558 77Z","RACCS":"M446 358 447 359 446 360 445 361 446 362 447 363 446 364 447 365 448 366 449 365 449 367 448 362 448 359 448 355 449 353 450 351 448 351 447 352 447 354 446 355 446 357Z M523 331 522 332 523 333 522 334 524 334 524 332 526 332 526 330 525 329 524 330 523 331Z M531 316 531 318 533 319 532 316Z M454 310 455 309 455 307 454 306 454 309Z M349 369 350 370 351 371 352 372 353 377 355 377 353 386 356 389 357 391 357 393 358 396 357 398 355 398 355 400 353 401 354 404 353 406 353 411 355 414 358 414 363 418 366 419 368 421 380 434 383 435 392 440 397 449 398 450 399 451 401 451 402 452 403 451 405 452 407 452 408 453 409 452 410 451 411 452 411 454 412 455 413 456 414 457 416 456 417 455 418 456 419 455 421 455 423 455 424 454 423 455 424 454 426 454 427 453 428 454 428 456 428 458 429 459 430 461 431 462 432 461 435 461 437 461 439 462 440 463 444 469 445 471 446 472 449 474 448 473 447 472 445 470 443 466 441 464 439 460 436 453 436 451 435 450 434 446 433 443 432 438 432 433 431 427 432 423 432 421 433 419 434 418 435 416 437 415 439 416 440 412 442 412 443 408 444 404 445 402 447 401 448 402 449 401 450 400 451 399 452 398 453 397 455 398 456 399 457 398 457 396 456 395 455 387 454 386 455 387 453 378 452 375 451 372 451 370 451 368 449 368 448 367 446 366 445 368 446 369 445 370 445 373 446 374 444 374 442 374 441 373 440 372 438 371 437 369 438 368 437 367 435 366 436 364 437 363 439 363 440 362 439 361 440 360 441 359 442 358 443 357 443 355 443 353 444 352 444 350 445 349 444 348 443 347 442 346 443 345 440 345 439 344 440 345 441 344 442 345 443 344 443 346 444 347 445 345 445 347 446 345 448 344 449 346 451 348 452 350 453 351 452 346 452 339 452 333 453 330 453 328 454 324 454 322 456 318 457 315 458 313 460 311 459 309 457 310 456 311 455 312 456 313 455 314 455 316 455 318 454 320 453 319 453 317 454 316 454 314 455 313 454 311 452 312 451 313 450 314 449 313 447 312 448 311 447 310 447 308 447 306 448 305 448 303 447 302 448 300 447 299 448 298 447 297 446 296 445 295 444 296 443 297 442 296 441 294 442 293 442 290 443 289 444 288 445 287 447 287 449 287 451 287 452 286 453 285 455 284 456 283 457 282 458 281 460 281 461 279 462 278 463 279 462 278 463 277 462 276 461 275 462 274 462 272 462 270 460 269 459 267 460 268 460 265 459 264 458 265 457 264 456 265 456 263 457 262 457 260 456 259 455 260 456 259 457 258 458 257 460 256 462 256 463 257 465 257 467 258 468 259 469 260 469 262 468 264 466 265 466 267 467 268 466 272 465 273 466 275 467 276 467 278 467 280 466 282 465 285 465 287 466 288 465 287 463 286 461 286 459 286 459 284 458 285 458 287 458 289 458 291 458 293 458 295 459 297 460 299 462 302 461 304 460 305 458 306 458 308 459 309 460 308 462 307 465 306 466 305 468 305 470 305 471 306 473 306 475 304 475 298 474 296 472 292 471 290 470 288 469 285 469 282 468 275 470 261 470 257 473 247 472 246 471 243 469 232 467 232 465 232 464 233 463 232 462 231 460 231 459 230 458 229 458 227 455 226 456 225 457 224 456 225 455 224 454 223 452 223 451 222 450 223 449 222 447 222 448 221 446 221 445 220 442 220 441 218 442 217 442 215 442 213 441 212 440 211 440 209 441 208 442 207 441 206 440 207 438 207 436 207 435 206 434 205 433 204 432 205 430 205 419 203 402 200 401 199 400 200 399 201 397 201 396 202 394 202 392 202 391 203 390 204 388 204 387 202 386 203 385 202 383 202 382 203 381 204 380 205 356 206 331 209 326 218 324 218 323 217 322 218 321 219 320 221 319 220 318 221 317 220 316 221 314 220 313 221 312 222 312 224 310 223 310 225 309 224 308 225 307 224 305 224 304 223 303 224 302 223 300 224 299 223 298 222 296 221 295 220 294 221 292 221 291 223 292 224 293 226 294 227 293 228 292 229 291 230 290 231 289 232 288 233 288 235 287 236 287 238 286 237 285 236 284 234 283 236 282 237 283 239 283 241 283 243 282 244 283 245 283 247 283 249 283 251 282 252 282 254 283 255 283 257 284 258 285 257 287 257 288 258 289 259 290 260 291 259 293 258 294 259 295 258 296 259 298 261 300 263 301 264 302 265 303 266 303 268 304 269 303 270 304 271 305 272 305 274 306 275 309 278 310 279 311 280 312 281 313 283 314 284 316 285 316 287 317 288 316 289 317 290 318 291 318 293 319 294 321 294 322 295 321 296 322 298 321 299 320 301 319 303 320 304 321 307 322 310 326 312 327 315 329 319 328 320 327 321 327 323 330 328 331 331 332 332 331 333 334 336 335 348 335 351 341 354 345 356 350 358 352 360 355 362 358 366 356 366 353 368 352 367 350 367 349 366 349 368Z","Jinotega":"M168 190 167 191 166 192 165 193 164 194 165 195 164 196 164 198 162 199 163 200 164 202 165 206 162 214 167 215 168 216 169 219 173 223 178 223 179 229 180 230 181 231 182 230 183 231 184 232 185 233 187 233 189 234 189 236 192 235 193 236 193 234 194 233 195 232 197 236 200 235 200 233 201 232 202 231 202 229 202 227 204 227 205 226 206 225 207 226 210 224 213 220 221 211 220 210 221 208 223 206 225 206 227 207 228 206 232 204 231 203 230 202 231 201 232 198 233 197 234 196 236 198 237 197 241 198 243 197 247 195 246 193 247 192 247 190 248 189 249 185 251 184 255 179 256 178 257 177 258 176 260 174 258 172 259 167 258 165 257 164 256 163 255 162 259 160 262 154 270 154 285 144 297 150 300 146 315 124 317 123 318 122 320 116 319 114 318 112 318 110 317 108 318 107 318 105 324 80 311 81 310 80 310 78 309 79 308 78 308 76 307 77 306 76 306 74 305 73 304 72 305 71 306 72 306 70 306 68 305 67 306 66 307 65 308 64 308 62 307 61 305 61 304 60 304 58 305 57 304 56 304 54 305 53 305 51 304 50 303 49 302 48 301 49 300 51 299 53 297 53 296 54 294 55 292 55 292 53 291 52 290 51 289 53 287 52 287 54 288 55 287 56 288 57 288 60 287 61 287 63 286 64 283 65 284 66 283 68 284 69 283 70 282 72 281 73 281 75 279 76 280 77 281 76 282 77 282 79 282 81 284 81 284 83 287 84 286 86 285 87 284 88 283 90 281 90 279 90 277 90 276 89 274 89 272 89 271 90 269 90 267 90 265 91 266 92 265 93 264 92 263 95 262 93 261 94 262 95 261 97 262 98 261 99 260 100 259 102 259 104 258 105 257 106 256 107 254 107 253 106 252 107 251 108 250 110 249 109 248 110 247 109 247 111 246 112 245 113 246 114 244 114 242 114 241 113 240 112 239 114 238 115 237 114 236 116 235 117 233 117 234 118 232 118 230 118 229 119 229 121 228 122 227 121 224 120 223 121 222 122 221 123 219 123 218 125 219 126 219 128 219 130 218 133 219 134 221 134 221 136 220 137 219 139 218 141 217 142 216 143 215 144 215 146 216 147 215 148 215 150 216 151 215 152 214 153 214 155 213 156 212 157 213 158 212 159 212 161 211 162 210 163 211 165 210 167 212 168 211 169 210 170 211 171 212 170 212 172 211 173 211 175 210 176 209 175 208 176 207 177 206 176 204 176 203 178 201 180 202 181 200 180 198 179 197 178 195 177 194 176 192 175 190 175 188 176 189 177 188 178 187 177 185 177 184 178 183 179 182 180 181 182 179 183 178 184 176 184 174 184 172 184 171 185 170 186 169 187 168 189Z","Carazo":"M141 383 145 386 147 388 148 389 150 391 152 394 151 392 152 393 153 394 155 396 156 397 162 399 163 400 165 402 167 402 166 403 168 403 169 404 171 406 172 407 173 406 172 405 174 404 173 403 174 402 174 400 175 399 176 398 178 397 179 396 178 395 177 394 177 392 176 391 177 390 177 388 176 387 177 385 178 384 180 384 181 383 180 381 181 379 181 377 180 375 181 374 182 371 181 370 178 370 177 369 175 369 173 369 174 368 173 365 174 364 172 363 171 362 171 360 169 360 166 359 164 359 162 359 161 358 160 357 158 357 156 359 155 360 154 361 152 363 152 366 151 367 150 369 149 371 148 372 147 373 147 375 146 376 144 376 143 377 142 378 141 379 140 380 141 381 142 382 141 383Z","Granada":"M211 327 208 328 207 327 205 327 204 326 203 327 200 327 201 328 199 329 189 334 190 335 192 336 193 337 196 340 193 343 193 349 192 352 190 353 189 354 188 355 187 357 188 360 185 363 184 364 183 365 182 366 182 368 181 370 182 371 181 373 180 375 181 376 181 379 180 381 181 382 181 384 179 384 177 384 176 387 177 388 177 390 176 391 177 392 177 394 178 395 179 396 181 397 183 397 184 396 186 396 188 395 189 394 190 393 192 392 193 391 195 391 196 390 197 389 200 389 202 388 203 387 204 384 205 386 228 385 216 337 215 336 214 335 212 335 212 333 212 331 212 329 211 328Z","Masaya":"M158 356 159 357 160 358 162 358 163 359 165 359 168 360 170 360 171 361 172 362 173 364 173 368 175 369 177 369 178 370 180 370 181 368 182 367 181 366 183 365 184 364 185 363 188 360 187 357 188 355 189 354 190 353 191 352 193 350 192 349 193 343 196 340 193 337 192 336 190 335 189 334 187 333 185 333 184 334 183 335 180 335 177 335 175 340 172 340 167 344 171 348 170 353 164 354 161 352 158 356Z","Rivas":"M287 424 228 385 205 386 204 384 203 386 202 387 200 389 198 389 197 390 195 391 193 391 192 392 190 393 189 394 188 395 187 396 185 396 183 396 182 397 180 396 178 396 177 397 176 398 175 399 174 400 174 402 173 403 174 404 173 405 172 406 172 408 173 410 174 411 175 412 178 413 179 414 180 415 181 416 182 417 183 418 184 419 186 420 187 421 188 422 187 423 189 423 190 424 191 425 192 426 193 427 196 429 197 430 198 431 199 432 200 431 201 432 200 433 202 433 203 435 204 436 205 437 205 439 206 440 208 441 209 442 210 443 212 446 213 448 214 449 213 450 214 451 215 453 216 454 217 455 218 454 219 456 220 457 221 456 222 457 224 457 225 458 235 441 241 443 245 447 256 452 264 452 278 460 284 462 284 460 283 459 283 457 287 424Z"},"datos":{"Boaco":{"label":"Boaco","n":0,"vendidos":0,"mayores":0,"monto":0,"max":0,"maxSorteo":null,"ciudades":[]},"Carazo":{"label":"Carazo","n":200,"vendidos":198,"mayores":19,"monto":95589000,"max":12000000,"maxSorteo":1658,"ciudades":[["Jinotepe",199],["Dolores",1]]},"Chinandega":{"label":"Chinandega","n":270,"vendidos":261,"mayores":36,"monto":188850000,"max":20000000,"maxSorteo":1492,"ciudades":[["Chinandega",270]]},"Chontales":{"label":"Chontales","n":220,"vendidos":216,"mayores":26,"monto":133262000,"max":8000000,"maxSorteo":1722,"ciudades":[["Juigalpa",220]]},"Esteli":{"label":"Estelí","n":219,"vendidos":215,"mayores":31,"monto":137567000,"max":8000000,"maxSorteo":1798,"ciudades":[["Esteli",219]]},"Granada":{"label":"Granada","n":316,"vendidos":310,"mayores":50,"monto":187973000,"max":10000000,"maxSorteo":1807,"ciudades":[["Granada",316]]},"Jinotega":{"label":"Jinotega","n":201,"vendidos":194,"mayores":28,"monto":98885000,"max":9000000,"maxSorteo":1799,"ciudades":[["Jinotega",201]]},"Leon":{"label":"León","n":220,"vendidos":219,"mayores":34,"monto":158580000,"max":15000000,"maxSorteo":1736,"ciudades":[["Leon",220]]},"Madriz":{"label":"Madriz","n":0,"vendidos":0,"mayores":0,"monto":0,"max":0,"maxSorteo":null,"ciudades":[]},"Managua":{"label":"Managua","n":1793,"vendidos":1758,"mayores":252,"monto":1176168500,"max":25000000,"maxSorteo":1639,"ciudades":[["Managua",1693],["Tipitapa",100]]},"Masaya":{"label":"Masaya","n":240,"vendidos":234,"mayores":35,"monto":153084000,"max":10000000,"maxSorteo":2022,"ciudades":[["Masaya",240]]},"Matagalpa":{"label":"Matagalpa","n":338,"vendidos":333,"mayores":39,"monto":156290000,"max":18000000,"maxSorteo":1851,"ciudades":[["Matagalpa",338]]},"Nueva Segovia":{"label":"Nueva Segovia","n":113,"vendidos":113,"mayores":17,"monto":59430000,"max":8000000,"maxSorteo":1698,"ciudades":[["Ocotal",113]]},"RACCN":{"label":"RACCN (Caribe Norte)","n":32,"vendidos":32,"mayores":5,"monto":22140000,"max":7000000,"maxSorteo":1483,"ciudades":[["Siuna",27],["Puerto Cabezas",5]]},"RACCS":{"label":"RACCS (Caribe Sur)","n":79,"vendidos":78,"mayores":11,"monto":38525000,"max":8000000,"maxSorteo":2094,"ciudades":[["Bluefields",76],["Nueva Guinea",3]]},"Rio San Juan":{"label":"Río San Juan","n":21,"vendidos":21,"mayores":3,"monto":10890000,"max":5000000,"maxSorteo":1571,"ciudades":[["San Carlos",21]]},"Rivas":{"label":"Rivas","n":149,"vendidos":149,"mayores":28,"monto":89259000,"max":11750000,"maxSorteo":1465,"ciudades":[["Rivas",149]]}}}
+  var geoSel = "Managua";
+  function fmtM(v){
+    if (v >= 1e6) return "C$" + (v / 1e6).toLocaleString("es", {maximumFractionDigits: 1}) + "\u00a0M";
+    return "C$" + v.toLocaleString("es");
+  }
+  function drawMapa(){
+    var host = document.getElementById("mapa-nic");
+    var maxM = 0, k;
+    for (k in GEO.datos){ if (GEO.datos[k].monto > maxM) maxM = GEO.datos[k].monto; }
+    var svgNS = "http://www.w3.org/2000/svg";
+    var svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("viewBox", GEO.viewBox);
+    svg.setAttribute("role", "img");
+    svg.setAttribute("aria-label", "Mapa de Nicaragua: monto de premios por departamento");
+    Object.keys(GEO.paths).forEach(function(dep){
+      var d = GEO.datos[dep];
+      var p = document.createElementNS(svgNS, "path");
+      p.setAttribute("d", GEO.paths[dep]);
+      if (d.monto > 0){
+        p.setAttribute("fill", css("--s1"));
+        p.setAttribute("fill-opacity", (0.25 + 0.75 * Math.sqrt(d.monto / maxM)).toFixed(3));
+      } else {
+        p.setAttribute("fill", css("--grid"));
+        p.setAttribute("fill-opacity", "0.9");
+      }
+      p.setAttribute("stroke", dep === geoSel ? css("--ink") : css("--surface"));
+      p.setAttribute("stroke-width", dep === geoSel ? 2 : 1);
+      p.dataset.dep = dep;
+      p.addEventListener("mousemove", function(ev){
+        var x = GEO.datos[this.dataset.dep];
+        showTip(ev, "<b>" + x.label + "</b><br>" + (x.n ? fmtM(x.monto) + " en " + x.n.toLocaleString("es") +
+          " premios · " + x.mayores + " mayores" : "sin premios destacados ubicados"));
+      });
+      p.addEventListener("mouseleave", hideTip);
+      p.addEventListener("click", function(){ geoSel = this.dataset.dep; drawGeo(); });
+      svg.appendChild(p);
+    });
+    host.appendChild(svg);
+  }
+  function drawGeoDetalle(){
+    var d = GEO.datos[geoSel];
+    var host = document.getElementById("geo-detalle");
+    var pv = d.n ? Math.round(100 * d.vendidos / d.n) : 0;
+    var chips = d.ciudades.map(function(c){
+      return '<span class="chip">' + c[0] + ' <b style="font-variant-numeric:tabular-nums">' + c[1].toLocaleString("es") + "</b></span>";
+    }).join(" ");
+    host.innerHTML = '<div class="geo-hero">' +
+      '<div class="dep">' + d.label + "</div>" +
+      '<div class="monto">' + (d.n ? fmtM(d.monto) : "\u2014") + " <small>en premios ubicados</small></div>" +
+      '<div class="geo-kpis">' +
+        '<span class="k">Premios ubicados <b>' + d.n.toLocaleString("es") + "</b></span>" +
+        '<span class="k">Premios mayores <b>' + d.mayores.toLocaleString("es") + "</b></span>" +
+        '<span class="k">Vendidos <b>' + (d.n ? pv + "%" : "\u2014") + "</b></span>" +
+        '<span class="k">Mayor premio <b>' + (d.max ? fmtM(d.max) + " (s" + d.maxSorteo + ")" : "\u2014") + "</b></span>" +
+      "</div>" +
+      (chips ? '<div class="geo-ciudades">' + chips + "</div>" : "") +
+      "</div>";
+  }
+  function drawGeoLista(){
+    var host = document.getElementById("geo-lista");
+    var orden = Object.keys(GEO.datos).sort(function(a, b){ return GEO.datos[b].monto - GEO.datos[a].monto; });
+    var maxM = GEO.datos[orden[0]].monto;
+    orden.forEach(function(dep){
+      var d = GEO.datos[dep];
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "geo-fila" + (dep === geoSel ? " sel" : "");
+      b.innerHTML = "<span>" + d.label.replace(/ \(.*\)/, "") + "</span>" +
+        '<span class="bar" style="width:' + (d.monto ? Math.max(2, 100 * d.monto / maxM) : 0) + '%"></span>' +
+        '<span class="val">' + (d.monto ? fmtM(d.monto) : "\u2014") + "</span>";
+      b.addEventListener("click", function(){ geoSel = dep; drawGeo(); });
+      host.appendChild(b);
+    });
+  }
+  function drawGeo(){
+    ["mapa-nic", "geo-detalle", "geo-lista"].forEach(function(id){
+      document.getElementById(id).innerHTML = "";
+    });
+    drawMapa(); drawGeoDetalle(); drawGeoLista();
+  }
+
+  /* ---------- render completo (se repite al cambiar de tema) ---------- */
+  function renderAll(){
+    ["leyenda", "strip", "confbar", "ch-p1", "ch-t1", "minis"].forEach(function(id){
+      document.getElementById(id).innerHTML = "";
+    });
+    drawLeyenda();
+    drawStrip();
+    drawConfbar();
+    drawGeo();
+    digitChart("ch-p1", DIG.p1, { marca: 5, marcaTxt: "la emisión se agota" });
+    digitChart("ch-t1", DIG.p5, { esperado: FILAS / 10, marca: 9, marcaTxt: "+25%" });
+    drawMinis();
+  }
+  renderAll();
+
+  /* ---------- tabla top números ---------- */
+  (function(){
+    var t = document.getElementById("tbl-top");
+    var html = "<thead><tr><th>#</th><th>Número</th><th style='text-align:right'>Apariciones</th><th>Terminación</th></tr></thead><tbody>";
+    TOP.forEach(function(par, i){
+      var num = par[0], c = par[1];
+      var term = /999$/.test(num) ? "−999" : /99$/.test(num) ? "−99" : /9$/.test(num) ? "−9" : "—";
+      html += "<tr><td>" + (i + 1) + "</td><td><b>" + num + "</b></td><td class='num'>" + c + "</td><td>" + term + "</td></tr>";
+    });
+    t.innerHTML = html + "</tbody>";
+  })();
+
+  /* ---------- rangos faltantes ---------- */
+  (function(){
+    var host = document.getElementById("rangos");
+    RANGOS.forEach(function(r){
+      var s = document.createElement("span"); s.textContent = r; host.appendChild(s);
+    });
+  })();
+
+  /* ---------- fases ---------- */
+  (function(){
+    var fases = [
+      ["F0", "Reparación de la ingesta", "parser, reintentos, alertas, recuperación masiva", "done", "Completada hoy"],
+      ["F1", "Esquema en rqlite + carga de datos", "8 tablas; 933 sorteos, 1,207 archivos con SHA-256, 485,900 premios", "done", "Completada hoy"],
+      ["F2", "Saneamiento y faltantes", "105 PDFs + 83 imágenes recuperados; 0 corruptos; espejo pendiente de destino", "done", "Completada"],
+      ["F3", "Extracción de premios v2", "extractor por coordenadas: 442,513 premios de 736 sorteos, 98.5% acuerdo; quedan 37 OCR + 12 parser especial", "done", "Completada"],
+      ["F4", "Calidad de datos", "1,015 montos conciliados, acuerdo 98.9%, scorecard verde/ámbar/rojo en BD; OCR descartado por precisión 50%", "done", "Completada"],
+      ["F5", "Análisis de equidad", "10 tests sobre 735 mayores: 9 limpios; sesgo real en último dígito (9 y 5)", "done", "Completada"],
+      ["F6", "Sistema predictivo", "backtest honesto: log-loss no supera al uniforme; EV terminación 9 = +35.6%; predicción 2288 en BD", "done", "Completada"],
+      ["F7", "Operación continua", "TareaDiaria.ps1: sync→extracción→carga→calidad→predicción→espejo a D:\\Loteria Nacional; tarea 07:53 diaria", "done", "Completada"]
+    ];
+    var host = document.getElementById("fases");
+    fases.forEach(function(f){
+      var d = document.createElement("div"); d.className = "fase";
+      var col = f[3] === "done" ? "var(--good)" : f[3] === "next" ? "var(--s1)" : f[3] === "part" ? "var(--warn)" : "var(--baseline)";
+      d.innerHTML = '<span class="fid">' + f[0] + '</span><span><span class="fname">' + f[1] +
+        '</span> <span class="fdesc">· ' + f[2] + '</span></span>' +
+        '<span class="fst chip"><span class="dot" style="background:' + col + '"></span>' + f[4] + "</span>";
+      host.appendChild(d);
+    });
+  })();
+
+  /* ---------- redibujar al cambiar de tema ---------- */
+  var mq = matchMedia("(prefers-color-scheme: dark)");
+  if (mq.addEventListener){ mq.addEventListener("change", renderAll); }
+  new MutationObserver(function(m){
+    m.forEach(function(x){ if (x.attributeName === "data-theme") renderAll(); });
+  }).observe(document.documentElement, { attributes: true });
+})();
+</script>

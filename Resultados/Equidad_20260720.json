@@ -1,0 +1,136 @@
+{
+ "n_mayores": 779,
+ "rango": [
+  1138,
+  2287
+ ],
+ "alfa": 0.05,
+ "tests": [
+  {
+   "test": "chi2 ultimo digito del mayor [nota]",
+   "estadistico": 28.38,
+   "df": 9,
+   "p": 0.000823052140905251,
+   "detalle": [
+    81,
+    61,
+    82,
+    78,
+    80,
+    100,
+    62,
+    82,
+    62,
+    109
+   ],
+   "significativo_fdr": true
+  },
+  {
+   "test": "chi2 decenas del mayor [nota]",
+   "estadistico": 16.06,
+   "df": 9,
+   "p": 0.06560876035669148,
+   "detalle": [
+    73,
+    69,
+    82,
+    70,
+    84,
+    85,
+    70,
+    75,
+    80,
+    109
+   ],
+   "significativo_fdr": false
+  },
+  {
+   "test": "chi2 centenas del mayor [nota]",
+   "estadistico": 18.62,
+   "df": 9,
+   "p": 0.028614637605389986,
+   "detalle": [
+    90,
+    57,
+    86,
+    69,
+    74,
+    76,
+    71,
+    82,
+    91,
+    101
+   ],
+   "significativo_fdr": false
+  },
+  {
+   "test": "chi2 millares del mayor [nota]",
+   "estadistico": 3.21,
+   "df": 9,
+   "p": 0.9552343354139714,
+   "detalle": [
+    73,
+    85,
+    80,
+    83,
+    72,
+    78,
+    84,
+    85,
+    73,
+    84
+   ],
+   "significativo_fdr": false
+  },
+  {
+   "test": "chi2 ultimos dos digitos (00-99)",
+   "estadistico": 129.1,
+   "df": 99,
+   "p": 0.02273228533585948,
+   "significativo_fdr": false
+  },
+  {
+   "test": "homogeneidad temporal del ultimo digito (4 eras)",
+   "estadistico": 31.39,
+   "df": 27,
+   "p": 0.25556560515374516,
+   "significativo_fdr": false
+  },
+  {
+   "test": "KS uniforme sobre numero/emision",
+   "estadistico": 0.0478,
+   "df": 779,
+   "p": 0.055119540189336416,
+   "significativo_fdr": false
+  },
+  {
+   "test": "rachas par/impar (Wald-Wolfowitz)",
+   "estadistico": -0.03,
+   "df": 779,
+   "p": 0.9761540041865834,
+   "detalle": {
+    "rachas": 388,
+    "esperadas": 388.4
+   },
+   "significativo_fdr": false
+  },
+  {
+   "test": "autocorrelacion lag-1 (mayor consecutivos)",
+   "estadistico": -0.0328,
+   "df": 778,
+   "p": 0.35984635754444916,
+   "significativo_fdr": false
+  },
+  {
+   "test": "repeticiones exactas del mayor (cumpleanos)",
+   "estadistico": 4,
+   "df": 779,
+   "p": 0.7555128719220614,
+   "detalle": {
+    "esperadas": 5.37
+   },
+   "significativo_fdr": false
+  }
+ ],
+ "veredicto": "ATENCION: 1 test(s) significativos tras FDR: chi2 ultimo digito del mayor [nota]. Requiere investigacion dirigida."
+}

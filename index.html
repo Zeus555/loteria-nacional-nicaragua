@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRC Lotería Nacional — archivo y análisis de los sorteos de Nicaragua</title>
+<meta name="description" content="Pipeline de archivo, extracción dual y análisis estadístico de 24 años de sorteos de la Lotería Nacional de Nicaragua. Proyecto educacional y de preservación de datos.">
+<style>
+  :root {
+    color-scheme: light dark;
+    --page: #f9f9f7; --surface: #fcfcfb;
+    --ink: #0b0b0b; --ink-2: #52514e; --ink-3: #898781;
+    --grid: #e1e0d9; --ring: rgba(11,11,11,.10);
+    --s1: #2a78d6; --s2: #1baf7a; --s3: #eda100;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --page: #0d0d0d; --surface: #1a1a19;
+      --ink: #ffffff; --ink-2: #c3c2b7; --ink-3: #898781;
+      --grid: #2c2c2a; --ring: rgba(255,255,255,.10);
+      --s1: #3987e5; --s2: #199e70; --s3: #c98500;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--page); color: var(--ink); margin: 0;
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 40px 20px 72px; }
+
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--ink-3); }
+  h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.1; margin: 10px 0 6px;
+    letter-spacing: -.02em; text-wrap: balance; }
+  .lede { color: var(--ink-2); font-size: 17px; max-width: 62ch; margin: 0 0 6px; }
+  .verdict { border-left: 3px solid var(--s1); padding: 6px 0 6px 16px; margin: 22px 0 0;
+    color: var(--ink-2); max-width: 68ch; }
+  .verdict b { color: var(--ink); }
+
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px; margin: 30px 0 0; }
+  .kpi { background: var(--surface); border: 1px solid var(--ring); border-radius: 10px; padding: 14px 16px; }
+  .kpi .v { font-size: 24px; font-weight: 700; letter-spacing: -.02em; line-height: 1.15;
+    font-variant-numeric: tabular-nums; }
+  .kpi .l { font-size: 12.5px; color: var(--ink-2); margin-top: 3px; }
+
+  h2 { font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3);
+    margin: 42px 0 14px; font-weight: 700; }
+
+  .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  @media (max-width: 700px) { .cards { grid-template-columns: 1fr; } }
+  a.card { display: block; background: var(--surface); border: 1px solid var(--ring);
+    border-radius: 12px; padding: 20px; text-decoration: none; color: inherit;
+    transition: border-color .15s, transform .15s; }
+  a.card:hover { border-color: var(--s1); transform: translateY(-2px); }
+  a.card .ico { font-size: 22px; line-height: 1; }
+  a.card h3 { margin: 10px 0 4px; font-size: 17px; letter-spacing: -.01em; }
+  a.card p { margin: 0; color: var(--ink-2); font-size: 14px; }
+  a.card .go { display: inline-block; margin-top: 10px; font-size: 13px; font-weight: 600; color: var(--s1); }
+
+  figure { margin: 0; }
+  figure img { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--ring); }
+  figure video { width: 100%; height: auto; display: block; border-radius: 10px;
+    border: 1px solid var(--ring); background: #000; }
+  figcaption { color: var(--ink-3); font-size: 12.5px; margin-top: 8px; }
+
+  footer { margin-top: 52px; padding-top: 20px; border-top: 1px solid var(--grid);
+    color: var(--ink-3); font-size: 13px; }
+  footer a { color: var(--ink-2); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">Nicaragua · 2002–2026 · proyecto educacional</p>
+  <h1>PRC Lotería Nacional</h1>
+  <p class="lede">Archivo, extracción dual y análisis estadístico de veinticuatro años de sorteos
+  de la Lotería Nacional de Nicaragua — para preservar los datos y responder con evidencia
+  la pregunta que todo el mundo se hace.</p>
+
+  <div class="verdict">
+    <b>¿Está arreglada?</b> Nueve de diez pruebas estadísticas son compatibles con un sorteo justo.
+    La décima encontró algo real: el último dígito del premio mayor favorece al <b>9</b> (+37 %) y al
+    <b>5</b> (+25 %), de forma estable durante 24 años — la firma de un sesgo físico de la tómbola,
+    no de un fraude.
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="v">1,033</div><div class="l">sorteos en catálogo</div></div>
+    <div class="kpi"><div class="v">785</div><div class="l">PDFs oficiales archivados</div></div>
+    <div class="kpi"><div class="v">502,652</div><div class="l">premios extraídos</div></div>
+    <div class="kpi"><div class="v">C$ 4,236 M</div><div class="l">monto histórico pagado</div></div>
+    <div class="kpi"><div class="v">4,411</div><div class="l">premios con lugar de venta</div></div>
+  </div>
+
+  <h2>Explorar</h2>
+  <div class="cards">
+    <a class="card" href="Documentaci%C3%B3n/Dashboard%20Estado%20de%20Datos.html">
+      <div class="ico">📊</div>
+      <h3>Dashboard de datos</h3>
+      <p>Estado del archivo sorteo por sorteo, calidad, la batería de equidad completa y la
+      navegación de premios por departamento.</p>
+      <span class="go">Abrir el dashboard →</span>
+    </a>
+    <a class="card" href="Documentaci%C3%B3n/Mapa%20Premios.html">
+      <div class="ico">🗺️</div>
+      <h3>Mapa animado</h3>
+      <p>¿Dónde cae la suerte? Los 4,411 premios con lugar de venta publicado, animados año por
+      año sobre el mapa de departamentos.</p>
+      <span class="go">Abrir el mapa →</span>
+    </a>
+    <a class="card" href="https://github.com/Zeus555/loteria-nacional-nicaragua#readme">
+      <div class="ico">📚</div>
+      <h3>Documentación</h3>
+      <p>Cómo funciona el pipeline, la arquitectura, el esquema de la base de datos y los
+      hallazgos estadísticos con su metodología.</p>
+      <span class="go">Leer el README →</span>
+    </a>
+    <a class="card" href="https://github.com/Zeus555/loteria-nacional-nicaragua">
+      <div class="ico">⚙️</div>
+      <h3>Código y datos</h3>
+      <p>El pipeline completo, los PDFs oficiales archivados y todos los resultados de los
+      análisis, abiertos y reproducibles.</p>
+      <span class="go">Ver el repositorio →</span>
+    </a>
+  </div>
+
+  <h2 id="el-proyecto-en-90-segundos">El proyecto en 90 segundos</h2>
+  <figure>
+    <video controls preload="metadata" playsinline
+           poster="Documentaci%C3%B3n/cobertura-sorteos.png"
+           src="video/explicador.mp4">
+      Tu navegador no puede reproducir este vídeo.
+      <a href="video/explicador.mp4">Descargarlo (MP4, 33 MB)</a>.
+    </video>
+    <figcaption>Explicador sin narración: la arquitectura, el pipeline diario de 7 pasos y los
+    hallazgos estadísticos. Renderizado desde HTML con HyperFrames ·
+    <a href="video/explicador.mp4">descargar MP4</a>.</figcaption>
+  </figure>
+
+  <h2>El archivo, de un vistazo</h2>
+  <figure>
+    <img src="Documentaci%C3%B3n/cobertura-sorteos.png"
+         alt="Mapa de cobertura: cada celda es un sorteo entre el 1356 y el 2288, coloreada según su estado de extracción">
+    <figcaption>Cobertura sorteo por sorteo (1356 → 2288). Azul: premios ya extraídos ·
+    azul oscuro: PDF pendiente de parser especial · naranja: escaneado, requiere OCR ·
+    gris: sin fichero en línea · verde: anunciado.</figcaption>
+  </figure>
+
+  <footer>
+    <p>Proyecto independiente, educacional y sin fines de lucro. No está afiliado a la Lotería
+    Nacional de Nicaragua; los datos provienen de sus listas oficiales públicas.</p>
+    <p><b>Nada de esto es consejo de apuestas.</b> La lotería tiene valor esperado negativo
+    (payout mediano ≈ 51 %): jugar es entretenimiento, no inversión.</p>
+    <p>Código bajo licencia MIT · <a href="https://github.com/Zeus555/loteria-nacional-nicaragua">github.com/Zeus555/loteria-nacional-nicaragua</a></p>
+  </footer>
+
+</div>
+</body>
+</html>

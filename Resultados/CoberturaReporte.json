@@ -1,0 +1,145 @@
+{
+ "sorteos": 695,
+ "ratio_min": 0.248,
+ "ratio_mediana": 0.5116,
+ "ratio_max": 1.0467,
+ "rentables": 1,
+ "top": [
+  {
+   "sorteo": 1734,
+   "emision": 61000,
+   "precio": 400.0,
+   "premios_lista": 20050000,
+   "costo_cubrir_todo": 24400000,
+   "ratio_lista": 0.8217,
+   "ratio_total": 1.0467
+  },
+  {
+   "sorteo": 1446,
+   "emision": 51000,
+   "precio": 400.0,
+   "premios_lista": 13478500,
+   "costo_cubrir_todo": 20400000,
+   "ratio_lista": 0.6607,
+   "ratio_total": 0.8857
+  },
+  {
+   "sorteo": 1465,
+   "emision": 51000,
+   "precio": 400.0,
+   "premios_lista": 12803500,
+   "costo_cubrir_todo": 20400000,
+   "ratio_lista": 0.6276,
+   "ratio_total": 0.8526
+  },
+  {
+   "sorteo": 1597,
+   "emision": 51000,
+   "precio": 500.0,
+   "premios_lista": 15733000,
+   "costo_cubrir_todo": 25500000,
+   "ratio_lista": 0.617,
+   "ratio_total": 0.842
+  },
+  {
+   "sorteo": 1785,
+   "emision": 61000,
+   "precio": 400.0,
+   "premios_lista": 15027000,
+   "costo_cubrir_todo": 24400000,
+   "ratio_lista": 0.6159,
+   "ratio_total": 0.8409
+  },
+  {
+   "sorteo": 1737,
+   "emision": 61000,
+   "precio": 400.0,
+   "premios_lista": 14899000,
+   "costo_cubrir_todo": 24400000,
+   "ratio_lista": 0.6106,
+   "ratio_total": 0.8356
+  },
+  {
+   "sorteo": 1883,
+   "emision": 61000,
+   "precio": 600.0,
+   "premios_lista": 20167200,
+   "costo_cubrir_todo": 36600000,
+   "ratio_lista": 0.551,
+   "ratio_total": 0.776
+  },
+  {
+   "sorteo": 1736,
+   "emision": 61000,
+   "precio": 1000.0,
+   "premios_lista": 33575900,
+   "costo_cubrir_todo": 61000000,
+   "ratio_lista": 0.5504,
+   "ratio_total": 0.7754
+  },
+  {
+   "sorteo": 1484,
+   "emision": 51000,
+   "precio": 400.0,
+   "premios_lista": 11028500,
+   "costo_cubrir_todo": 20400000,
+   "ratio_lista": 0.5406,
+   "ratio_total": 0.7656
+  },
+  {
+   "sorteo": 1479,
+   "emision": 51000,
+   "precio": 400.0,
+   "premios_lista": 11003500,
+   "costo_cubrir_todo": 20400000,
+   "ratio_lista": 0.5394,
+   "ratio_total": 0.7644
+  },
+  {
+   "sorteo": 1468,
+   "emision": 51000,
+   "precio": 300.0,
+   "premios_lista": 8202000,
+   "costo_cubrir_todo": 15300000,
+   "ratio_lista": 0.5361,
+   "ratio_total": 0.7611
+  },
+  {
+   "sorteo": 1470,
+   "emision": 51000,
+   "precio": 300.0,
+   "premios_lista": 8186000,
+   "costo_cubrir_todo": 15300000,
+   "ratio_lista": 0.535,
+   "ratio_total": 0.76
+  },
+  {
+   "sorteo": 1451,
+   "emision": 51000,
+   "precio": 400.0,
+   "premios_lista": 10888500,
+   "costo_cubrir_todo": 20400000,
+   "ratio_lista": 0.5337,
+   "ratio_total": 0.7587
+  },
+  {
+   "sorteo": 1481,
+   "emision": 51000,
+   "precio": 300.0,
+   "premios_lista": 8156000,
+   "costo_cubrir_todo": 15300000,
+   "ratio_lista": 0.5331,
+   "ratio_total": 0.7581
+  },
+  {
+   "sorteo": 1526,
+   "emision": 51000,
+   "precio": 300.0,
+   "premios_lista": 8150000,
+   "costo_cubrir_todo": 15300000,
+   "ratio_lista": 0.5327,
+   "ratio_total": 0.7577
+  }
+ ],
+ "masa_terminaciones": 0.225
+}

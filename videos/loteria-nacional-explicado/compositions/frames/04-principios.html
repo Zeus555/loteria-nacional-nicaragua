@@ -1,0 +1,436 @@
+<template>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Hanken+Grotesk:wght@400;600&family=DM+Mono:wght@400;500&display=swap");
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      font-family: "Hanken Grotesk", sans-serif;
+      color: #1f2be0;
+    }
+
+    /* ---- full-bleed ground: paper + permanent graph grid (its own clip) ---- */
+    .pri04-bg {
+      position: absolute;
+      inset: 0;
+      background-color: #f0ebde;
+      background-image:
+        linear-gradient(rgba(31, 43, 224, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(31, 43, 224, 0.1) 1px, transparent 1px);
+      background-size: 38px 38px;
+    }
+
+    /* ---- content layer ---- */
+    .pri04-content {
+      position: absolute;
+      inset: 0;
+      transform-origin: 50% 45%;
+    }
+
+    .pri04-hairline {
+      position: absolute;
+      left: 77px;
+      right: 77px;
+      height: 2px;
+      background: #1f2be0;
+    }
+    .pri04-hairline-top { top: 58px; }
+    .pri04-hairline-bot { top: 1022px; }
+
+    .pri04-chrome {
+      position: absolute;
+      font-family: "DM Mono", monospace;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: #1f2be0;
+    }
+    .pri04-chrome-tl { top: 26px; left: 77px; }
+    .pri04-chrome-tr { top: 26px; right: 77px; }
+    .pri04-chrome-bl { top: 990px; left: 77px; }
+    .pri04-chrome-br { top: 990px; right: 77px; }
+
+    /* QR-block corner patch */
+    .pri04-qr {
+      position: absolute;
+      top: 92px;
+      right: 77px;
+      width: 96px;
+      height: 96px;
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      background: #f0ebde;
+      box-shadow: 0 0 0 2px #f0ebde;
+    }
+    .pri04-qr-cell-on { background: #1f2be0; }
+    .pri04-qr-cell-off { background: rgba(31, 43, 224, 0.1); }
+
+    /* ---- header: kicker + per-word headline (upper third, left anchor) ---- */
+    .pri04-header {
+      position: absolute;
+      left: 77px;
+      top: 138px;
+      width: 1500px;
+    }
+    .pri04-kicker {
+      font-family: "Hanken Grotesk", sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .pri04-headline {
+      margin-top: 20px;
+      font-family: "Newsreader", serif;
+      font-weight: 400;
+      font-size: 92px;
+      line-height: 0.95;
+      letter-spacing: -0.005em;
+      color: #1f2be0;
+    }
+    .pri04-wm {
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: top;
+      padding-bottom: 0.08em;
+      margin-right: 0.22em;
+    }
+    .pri04-w { display: inline-block; }
+
+    /* ---- triptych of principle cards ---- */
+    .pri04-cards {
+      position: absolute;
+      left: 77px;
+      right: 77px;
+      top: 402px;
+      height: 428px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 38px;
+    }
+    .pri04-card {
+      position: relative;
+      border: 2px solid #1f2be0;
+      background: #f0ebde;
+      padding: 38px 36px 34px;
+      will-change: transform;
+      transform-origin: 50% 50%;
+    }
+    .pri04-badge {
+      display: block;
+      width: 78px;
+      height: 78px;
+    }
+    .pri04-badge rect {
+      fill: none;
+      stroke: #1f2be0;
+      stroke-width: 6;
+    }
+    .pri04-badge text {
+      font-family: "DM Mono", monospace;
+      font-size: 44px;
+      fill: #1f2be0;
+    }
+    .pri04-statement {
+      margin-top: 26px;
+      font-family: "Newsreader", serif;
+      font-weight: 400;
+      font-size: 41px;
+      line-height: 1.18;
+      color: #1f2be0;
+      min-height: 148px;
+    }
+    .pri04-hl {
+      position: relative;
+      display: inline-block;
+      white-space: nowrap;
+    }
+    .pri04-hl-bg {
+      position: absolute;
+      inset: 0.02em -0.14em -0.02em -0.14em;
+      background: #1f2be0;
+    }
+    .pri04-hl-tx {
+      position: relative;
+      color: #1f2be0;
+    }
+    .pri04-under {
+      width: 96px;
+      height: 3px;
+      margin-top: 20px;
+      background: #1f2be0;
+      transform-origin: 0% 50%;
+      will-change: transform;
+    }
+    .pri04-body {
+      margin-top: 20px;
+      font-family: "DM Mono", monospace;
+      font-size: 23px;
+      letter-spacing: 0.04em;
+      line-height: 1.4;
+      color: #1f2be0;
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="04-principios"
+    data-duration="8.5"
+    data-width="1920"
+    data-height="1080"
+  >
+    <!-- ground -->
+    <div class="pri04-bg clip" data-start="0" data-duration="8.5" data-track-index="0"></div>
+
+    <!-- content -->
+    <div class="pri04-content clip" data-start="0" data-duration="8.5" data-track-index="1">
+      <div class="pri04-hairline pri04-hairline-top" id="pri04-hl-top"></div>
+      <div class="pri04-hairline pri04-hairline-bot" id="pri04-hl-bot"></div>
+
+      <div class="pri04-chrome pri04-chrome-tl" id="pri04-ch-tl">LOTERIA NACIONAL &middot; PIPELINE DE DATOS</div>
+      <div class="pri04-chrome pri04-chrome-tr" id="pri04-ch-tr">SEC&nbsp;04</div>
+      <div class="pri04-chrome pri04-chrome-bl" id="pri04-ch-bl">PRINCIPIOS DE INGENIERIA</div>
+      <div class="pri04-chrome pri04-chrome-br" id="pri04-ch-br">04</div>
+
+      <div class="pri04-qr" id="pri04-qr"></div>
+
+      <div class="pri04-header">
+        <div class="pri04-kicker" id="pri04-kicker">Principios de ingenier&iacute;a</div>
+        <h1 class="pri04-headline" id="pri04-headline">
+          <span class="pri04-wm"><span class="pri04-w">TRES</span></span><span class="pri04-wm"><span class="pri04-w">REGLAS</span></span><span class="pri04-wm"><span class="pri04-w">PROTEGEN</span></span><span class="pri04-wm"><span class="pri04-w">LOS</span></span><span class="pri04-wm"><span class="pri04-w">DATOS</span></span>
+        </h1>
+      </div>
+
+      <div class="pri04-cards">
+        <div class="pri04-card" id="pri04-card1">
+          <svg class="pri04-badge" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect class="pri04-badge-rect" x="6" y="6" width="88" height="88" />
+            <text class="pri04-badge-num" x="50" y="50" text-anchor="middle" dominant-baseline="central" fill-opacity="0">1</text>
+          </svg>
+          <div class="pri04-statement">
+            El archivo es
+            <span class="pri04-hl"><span class="pri04-hl-bg"></span><span class="pri04-hl-tx">SAGRADO</span></span>
+          </div>
+          <div class="pri04-under"></div>
+          <div class="pri04-body">nada se borra<br />todo con SHA-256</div>
+        </div>
+
+        <div class="pri04-card" id="pri04-card2">
+          <svg class="pri04-badge" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect class="pri04-badge-rect" x="6" y="6" width="88" height="88" />
+            <text class="pri04-badge-num" x="50" y="50" text-anchor="middle" dominant-baseline="central" fill-opacity="0">2</text>
+          </svg>
+          <div class="pri04-statement">
+            Ninguna etapa falla en
+            <span class="pri04-hl"><span class="pri04-hl-bg"></span><span class="pri04-hl-tx">silencio</span></span>
+          </div>
+          <div class="pri04-under"></div>
+          <div class="pri04-body">0 filas = alerta</div>
+        </div>
+
+        <div class="pri04-card" id="pri04-card3">
+          <svg class="pri04-badge" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect class="pri04-badge-rect" x="6" y="6" width="88" height="88" />
+            <text class="pri04-badge-num" x="50" y="50" text-anchor="middle" dominant-baseline="central" fill-opacity="0">3</text>
+          </svg>
+          <div class="pri04-statement">
+            Toda la BD es
+            <span class="pri04-hl"><span class="pri04-hl-bg"></span><span class="pri04-hl-tx">RE-DERIVABLE</span></span>
+          </div>
+          <div class="pri04-under"></div>
+          <div class="pri04-body">desde el archivo</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      /* ---- build the QR mosaic from a fixed pattern (deterministic) ---- */
+      var QR =
+        "1110010101001101" +
+        "1011100100110110" +
+        "0101101101011001" +
+        "1100110010110100" +
+        "1001011011001011";
+      /* 8x8 = 64 cells; reuse first 64 chars of the fixed string */
+      var qrHost = document.getElementById("pri04-qr");
+      for (var q = 0; q < 64; q++) {
+        var cell = document.createElement("div");
+        cell.className = QR[q] === "1" ? "pri04-qr-cell-on" : "pri04-qr-cell-off";
+        qrHost.appendChild(cell);
+      }
+
+      /* ---- svg self-draw setup: measure each badge rect (svg-path-draw) ---- */
+      var rects = document.querySelectorAll(".pri04-badge-rect");
+      rects.forEach(function (r) {
+        var len = r.getTotalLength() * 1.02;
+        r.style.strokeDasharray = String(len);
+        r.style.strokeDashoffset = String(len);
+      });
+
+      /* ---- dynamic-content-sequencing: card start times computed from body length ---- */
+      var CARDS_AT = 1.4; /* Scene 2 opens */
+      var BASE_DURATION = 1.05;
+      var SEC_PER_CHAR = 0.008;
+      var CONTENT = [
+        { sel: "#pri04-card1", body: "nada se borra todo con SHA-256" },
+        { sel: "#pri04-card2", body: "0 filas = alerta" },
+        { sel: "#pri04-card3", body: "desde el archivo" },
+      ];
+      var cumulative = CARDS_AT;
+      var TIMELINE = CONTENT.map(function (entry) {
+        var dur = BASE_DURATION + entry.body.length * SEC_PER_CHAR;
+        var start = cumulative;
+        cumulative += dur;
+        return { sel: entry.sel, start: start };
+      });
+
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      /* =========== Scene 1 (0.0-1.4s): frame furniture + per-word headline =========== */
+
+      /* slow macro push-in under the whole shot */
+      tl.fromTo(
+        ".pri04-content",
+        { scale: 1 },
+        { scale: 1.025, duration: 8, ease: "none" },
+        0
+      );
+
+      /* hairlines draw across */
+      tl.fromTo(
+        "#pri04-hl-top",
+        { scaleX: 0, transformOrigin: "0% 50%" },
+        { scaleX: 1, duration: 0.7, ease: "power3.out" },
+        0
+      );
+      tl.fromTo(
+        "#pri04-hl-bot",
+        { scaleX: 0, transformOrigin: "100% 50%" },
+        { scaleX: 1, duration: 0.7, ease: "power3.out" },
+        0.08
+      );
+
+      /* mono chrome fades */
+      tl.fromTo(
+        ["#pri04-ch-tl", "#pri04-ch-tr", "#pri04-ch-bl", "#pri04-ch-br"],
+        { opacity: 0 },
+        { opacity: 1, duration: 0.5, ease: "power1.out", stagger: 0.06 },
+        0.25
+      );
+
+      /* QR cells shimmer in */
+      var qrCells = gsap.utils.toArray("#pri04-qr div");
+      qrCells.forEach(function (c, i) {
+        tl.fromTo(
+          c,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.25, ease: "power1.out" },
+          0.35 + (i % 16) * 0.03
+        );
+      });
+
+      /* kicker */
+      tl.fromTo(
+        "#pri04-kicker",
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" },
+        0.1
+      );
+
+      /* headline per-word reveal — masked rise, hero visible well before 0.5s */
+      var words = gsap.utils.toArray(".pri04-w");
+      words.forEach(function (w, i) {
+        tl.fromTo(
+          w,
+          { yPercent: 112, opacity: 0 },
+          { yPercent: 0, opacity: 1, duration: 0.62, ease: "power3.out" },
+          0.15 + i * 0.1
+        );
+      });
+
+      /* =========== Scene 2 (1.4-5.4s): staggered cascade of the three cards =========== */
+
+      TIMELINE.forEach(function (item) {
+        var s = item.start;
+        var card = item.sel;
+
+        /* spring-pop-entrance: scale 0 -> 1, smooth power3 settle, no overshoot */
+        tl.fromTo(
+          card,
+          { scale: 0, opacity: 0, y: 26 },
+          { scale: 1, opacity: 1, y: 0, duration: 0.55, ease: "power3.out" },
+          s
+        );
+
+        /* badge square self-draws (stroke-dashoffset -> 0) */
+        tl.to(card + " .pri04-badge-rect", {
+          strokeDashoffset: 0,
+          duration: 0.5,
+          ease: "power2.out",
+        }, s + 0.22);
+
+        /* numeral fills after the stroke lands */
+        tl.to(card + " .pri04-badge-num", {
+          fillOpacity: 1,
+          duration: 0.3,
+          ease: "power1.out",
+        }, s + 0.62);
+
+        /* underline rule draws */
+        tl.fromTo(
+          card + " .pri04-under",
+          { scaleX: 0 },
+          { scaleX: 1, duration: 0.4, ease: "power3.out" },
+          s + 0.45
+        );
+
+        /* body line rises in */
+        tl.fromTo(
+          card + " .pri04-body",
+          { opacity: 0, y: 14 },
+          { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" },
+          s + 0.5
+        );
+
+        /* highlight sweep on the keyword: cobalt block sweeps, text flips to paper */
+        tl.fromTo(
+          card + " .pri04-hl-bg",
+          { scaleX: 0, transformOrigin: "0% 50%" },
+          { scaleX: 1, duration: 0.45, ease: "power3.out" },
+          s + 0.58
+        );
+        tl.to(card + " .pri04-hl-tx", {
+          color: "#F0EBDE",
+          duration: 0.22,
+          ease: "power1.out",
+        }, s + 0.7);
+      });
+
+      /* =========== Scene 3 (5.4-8.0s): RESPIRO — held frame, minimal jitter on the underlines =========== */
+
+      gsap.utils.toArray(".pri04-under").forEach(function (u, i) {
+        tl.to(
+          u,
+          {
+            keyframes: [
+              { scaleX: 1.06, duration: 0.55 },
+              { scaleX: 0.97, duration: 0.55 },
+              { scaleX: 1.03, duration: 0.55 },
+              { scaleX: 1, duration: 0.6 },
+            ],
+            ease: "sine.inOut",
+          },
+          5.5 + i * 0.12
+        );
+      });
+
+      window.__timelines["04-principios"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,39 @@
+PRC Lotería Nacional — pipeline de archivo, extracción y análisis estadístico de los sorteos de la Lotería Nacional de Nicaragua (2002–2026).
+
+QUÉ HACE
+Cada semana la Lotería Nacional de Nicaragua publica la lista oficial de premios de cada sorteo como un PDF. El proyecto:
+1. Archiva: descarga y conserva cada PDF e imagen, sin sobrescribir ni borrar jamás (append-only). Más de 800 sorteos desde 2006; la era 2002–2005 se rescató del Wayback Machine. Cada fichero registrado con hash SHA-256.
+2. Extrae: lee los ~658 números premiados de cada lista con DOS métodos independientes — un parser Python con coordenadas (pdfplumber) y los scripts AWK legado de 20 años como contraste. Las discrepancias van a cola de revisión.
+3. Controla calidad: cantidad esperada de premios por era, congruencia jerárquica (MAYOR > SEGUNDO > TERCER…), score 0–100 por sorteo.
+4. Analiza: batería de 10 pruebas estadísticas de equidad (chi-cuadrado, Kolmogorov–Smirnov, rachas, autocorrelación, colisiones de cumpleaños, deriva temporal) con corrección FDR de Benjamini–Hochberg.
+5. Predice honestamente: modelo Dirichlet-multinomial con backtesting walk-forward que admite abiertamente cuando no supera al azar.
+6. Publica: clúster distribuido rqlite (SQLite + consenso Raft) de 9 nodos — teléfonos Android reciclados — consultable desde un dashboard HTML y un chatbot de WhatsApp ("¿qué salió en el sorteo 2287?").
+
+ARQUITECTURA (flujo)
+loterianacional.com.ni → Archivo en disco (Datos/, Imagenes/; append-only, SHA-256) → extracción dual (pdfplumber ⇆ AWK) → clúster rqlite de 9 teléfonos (tablas: sorteo, premio, archivo, calidad_sorteo, prediccion, corrida) → análisis de equidad + sistema predictivo + dashboard + chatbot WhatsApp. Espejo diario con robocopy a una segunda ubicación (solo añade, nunca borra).
+
+PRINCIPIOS
+- El archivo binario es sagrado (nunca se borra nada; cuarentena en vez de borrado).
+- La verdad del número de sorteo se lee DENTRO del PDF (se descubrió un corrimiento: el archivo del sorteo N enlazaba el PDF del N−1).
+- Toda la base de datos es re-derivable desde el archivo.
+- Ninguna etapa falla en silencio: extraer 0 filas es una alerta, no un "Fin" exitoso.
+
+EL PIPELINE DIARIO (TareaDiaria.ps1 — 7 pasos)
+1 Sincronización con el sitio (valida cabecera %PDF- y tamaño mínimo)
+2 Extracción de PDFs nuevos
+3 Carga a rqlite (lotes transaccionales de 1000, reintentos con redescubrimiento de líder Raft)
+4 Calidad (congruencia jerárquica auto-corregida con auditoría + score)
+5 Notas del mayor + predicción del próximo sorteo
+6 Espejo robocopy solo-añadir
+7 Registro de la corrida (inicio, fin, filas, ok/errores) — si algo falló, error visible
+
+HALLAZGOS (779 premios mayores, 24 años, sorteos 1138–2287)
+- 9 de 10 pruebas: compatible con un sorteo justo. KS p=0.055, rachas p=0.98, autocorrelación p=0.36, repeticiones exactas p=0.76, deriva temporal p=0.26, millares p=0.96…
+- Los reclamos populares no se sostienen: "un número ganó dos veces en sorteos cercanos" — 5 casos observados vs 5.24 esperados por azar (p=0.60). Sequías de terminaciones: racha máxima 71 sorteos sin el dígito 1 es normal (p=0.35). Cero casos en 24 años de un número con dos premios destacados la misma noche.
+- EL HALLAZGO REAL: el último dígito del premio mayor favorece al 9 (+36%) y al 5 (+27%). Chi-cuadrado = 28.4, p = 0.0008 — el único test que sobrevive la corrección FDR. Estable a lo largo de 24 años (homogeneidad p=0.26) → interpretación: sesgo físico de la tómbola de unidades (bolillas desgastadas/desbalanceadas), NO fraude: un fraude mostraría deriva o correlaciones, y no hay ninguna.
+- ¿Se puede aprovechar? Ningún modelo supera al uniforme en log-loss: predecir el número completo es imposible y el sistema lo dice con números. Pero la terminación 9 acierta 13.1% vs 10% justo; como la terminación paga 2× el billete, su valor esperado es C$162.7 por cada C$120 "justos" — +35.6%, la única ventaja respaldada por datos.
+- Payout ratio histórico: mediana 51.2%. En 24 años, UNA sola ventana estilo Jerry Selbee (sorteo 1734: +4.7% comprando la emisión completa) — detectable solo a posteriori.
+
+TÉCNICA ESTRELLA — el canal NOTA: la nota al pie de cada lista ("LOS BILLETES TERMINADOS EN dddd GANAN…") publica los 4 dígitos finales del mayor en texto plano — un canal independiente del parseo de la cuadrícula que funciona en todas las eras y arbitra las discrepancias.
+
+DESCARGO: proyecto independiente, educacional, sin fines de lucro. La lotería tiene valor esperado negativo (~51% de payout): jugar es entretenimiento, no inversión. El hallazgo del último dígito reduce la pérdida esperada; no la convierte en ganancia.

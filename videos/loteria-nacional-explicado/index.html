@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js" integrity="sha384-sG0Hv1tP1lZCk9KQmrIbY/XNwi+OY84GQqhMscbnsoBFqAz8KNCil1kvfL3Hbbk2" crossorigin="anonymous"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #000;
+      }
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #F0EBDE;
+      }
+      .scene {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="89"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div
+        id="el-01-gancho"
+        class="scene"
+        data-composition-id="01-gancho"
+        data-composition-src="compositions/frames/01-gancho.html"
+        data-start="0"
+        data-duration="7.5"
+        data-track-index="0"
+      ></div>
+
+      <div
+        id="el-02-problema"
+        class="scene"
+        data-composition-id="02-problema"
+        data-composition-src="compositions/frames/02-problema.html"
+        data-start="7"
+        data-duration="8.5"
+        data-track-index="1"
+      ></div>
+
+      <div
+        id="el-03-arquitectura"
+        class="scene"
+        data-composition-id="03-arquitectura"
+        data-composition-src="compositions/frames/03-arquitectura.html"
+        data-start="15"
+        data-duration="12.5"
+        data-track-index="0"
+      ></div>
+
+      <div
+        id="el-04-principios"
+        class="scene"
+        data-composition-id="04-principios"
+        data-composition-src="compositions/frames/04-principios.html"
+        data-start="27"
+        data-duration="8.5"
+        data-track-index="1"
+      ></div>
+
+      <div
+        id="el-05-pipeline-diario"
+        class="scene"
+        data-composition-id="05-pipeline-diario"
+        data-composition-src="compositions/frames/05-pipeline-diario.html"
+        data-start="35"
+        data-duration="10.5"
+        data-track-index="0"
+      ></div>
+
+      <div
+        id="el-06-extraccion-dual"
+        class="scene"
+        data-composition-id="06-extraccion-dual"
+        data-composition-src="compositions/frames/06-extraccion-dual.html"
+        data-start="45"
+        data-duration="9.5"
+        data-track-index="1"
+      ></div>
+
+      <div
+        id="el-07-equidad"
+        class="scene"
+        data-composition-id="07-equidad"
+        data-composition-src="compositions/frames/07-equidad.html"
+        data-start="54"
+        data-duration="9.4"
+        data-track-index="0"
+      ></div>
+
+      <div
+        id="el-08-hallazgo"
+        class="scene"
+        data-composition-id="08-hallazgo"
+        data-composition-src="compositions/frames/08-hallazgo.html"
+        data-start="63"
+        data-duration="10.5"
+        data-track-index="1"
+      ></div>
+
+      <div
+        id="el-09-ev-honesto"
+        class="scene"
+        data-composition-id="09-ev-honesto"
+        data-composition-src="compositions/frames/09-ev-honesto.html"
+        data-start="73"
+        data-duration="9.5"
+        data-track-index="0"
+      ></div>
+
+      <div
+        id="el-10-cierre"
+        class="scene"
+        data-composition-id="10-cierre"
+        data-composition-src="compositions/frames/10-cierre.html"
+        data-start="82"
+        data-duration="7"
+        data-track-index="1"
+      ></div>
+
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+      // ── frame transitions (injected by transitions.mjs) ──
+      (function () { var tl = window.__timelines["main"];
+        tl.to("#el-01-gancho", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 7);
+        tl.fromTo("#el-02-problema", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 7);
+        tl.to("#el-02-problema", { x: -1920, duration: 0.5, ease: "power3.inOut" }, 15);
+        tl.fromTo("#el-03-arquitectura", { x: 1920, opacity: 1 }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 15);
+        tl.to("#el-03-arquitectura", { x: -1920, duration: 0.5, ease: "power3.inOut" }, 27);
+        tl.fromTo("#el-04-principios", { x: 1920, opacity: 1 }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 27);
+        tl.to("#el-04-principios", { x: -1920, duration: 0.5, ease: "power3.inOut" }, 35);
+        tl.fromTo("#el-05-pipeline-diario", { x: 1920, opacity: 1 }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 35);
+        tl.to("#el-05-pipeline-diario", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 45);
+        tl.fromTo("#el-06-extraccion-dual", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 45);
+        tl.to("#el-06-extraccion-dual", { x: -1920, duration: 0.5, ease: "power3.inOut" }, 54);
+        tl.fromTo("#el-07-equidad", { x: 1920, opacity: 1 }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 54);
+        tl.to("#el-07-equidad", { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, 63);
+        tl.fromTo("#el-08-hallazgo", { scale: 0.5, opacity: 0, filter: "blur(8px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 63);
+        tl.to("#el-08-hallazgo", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 73);
+        tl.fromTo("#el-09-ev-honesto", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 73);
+        tl.to("#el-09-ev-honesto", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 82);
+        tl.fromTo("#el-10-cierre", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 82);
+        tl.to({}, { duration: 89 }, 0); // full-span anchor — main.duration() == composition total (Studio master duration)
+      })();
+    </script>
+  </body>
+</html>

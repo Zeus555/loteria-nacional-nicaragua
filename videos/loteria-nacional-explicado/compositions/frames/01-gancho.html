@@ -1,0 +1,293 @@
+<template>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;1,400&family=Hanken+Grotesk:wght@400;600&family=DM+Mono:wght@400&display=swap");
+
+    #root {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      container-type: size;
+      overflow: hidden;
+    }
+
+    /* ---- full-bleed ground (clip layer, never on #root) ---- */
+    .gancho-bg {
+      position: absolute;
+      inset: 0;
+      background-color: #f0ebde;
+      background-image:
+        linear-gradient(to right, rgba(31, 43, 224, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(31, 43, 224, 0.1) 1px, transparent 1px);
+      background-size: 2cqw 2cqw;
+    }
+    .gancho-hairline {
+      position: absolute;
+      left: 4cqw;
+      right: 4cqw;
+      height: 0.12cqw;
+      background: #1f2be0;
+    }
+    .gancho-hairline-top {
+      top: 3cqw;
+    }
+    .gancho-hairline-bottom {
+      bottom: 3cqw;
+    }
+
+    /* ---- stage (macro camera move runs on this) ---- */
+    .gancho-stage {
+      position: absolute;
+      inset: 0;
+      transform-origin: 50% 42%;
+    }
+
+    /* ---- the question (focal) ---- */
+    .gancho-question {
+      position: absolute;
+      left: 4cqw;
+      right: 4cqw;
+      top: 11.5cqw;
+      text-align: center;
+      font-family: "Newsreader", serif;
+      font-weight: 400;
+      font-size: 8.3cqw;
+      line-height: 1.0;
+      letter-spacing: -0.008em;
+      color: #1f2be0;
+    }
+    .gancho-word {
+      display: inline-block;
+      will-change: transform;
+    }
+    .gancho-qmark {
+      display: inline-block;
+      transform-origin: 50% 70%;
+      will-change: transform;
+    }
+    .gancho-hl-wrap {
+      position: relative;
+      display: inline-block;
+    }
+    .gancho-hl-bar {
+      position: absolute;
+      inset: 0.6cqw -0.7cqw 0.2cqw -0.7cqw;
+      background: #1f2be0;
+      opacity: 0.18;
+      transform-origin: left center;
+      z-index: 0;
+    }
+    .gancho-hl-text {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ---- counter band (supporting) ---- */
+    .gancho-band {
+      position: absolute;
+      left: 4cqw;
+      right: 4cqw;
+      top: 33.5cqw;
+      display: flex;
+      gap: 2cqw;
+    }
+    .gancho-cap {
+      flex: 1 1 0;
+      border: 0.12cqw solid #1f2be0;
+      background: #f0ebde;
+      padding: 1.6cqw 1cqw 1.4cqw;
+      text-align: center;
+      will-change: transform;
+    }
+    .gancho-cap-num {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      font-family: "DM Mono", monospace;
+      font-weight: 400;
+      font-size: 3.4cqw;
+      line-height: 1;
+      letter-spacing: 0.05em;
+      color: #1f2be0;
+    }
+    .gancho-counter {
+      display: inline-block;
+      font-variant-numeric: tabular-nums;
+      transform-origin: center center;
+      will-change: transform;
+    }
+    .gancho-suffix {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(1cqw);
+      will-change: transform;
+    }
+    .gancho-cap-label {
+      margin-top: 0.9cqw;
+      font-family: "Hanken Grotesk", sans-serif;
+      font-weight: 600;
+      font-size: 0.85cqw;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #1f2be0;
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="01-gancho"
+    data-duration="7.5"
+    data-width="1920"
+    data-height="1080"
+  >
+    <!-- ground: paper + permanent graph grid + hairlines -->
+    <div class="gancho-bg clip" data-start="0" data-duration="7.5" data-track-index="0">
+      <div class="gancho-hairline gancho-hairline-top"></div>
+      <div class="gancho-hairline gancho-hairline-bottom"></div>
+    </div>
+
+    <!-- content stage -->
+    <div class="gancho-stage clip" data-start="0" data-duration="7.5" data-track-index="1">
+      <div class="gancho-question">
+        <span class="gancho-word">&iquest;EST&Aacute;</span>
+        <span class="gancho-word gancho-hl-wrap"
+          ><span class="gancho-hl-bar" id="gancho-hl"></span
+          ><span class="gancho-hl-text">ARREGLADA</span></span
+        ><br />
+        <span class="gancho-word">LA</span>
+        <span class="gancho-word">LOTER&Iacute;A</span><span class="gancho-qmark" id="gancho-qm">?</span>
+      </div>
+
+      <div class="gancho-band">
+        <div class="gancho-cap" id="gancho-cap1">
+          <div class="gancho-cap-num">
+            <span class="gancho-counter" id="gancho-n1">0</span><span class="gancho-suffix" id="gancho-s1"></span>
+          </div>
+          <div class="gancho-cap-label" id="gancho-l1">A&ntilde;os</div>
+        </div>
+        <div class="gancho-cap" id="gancho-cap2">
+          <div class="gancho-cap-num">
+            <span class="gancho-counter" id="gancho-n2">0</span><span class="gancho-suffix" id="gancho-s2">+</span>
+          </div>
+          <div class="gancho-cap-label" id="gancho-l2">Sorteos</div>
+        </div>
+        <div class="gancho-cap" id="gancho-cap3">
+          <div class="gancho-cap-num">
+            <span class="gancho-counter" id="gancho-n3">0</span><span class="gancho-suffix" id="gancho-s3">+</span>
+          </div>
+          <div class="gancho-cap-label" id="gancho-l3">Premios</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      window.__timelines["01-gancho"] = tl;
+
+      /* ---- macro camera move: slow push-in under the whole shot ---- */
+      tl.fromTo(
+        ".gancho-stage",
+        { scale: 1 },
+        { scale: 1.035, duration: 7, ease: "none" },
+        0
+      );
+
+      /* ---- Scene 1 (0.0-2.0s): per-word staggered reveal, long-tail settle ---- */
+      var words = gsap.utils.toArray(".gancho-word");
+      words.forEach(function (el, i) {
+        tl.fromTo(
+          el,
+          { opacity: 0, y: 60 },
+          { opacity: 1, y: 0, duration: 1.0, ease: "power3.out" },
+          0.2 + i * 0.22
+        );
+      });
+
+      /* final "?" — spring-pop entrance, smooth settle */
+      tl.fromTo(
+        "#gancho-qm",
+        { scale: 0, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.6, ease: "power3.out" },
+        1.35
+      );
+
+      /* ---- Scene 2 (2.0-4.8s): three capsules, value-scaled counters ---- */
+      var CAPS = [
+        { cap: "#gancho-cap1", num: "gancho-n1", sfx: "#gancho-s1", lbl: "#gancho-l1", target: 24, at: 2.0 },
+        { cap: "#gancho-cap2", num: "gancho-n2", sfx: "#gancho-s2", lbl: "#gancho-l2", target: 800, at: 2.55 },
+        { cap: "#gancho-cap3", num: "gancho-n3", sfx: "#gancho-s3", lbl: "#gancho-l3", target: 500000, at: 3.1 }
+      ];
+      var COUNT_DUR = 1.35;
+      var START_SCALE = 0.55;
+
+      CAPS.forEach(function (c) {
+        var el = document.getElementById(c.num);
+        var state = { value: 0 };
+
+        /* capsule reveal */
+        tl.fromTo(
+          c.cap,
+          { opacity: 0, y: 34 },
+          { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" },
+          c.at
+        );
+
+        /* label arrives before the count peaks */
+        tl.fromTo(
+          c.lbl,
+          { opacity: 0, y: 8 },
+          { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
+          c.at + 0.3
+        );
+
+        /* count value — onUpdate sets text only */
+        tl.to(
+          state,
+          {
+            value: c.target,
+            duration: COUNT_DUR,
+            ease: "power3.out",
+            onUpdate: function () {
+              el.textContent = Math.round(state.value).toLocaleString("en-US");
+            }
+          },
+          c.at + 0.15
+        );
+
+        /* visual growth — same timing + ease as the count */
+        tl.fromTo(
+          el,
+          { scale: START_SCALE },
+          { scale: 1, duration: COUNT_DUR, ease: "power3.out" },
+          c.at + 0.15
+        );
+
+        /* suffix lands AFTER the count */
+        tl.to(
+          c.sfx,
+          { opacity: 1, y: 0, duration: 0.4, ease: "back.out(1.6)" },
+          c.at + 0.15 + COUNT_DUR
+        );
+      });
+
+      /* ---- Scene 3 (4.8-7.0s): marker highlight sweep on ARREGLADA ---- */
+      tl.fromTo(
+        "#gancho-hl",
+        { scaleX: 0, skewX: -2 },
+        { scaleX: 1, skewX: -2, duration: 0.55, ease: "power2.out" },
+        4.8
+      );
+
+      /* subtle jitter on the highlight — low sine, settles before the end */
+      tl.to(
+        "#gancho-hl",
+        { y: -1.5, duration: 0.6, ease: "sine.inOut", yoyo: true, repeat: 1 },
+        5.6
+      );
+    })();
+  </script>
+</template>

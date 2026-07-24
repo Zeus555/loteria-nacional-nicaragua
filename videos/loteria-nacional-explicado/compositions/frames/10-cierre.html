@@ -1,0 +1,314 @@
+<template>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Hanken+Grotesk:wght@400;600&family=DM+Mono:wght@400&display=block");
+
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      container-type: size;
+    }
+
+    /* ---- full-bleed ground: paper + permanent graph grid + hairlines ---- */
+    .c10-bg {
+      position: absolute;
+      inset: 0;
+      background-color: #f0ebde;
+      background-image:
+        linear-gradient(rgba(31, 43, 224, 0.1) 0.06cqw, transparent 0.06cqw),
+        linear-gradient(90deg, rgba(31, 43, 224, 0.1) 0.06cqw, transparent 0.06cqw);
+      background-size: 2cqw 2cqw;
+    }
+    .c10-hairline {
+      position: absolute;
+      left: 4cqw;
+      right: 4cqw;
+      height: 0.12cqw;
+      background: #1f2be0;
+    }
+    .c10-hairline-top { top: 5.2cqh; }
+    .c10-hairline-bottom { bottom: 5.2cqh; }
+
+    /* ---- content stage ---- */
+    .c10-stage {
+      position: absolute;
+      inset: 0;
+      color: #1f2be0;
+    }
+
+    /* Scene 1 — hook callback, struck through */
+    .c10-hook {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 15cqh;
+      text-align: center;
+      font-family: "Newsreader", serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 2.4cqw;
+      line-height: 1.1;
+      color: #5560e5;
+      opacity: 0;
+    }
+    .c10-hook-wrap {
+      position: relative;
+      display: inline;
+    }
+    .c10-hook-text {
+      position: relative;
+      z-index: 1;
+    }
+    .c10-scribble-svg {
+      position: absolute;
+      left: -0.6cqw;
+      right: -0.6cqw;
+      width: calc(100% + 1.2cqw);
+      top: 50%;
+      transform: translateY(-50%);
+      height: 1.6cqw;
+      z-index: 2;
+      overflow: visible;
+    }
+
+    /* Scene 1 — thesis */
+    .c10-thesis {
+      position: absolute;
+      left: 11cqw;
+      right: 11cqw;
+      top: 37cqh;
+      text-align: center;
+      font-family: "Newsreader", serif;
+      font-weight: 400;
+      font-size: 5.1cqw;
+      line-height: 1.02;
+      letter-spacing: -0.005em;
+      text-transform: uppercase;
+      color: #1f2be0;
+    }
+
+    /* Scene 2 — descargo */
+    .c10-descargo {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 66.5cqh;
+      text-align: center;
+      font-family: "DM Mono", monospace;
+      font-weight: 400;
+      font-size: 1.5cqw;
+      letter-spacing: 0.06em;
+      color: #1f2be0;
+      opacity: 0;
+    }
+
+    /* Scene 3 — lockup: QR block + brand + repo line */
+    .c10-lockup {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 74.5cqh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.4cqw;
+      opacity: 0;
+    }
+    .c10-qr {
+      width: 4cqw;
+      height: 4cqw;
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      background: #f0ebde;
+      box-shadow: 0 0 0 0.12cqw #f0ebde;
+      flex: 0 0 auto;
+    }
+    .c10-qr-cell-on { background: #1f2be0; }
+    .c10-qr-cell-off { background: rgba(31, 43, 224, 0.1); }
+    .c10-lockup-text { text-align: left; }
+    .c10-brand {
+      font-family: "Hanken Grotesk", sans-serif;
+      font-weight: 600;
+      font-size: 1.15cqw;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #1f2be0;
+    }
+    .c10-repo {
+      margin-top: 0.55cqh;
+      font-family: "DM Mono", monospace;
+      font-weight: 400;
+      font-size: 0.95cqw;
+      letter-spacing: 0.05em;
+      color: #5560e5;
+    }
+
+    /* final exit — fade to cream field */
+    .c10-fadeout {
+      position: absolute;
+      inset: 0;
+      background: #f0ebde;
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+
+  <div id="root" data-composition-id="10-cierre" data-start="0" data-duration="7" data-width="1920" data-height="1080">
+    <!-- ground -->
+    <div
+      class="clip c10-bg"
+      data-start="0"
+      data-duration="7"
+      data-track-index="0"
+    >
+      <div class="c10-hairline c10-hairline-top" id="c10-hair-top"></div>
+      <div class="c10-hairline c10-hairline-bottom" id="c10-hair-bottom"></div>
+    </div>
+
+    <!-- content -->
+    <div
+      class="clip c10-stage"
+      data-start="0"
+      data-duration="7"
+      data-track-index="1"
+    >
+      <!-- Scene 1a: hook callback, struck through with cobalt marker scribble -->
+      <div class="c10-hook" id="c10-hook">
+        <span class="c10-hook-wrap">
+          <span class="c10-hook-text">&iquest;est&aacute; arreglada?</span>
+          <svg
+            class="c10-scribble-svg"
+            viewBox="0 0 500 24"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <path
+              id="c10-scribble"
+              d="M0,12 Q31,2 62,12 Q93,22 125,12 Q156,2 187,12 Q218,22 250,12 Q281,2 312,12 Q343,22 375,12 Q406,2 437,12 Q468,22 500,12"
+              fill="none"
+              stroke="#1F2BE0"
+              stroke-width="4"
+              stroke-linecap="round"
+            />
+          </svg>
+        </span>
+      </div>
+
+      <!-- Scene 1b: thesis -->
+      <div class="c10-thesis" id="c10-thesis">
+        Estad&iacute;stica honesta<br />sobre datos p&uacute;blicos
+      </div>
+
+      <!-- Scene 2: descargo -->
+      <div class="c10-descargo" id="c10-descargo">
+        jugar es entretenimiento, no inversi&oacute;n &middot; payout mediano: 51%
+      </div>
+
+      <!-- Scene 3: lockup -->
+      <div class="c10-lockup" id="c10-lockup">
+        <div class="c10-qr" id="c10-qr"></div>
+        <div class="c10-lockup-text">
+          <div class="c10-brand">PRC Loter&iacute;a Nacional</div>
+          <div class="c10-repo">el c&oacute;digo y los datos, en GitHub</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- final exit: fade to cream field (this is the last frame) -->
+    <div
+      class="clip c10-fadeout"
+      data-start="0"
+      data-duration="7"
+      data-track-index="2"
+      id="c10-fadeout"
+    ></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      // deterministic hand-authored 8x8 QR mosaic (1 = ink on, 0 = 10% off)
+      var qrBits =
+        "1110011110100101001110101101011101011010101110010100101111100111";
+      var qrEl = document.getElementById("c10-qr");
+      if (qrEl && qrEl.childElementCount === 0) {
+        for (var i = 0; i < 64; i++) {
+          var cell = document.createElement("span");
+          cell.className =
+            qrBits.charAt(i) === "1" ? "c10-qr-cell-on" : "c10-qr-cell-off";
+          qrEl.appendChild(cell);
+        }
+      }
+
+      var tl = gsap.timeline({ paused: true });
+
+      /* ---- Scene 1 (0.0–2.4s): callback + strike, then the thesis lands ---- */
+      // ground settles in with the crossfade-in
+      tl.fromTo(
+        "#c10-hair-top, #c10-hair-bottom",
+        { scaleX: 0, transformOrigin: "left center" },
+        { scaleX: 1, duration: 0.5, ease: "power2.out" },
+        0.0
+      );
+      // hook question reappears, small and faint
+      tl.fromTo(
+        "#c10-hook",
+        { opacity: 0, y: 14 },
+        { opacity: 0.85, y: 0, duration: 0.45, ease: "power2.out" },
+        0.15
+      );
+      // cobalt marker scribble strikes it through (css-marker-patterns, scribble/strikethrough)
+      var scribble = document.getElementById("c10-scribble");
+      var len = scribble.getTotalLength();
+      gsap.set(scribble, { strokeDasharray: len, strokeDashoffset: len });
+      tl.to(
+        scribble,
+        { strokeDashoffset: 0, duration: 0.7, ease: "power1.inOut" },
+        0.85
+      );
+      // struck line recedes slightly once crossed out
+      tl.to("#c10-hook", { opacity: 0.4, duration: 0.5, ease: "power1.out" }, 1.6);
+      // thesis: ONE contained move — slide-up + crossfade
+      tl.fromTo(
+        "#c10-thesis",
+        { opacity: 0, y: 54 },
+        { opacity: 1, y: 0, duration: 1.1, ease: "power3.out" },
+        0.85
+      );
+
+      /* ---- Scene 2 (2.4–4.6s): descargo reveals on its beat ---- */
+      tl.fromTo(
+        "#c10-descargo",
+        { opacity: 0, y: 18 },
+        { opacity: 1, y: 0, duration: 0.75, ease: "power2.out" },
+        2.55
+      );
+
+      /* ---- Scene 3 (4.6–7.0s): serene lockup crossfade, absolute hold ---- */
+      tl.fromTo(
+        "#c10-lockup",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.9, ease: "power1.inOut" },
+        4.7
+      );
+      // QR cells settle in with a quiet micro-stagger inside the crossfade
+      tl.fromTo(
+        "#c10-qr span",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.35, ease: "none", stagger: 0.008 },
+        4.75
+      );
+
+      // the only real exit in the video: fade to cream field, last 0.4s
+      tl.to(
+        "#c10-fadeout",
+        { opacity: 1, duration: 0.4, ease: "power1.inOut" },
+        6.6
+      );
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["10-cierre"] = tl;
+    })();
+  </script>
+</template>
