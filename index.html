@@ -58,6 +58,8 @@
 
   figure { margin: 0; }
   figure img { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--ring); }
+  figure video { width: 100%; height: auto; display: block; border-radius: 10px;
+    border: 1px solid var(--ring); background: #000; }
   figcaption { color: var(--ink-3); font-size: 12.5px; margin-top: 8px; }
 
   footer { margin-top: 52px; padding-top: 20px; border-top: 1px solid var(--grid);
@@ -120,6 +122,19 @@
       <span class="go">Ver el repositorio →</span>
     </a>
   </div>
+
+  <h2 id="el-proyecto-en-90-segundos">El proyecto en 90 segundos</h2>
+  <figure>
+    <video controls preload="metadata" playsinline
+           poster="Documentaci%C3%B3n/cobertura-sorteos.png"
+           src="video/explicador.mp4">
+      Tu navegador no puede reproducir este vídeo.
+      <a href="video/explicador.mp4">Descargarlo (MP4, 33 MB)</a>.
+    </video>
+    <figcaption>Explicador sin narración: la arquitectura, el pipeline diario de 7 pasos y los
+    hallazgos estadísticos. Renderizado desde HTML con HyperFrames ·
+    <a href="video/explicador.mp4">descargar MP4</a>.</figcaption>
+  </figure>
 
   <h2>El archivo, de un vistazo</h2>
   <figure>
