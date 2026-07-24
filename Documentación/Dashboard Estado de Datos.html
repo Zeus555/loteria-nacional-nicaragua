@@ -1,3 +1,8 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lotería Nacional — Estado de Datos</title>
 <style>
   :root {
@@ -165,6 +170,8 @@
   .geo-fila .val { font-variant-numeric: tabular-nums; font-size: 12.5px; }
   .geo-nota { color: var(--ink-3); font-size: 12.5px; margin: 14px 0 0; }
 </style>
+</head>
+<body>
 
 <div class="wrap">
   <header>
@@ -280,23 +287,23 @@
 
     <div class="card" style="margin-bottom:12px">
       <h3 style="margin:0 0 2px;font-size:14px">Informe de equidad — Fase 5 (¿está arreglada?)</h3>
-      <p style="color:var(--ink-2);font-size:13.5px;margin:4px 0 12px">Batería de 10 tests sobre el <b>premio mayor de 797 sorteos (2002–2026, 24 años)</b>: la nota al pie del PDF
-      ("LOS BILLETES TERMINADOS EN… GANAN") + los encabezados de la era HTML rescatada de Wayback. Corrección por comparaciones múltiples: Benjamini–Hochberg al 5%.
+      <p style="color:var(--ink-2);font-size:13.5px;margin:4px 0 12px">Batería de 10 tests sobre el <b>premio mayor a lo largo de 24 años (2002–2026)</b>: las pruebas de dígitos usan las <b>797 lecturas del canal NOTA</b> y las que necesitan el número completo, los <b>779 mayores</b> reconstruidos enteros: la nota al pie del PDF
+      ("LOS BILLETES TERMINADOS EN… GANAN") + los encabezados de la era HTML rescatada de Wayback. Corrección por comparaciones múltiples: Benjamini–Hochberg al 5% (<b>*</b> = p&lt;0.05 en crudo pero <b>no</b> sobrevive la corrección: con 10 tests, alguno baja de 0.05 por puro azar). Cifras generadas desde <code>Resultados/Equidad_20260720.json</code>.
       El sesgo del último dígito <b>ya existía en 2002–05</b> (el 9 fue el dígito más frecuente también ahí) y es estable en 24 años — firma de tómbola física.</p>
       <div class="grid2">
         <div>
-          <div class="qrow"><span class="st" style="color:var(--crit)" data-ic="x"></span> Último dígito del mayor <span class="n">χ²=24.7 · p=0.003</span></div>
-          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Últimos dos dígitos (00–99) <span class="n">p=0.021*</span></div>
-          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Centenas del mayor <span class="n">p=0.057</span></div>
-          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Decenas del mayor <span class="n">p=0.089</span></div>
+          <div class="qrow"><span class="st" style="color:var(--crit)" data-ic="x"></span> Último dígito del mayor <span class="n">χ²=28.4 · p=0.0008</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Últimos dos dígitos (00–99) <span class="n">p=0.023*</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Centenas del mayor <span class="n">p=0.029*</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Decenas del mayor <span class="n">p=0.066</span></div>
           <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Millares del mayor <span class="n">p=0.955</span></div>
         </div>
         <div>
-          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Kolmogorov–Smirnov número/emisión <span class="n">p=0.117</span></div>
-          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Rachas par/impar <span class="n">p=0.639</span></div>
-          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Autocorrelación entre sorteos <span class="n">p=0.396</span></div>
-          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Repeticiones exactas (4 vs 4.6 esperadas) <span class="n">p=1.000</span></div>
-          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Deriva temporal (4 eras) <span class="n">p=0.109</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Kolmogorov–Smirnov número/emisión <span class="n">p=0.055</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Rachas par/impar <span class="n">p=0.976</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Autocorrelación entre sorteos <span class="n">p=0.360</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Repeticiones exactas (4 vs 5.37 esperadas) <span class="n">p=0.756</span></div>
+          <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> Deriva temporal (4 eras) <span class="n">p=0.256</span></div>
           <div class="qrow"><span class="st" style="color:var(--good-text)" data-ic="ok"></span> <b>Ganadores repetidos en sorteos cercanos</b> (el reclamo histórico): 6 casos en ≤10 sorteos vs 5.69 esperados por azar <span class="n">p=0.503</span></div>
         </div>
       </div>
@@ -819,3 +826,6 @@
   }).observe(document.documentElement, { attributes: true });
 })();
 </script>
+
+</body>
+</html>
