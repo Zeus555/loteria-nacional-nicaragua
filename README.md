@@ -145,6 +145,8 @@ Detalle robusto: el clúster de teléfonos pierde el líder Raft transitoriament
 | `corrida` | Auditoría de cada ejecución del pipeline |
 | `no_encontrado` | Correcciones manuales documentadas |
 
+> **Nota de seguridad, por honestidad:** este clúster corre **sin autenticación**, por HTTP plano y en una LAN doméstica — las IPs semilla que verás en los scripts son direcciones privadas (`192.168.x`), inalcanzables desde internet. Es una decisión deliberada para un laboratorio casero, **no** una configuración apta para producción. Si reproducís este montaje en una red que no controlás por completo, activá autenticación y TLS en rqlite antes de cargar nada.
+
 ## Hallazgos estadísticos
 
 *El corazón educacional del proyecto.* Batería de 10 pruebas sobre el premio mayor a lo largo de 24 años (sorteos 1138–2287), con corrección FDR de Benjamini–Hochberg — porque con 10 tests, algún p < 0.05 aparece solo, y un informe sin esa corrección mentiría.
