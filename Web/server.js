@@ -1,7 +1,7 @@
 // Dashboard local del proyecto Loteria Nacional.
 // Sirve el dashboard HTML (Docs) con una franja de estado EN VIVO
 // consultada al cluster rqlite. Sin dependencias (Node >= 18).
-// Puerto 3020 - registrado en pm2 como "loteria-dashboard".
+// Puerto 3020 - registrado en pm2 como "prc-loteria-nacional-dashboard".
 
 const http = require("http");
 const fs = require("fs");
@@ -118,5 +118,5 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, "0.0.0.0", () => {
-  console.log(`loteria-dashboard escuchando en http://localhost:${PORT}`);
+  console.log(`prc-loteria-nacional-dashboard escuchando en http://localhost:${PORT}`);
 });
