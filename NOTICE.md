@@ -2,7 +2,7 @@
 
 La licencia [MIT](LICENSE) de este repositorio cubre el **código** (`Script/`, `Web/`,
 `videos/`) y la **documentación** escrita para el proyecto (`README.md`,
-`Documentación/`, los informes de `Resultados/`).
+`Docs/`, los informes de `Resultados/`).
 
 ## Qué NO cubre la licencia MIT
 

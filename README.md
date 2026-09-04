@@ -8,7 +8,7 @@
 
 ---
 
-**🌐 [Sitio del proyecto](https://zeus555.github.io/loteria-nacional-nicaragua/)** · **📊 [Dashboard de datos](https://zeus555.github.io/loteria-nacional-nicaragua/Documentaci%C3%B3n/Dashboard%20Estado%20de%20Datos.html)** · **🗺️ [Mapa animado de premios](https://zeus555.github.io/loteria-nacional-nicaragua/Documentaci%C3%B3n/Mapa%20Premios.html)**
+**🌐 [Sitio del proyecto](https://zeus555.github.io/loteria-nacional-nicaragua/)** · **📊 [Dashboard de datos](https://zeus555.github.io/loteria-nacional-nicaragua/Docs/Dashboard%20Estado%20de%20Datos.html)** · **🗺️ [Mapa animado de premios](https://zeus555.github.io/loteria-nacional-nicaragua/Docs/Mapa%20Premios.html)**
 
 ## 🎬 Video explicativo
 
@@ -47,11 +47,11 @@ Cada semana la Lotería Nacional de Nicaragua publica en [loterianacional.com.ni
 
 Cobertura sorteo por sorteo (1356 → 2288): cada celda es un sorteo — azul = premios extraídos en la base de datos, azul oscuro = PDF válido pendiente de parser especial, naranja = escaneado (requiere OCR/transcripción), gris = sin fichero en línea, verde = anunciado.
 
-![Mapa de cobertura del archivo, sorteo por sorteo](Documentación/cobertura-sorteos.png)
+![Mapa de cobertura del archivo, sorteo por sorteo](Docs/cobertura-sorteos.png)
 
-**[▶ Abrir el dashboard interactivo](https://zeus555.github.io/loteria-nacional-nicaragua/Documentaci%C3%B3n/Dashboard%20Estado%20de%20Datos.html)** — la misma tira con tooltip por sorteo, la batería de equidad completa y un **mapa de Nicaragua navegable por departamento** con los montos de premios ubicados en cada uno. Y **[▶ el mapa animado](https://zeus555.github.io/loteria-nacional-nicaragua/Documentaci%C3%B3n/Mapa%20Premios.html)**, que reproduce año por año dónde cayó cada premio destacado.
+**[▶ Abrir el dashboard interactivo](https://zeus555.github.io/loteria-nacional-nicaragua/Docs/Dashboard%20Estado%20de%20Datos.html)** — la misma tira con tooltip por sorteo, la batería de equidad completa y un **mapa de Nicaragua navegable por departamento** con los montos de premios ubicados en cada uno. Y **[▶ el mapa animado](https://zeus555.github.io/loteria-nacional-nicaragua/Docs/Mapa%20Premios.html)**, que reproduce año por año dónde cayó cada premio destacado.
 
-> Los dos son HTML autocontenidos: se abren igual con doble clic desde `Documentación/`, sin servidor ni dependencias.
+> Los dos son HTML autocontenidos: se abren igual con doble clic desde `Docs/`, sin servidor ni dependencias.
 
 ## Arquitectura
 
@@ -105,7 +105,7 @@ PRC Loteria Nacional/
 │   ├── EsquemaRqlite.sql        #  esquema de la base de datos
 │   └── Historico/               #  versiones anteriores de los scripts (arqueología)
 ├── Resultados/       # 📊 CSVs de extracción, reportes JSON de cada análisis, predicciones
-├── Documentación/    # 📚 Dashboard, mapa animado, propuesta de modernización, hojas históricas
+├── Docs/    # 📚 Dashboard, mapa animado, propuesta de modernización, hojas históricas
 ├── Web/              # 🌐 server.js — servidor local opcional (franja "EN VIVO" contra el clúster)
 ├── videos/           # 🎬 Proyecto HyperFrames del explicador + el MP4 renderizado
 ├── Nuevos/           # 🧾 Salidas intermedias del pipeline AWK (los PDFs duplican Datos/)
@@ -238,7 +238,7 @@ node Web\server.js     # http://localhost:3020
 
 - **2005–2017 · Era AWK**: scripts AWK + batch descargaban y tabulaban sorteos; estadísticas en ficheros de texto planos. Incluye un experimento de red neuronal de 2017 (`Modelo Predictivo/`) conservado como pieza de museo.
 - **2017–2026 · El letargo**: la capa de estadísticas quedó congelada apuntando a rutas de Google Drive extintas; la descarga siguió funcionando en silencio… hasta que dejó de hacerlo.
-- **Julio 2026 · La modernización** ([propuesta completa](Documentación/Propuesta%20Modernizacion%202026-07.md)): auditoría que halló la ingesta rota, PDFs corridos en 1 y 146 descargas en 0 bytes → reconstrucción total en 8 fases (F0–F7): reparación, esquema rqlite, saneamiento del archivo, extracción dual, calidad, equidad, predicción honesta y operación continua. Los AWK de 20 años no se tiraron: hoy son el método de contraste.
+- **Julio 2026 · La modernización** ([propuesta completa](Docs/Propuesta%20Modernizacion%202026-07.md)): auditoría que halló la ingesta rota, PDFs corridos en 1 y 146 descargas en 0 bytes → reconstrucción total en 8 fases (F0–F7): reparación, esquema rqlite, saneamiento del archivo, extracción dual, calidad, equidad, predicción honesta y operación continua. Los AWK de 20 años no se tiraron: hoy son el método de contraste.
 
 ## Descargo de responsabilidad
 

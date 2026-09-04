@@ -1,53 +1,53 @@
 {
- "generado_en": "2026-07-24",
- "para_sorteo": 2289,
- "n_serie": 736,
+ "generado_en": "2026-09-04",
+ "para_sorteo": 2294,
+ "n_serie": 741,
  "backtest": {
   "M0": {
-   "log_loss": 2.3025850929940717,
-   "brier": 0.8999999999999893,
-   "top1_pct": 10.534591194968554
+   "log_loss": 2.302585092994072,
+   "brier": 0.8999999999999891,
+   "top1_pct": 10.45241809672387
   },
   "M1": {
-   "log_loss": 2.305574213074115,
-   "brier": 0.9004339382289249,
-   "top1_pct": 13.050314465408805
+   "log_loss": 2.3045047313519853,
+   "brier": 0.9002145560873255,
+   "top1_pct": 13.260530421216849
   },
   "M2": {
-   "log_loss": 2.312478291031384,
-   "brier": 0.9018785260883897,
-   "top1_pct": 10.69182389937107
+   "log_loss": 2.311397569305677,
+   "brier": 0.901710767554831,
+   "top1_pct": 10.60842433697348
   },
   "M1_vs_M0": {
-   "mejora_media_logloss": -0.00298912008006738,
-   "z": -0.3747246397343815,
-   "p_una_cola": 0.646067367269803
+   "mejora_media_logloss": -0.0019196383579380362,
+   "z": -0.2416493850889744,
+   "p_una_cola": 0.5954740739499447
   },
-  "evaluados": 636
+  "evaluados": 641
  },
  "posterior_ultimo_digito": {
-  "0": 0.0992,
-  "1": 0.07775,
-  "2": 0.10054,
-  "3": 0.0992,
-  "4": 0.0992,
-  "5": 0.12601,
-  "6": 0.07909,
-  "7": 0.10322,
-  "8": 0.08043,
-  "9": 0.13539
+  "0": 0.09854,
+  "1": 0.07723,
+  "2": 0.09987,
+  "3": 0.09854,
+  "4": 0.09987,
+  "5": 0.12517,
+  "6": 0.07856,
+  "7": 0.10519,
+  "8": 0.07989,
+  "9": 0.13715
  },
  "ev_terminacion": {
-  "0": 119.0,
-  "1": 93.3,
-  "2": 120.6,
-  "3": 119.0,
-  "4": 119.0,
-  "5": 151.2,
-  "6": 94.9,
-  "7": 123.9,
-  "8": 96.5,
-  "9": 162.5
+  "0": 118.2,
+  "1": 92.7,
+  "2": 119.8,
+  "3": 118.2,
+  "4": 119.8,
+  "5": 150.2,
+  "6": 94.3,
+  "7": 126.2,
+  "8": 95.9,
+  "9": 164.6
  },
- "nota_honesta": "El numero completo del mayor es impredecible (KS, rachas y autocorrelacion limpias en F5): ningun modelo puede elegir EL billete ganador. La unica ventaja medible es el sesgo del ultimo digito (9 y 5), que mejora el premio por terminacion en ~35%."
+ "nota_honesta": "El numero completo del mayor es impredecible (KS, rachas y autocorrelacion limpias en F5): ningun modelo puede elegir EL billete ganador. La unica ventaja medible es el sesgo del ultimo digito (9 y 5), que mejora el premio por terminacion en ~37%."
 }

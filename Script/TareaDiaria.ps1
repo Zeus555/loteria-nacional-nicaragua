@@ -4,13 +4,16 @@
 #   3. Carga los sorteos nuevos a rqlite + refresca metadatos
 #   4. Recalcula calidad (premios_extraidos + score)
 #   5. Regenera notas del mayor y la prediccion del proximo sorteo
-#   6. Espeja el archivo a D:\Loteria Nacional (solo-anadir, nunca borra)
-#   7. Registra la corrida; si algo fallo, termina con error visible
+#   6. Registra la corrida; si algo fallo, termina con error visible
 # Autocontenido: no depende de otros .ps1. ASCII puro (PS 5.1).
+#
+# El paso "espejo a D:\Loteria Nacional" se retiro el 2026-07-26. Era un
+# robocopy /E /XO de seis carpetas al mismo disco: verificado que las dos
+# copias eran identicas (1529 ficheros, 0 unicos en el espejo), asi que
+# duplicaba 647 MB sin proteger de una falla de la unidad.
 
 $ErrorActionPreference = "Continue"
 $DirRaiz = "D:\PRC Loteria Nacional"
-$DirEspejo = "D:\Loteria Nacional"
 $Python = "D:\Herramientas\Python\python.exe"
 $Semillas = @("192.168.1.190", "192.168.1.124", "192.168.1.69", "192.168.1.252")
 
@@ -182,16 +185,7 @@ try {
   }
 } catch { Falla "prediccion" $_.Exception.Message }
 
-# ==================== 6. ESPEJO ====================
-Log "== 6. Espejo a $DirEspejo (solo-anadir) =="
-foreach ($carpeta in "Datos", "Imagenes", "Resultados", "Script", "Web", "Documentaci$([char]0xF3)n") {
-  robocopy "$DirRaiz\$carpeta" "$DirEspejo\$carpeta" /E /XO /R:2 /W:5 /NP /NDL /NFL /NJH | Out-Null
-  $rc = $LASTEXITCODE
-  if ($rc -ge 8) { Falla "espejo" "robocopy $carpeta codigo $rc" }
-  else { Log "   $carpeta OK (robocopy $rc)" }
-}
-
-# ==================== 7. REGISTRO Y CIERRE ====================
+# ==================== 6. REGISTRO Y CIERRE ====================
 $ok = if ($script:Errores.Count) { 0 } else { 1 }
 if ($script:RqUrl) {
   try {

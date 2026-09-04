@@ -1,5 +1,5 @@
 // Dashboard local del proyecto Loteria Nacional.
-// Sirve el dashboard HTML (Documentación) con una franja de estado EN VIVO
+// Sirve el dashboard HTML (Docs) con una franja de estado EN VIVO
 // consultada al cluster rqlite. Sin dependencias (Node >= 18).
 // Puerto 3020 - registrado en pm2 como "loteria-dashboard".
 
@@ -9,7 +9,7 @@ const path = require("path");
 
 const PORT = Number(process.env.LOTERIA_PORT) || 3020;
 const RAIZ = path.resolve(__dirname, "..");
-const DOCS = path.join(RAIZ, "Documentación");
+const DOCS = path.join(RAIZ, "Docs");
 const HTML = path.join(DOCS, "Dashboard Estado de Datos.html");
 const MAPA = path.join(DOCS, "Mapa Premios.html");
 // IPs semilla del cluster rqlite. Cambialas con LOTERIA_SEMILLAS=ip1,ip2,...

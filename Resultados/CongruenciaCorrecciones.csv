@@ -5070,6 +5070,28 @@ sorteo|numero|actual|nuevo|causa
 2288|24246|TERCER|Ordinario|etiqueta de caja con monto de cuadricula
 2288|31440|CUARTO|Ordinario|etiqueta de caja con monto de cuadricula
 2288|59745|SEGUNDO|Ordinario|etiqueta de caja con monto de cuadricula
+2289|06165|MAYOR|Ordinario|banner: monto de cuadricula
+2289|12842|MAYOR|Ordinario|banner: monto de cuadricula
+2289|12845|MAYOR|Ordinario|banner: monto de cuadricula
+2289|40698|MAYOR|Ordinario|banner: monto de cuadricula
+2289|52692|MAYOR|Ordinario|banner: monto de cuadricula
+2289|04093|SEXTO|Ordinario|etiqueta de caja con monto de cuadricula
+2289|04227|TERCER|Ordinario|etiqueta de caja con monto de cuadricula
+2289|27376|SEXTO|Ordinario|etiqueta de caja con monto de cuadricula
+2289|56789|SEGUNDO|Ordinario|etiqueta de caja con monto de cuadricula
+2290|24091|MAYOR|Destacado|REVISAR: mayor falso, nivel real por determinar
+2290|35575|MAYOR|Destacado|REVISAR: mayor falso, nivel real por determinar
+2290|60968|MAYOR|Destacado|REVISAR: mayor falso, nivel real por determinar
+2291|37606|MAYOR|Destacado|REVISAR: mayor falso, nivel real por determinar
+2291|36694|MAYOR|Destacado|REVISAR: mayor falso, nivel real por determinar
+2291|60992|MAYOR|Destacado|REVISAR: mayor falso, nivel real por determinar
+2291|17609|Ordinario|MAYOR|casa con la nota (monto destacado o grafico)
+2292|45694|MAYOR|Destacado|REVISAR: mayor falso, nivel real por determinar
+2292|33457|MAYOR|Destacado|REVISAR: mayor falso, nivel real por determinar
+2292|60984|MAYOR|Destacado|REVISAR: mayor falso, nivel real por determinar
+2293|16496|MAYOR|Destacado|REVISAR: mayor falso, nivel real por determinar
+2293|35996|MAYOR|Destacado|REVISAR: mayor falso, nivel real por determinar
+2293|60954|MAYOR|Destacado|REVISAR: mayor falso, nivel real por determinar
 1468|50531|QUINTO|TERCER|reorden por monto (etiquetas permutadas)
 1468|46747|TERCER|QUINTO|reorden por monto (etiquetas permutadas)
 1492|16203|TERCER|SEGUNDO|reorden por monto (etiquetas permutadas)
@@ -5253,3 +5275,4 @@ sorteo|numero|actual|nuevo|causa
 2272|20003|monto:20000.00|monto:NULL|monto incongruente sin contraste
 2278|01694|monto:8000.00|monto:NULL|monto incongruente sin contraste
 2281|09499|monto:20000.00|monto:NULL|monto incongruente sin contraste
+2289|45037|monto:20000.00|monto:NULL|monto incongruente sin contraste

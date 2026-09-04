@@ -1,8 +1,8 @@
 {
- "sorteos": 737,
- "mayor_contra_nota": 735,
- "caja_sobre_cuadricula": 733,
- "correcciones_auto": 5230,
+ "sorteos": 742,
+ "mayor_contra_nota": 740,
+ "caja_sobre_cuadricula": 734,
+ "correcciones_auto": 5241,
  "revision_manual": [
   [
    1478,
@@ -168,6 +168,90 @@
   [
    2285,
    "30723",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2290,
+   "24091",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2290,
+   "35575",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2290,
+   "60968",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2291,
+   "37606",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2291,
+   "36694",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2291,
+   "60992",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2292,
+   "45694",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2292,
+   "33457",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2292,
+   "60984",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2293,
+   "16496",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2293,
+   "35996",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2293,
+   "60954",
    "MAYOR",
    "Destacado",
    "REVISAR: mayor falso, nivel real por determinar"

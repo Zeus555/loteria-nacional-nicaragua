@@ -1,5 +1,5 @@
 -- Esquema del proyecto PRC Loteria Nacional en el cluster rqlite.
--- Creado en Fase 1 (2026-07-19). Ver Documentacion\Propuesta Modernizacion 2026-07.md
+-- Creado en Fase 1 (2026-07-19). Ver Docs\Propuesta Modernizacion 2026-07.md
 
 CREATE TABLE IF NOT EXISTS sorteo (
   num_sorteo   INTEGER PRIMARY KEY,

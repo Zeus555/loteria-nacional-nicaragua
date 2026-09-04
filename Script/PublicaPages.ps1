@@ -18,9 +18,9 @@ Set-Location $DirRaiz
 $Sitio = @{
   "index.html"                                          = "index.html"
   ".nojekyll"                                           = ".nojekyll"
-  "Documentaci$([char]0xF3)n\Dashboard Estado de Datos.html" = "Documentaci$([char]0xF3)n\Dashboard Estado de Datos.html"
-  "Documentaci$([char]0xF3)n\Mapa Premios.html"              = "Documentaci$([char]0xF3)n\Mapa Premios.html"
-  "Documentaci$([char]0xF3)n\cobertura-sorteos.png"          = "Documentaci$([char]0xF3)n\cobertura-sorteos.png"
+  "Docs\Dashboard Estado de Datos.html" = "Docs\Dashboard Estado de Datos.html"
+  "Docs\Mapa Premios.html"              = "Docs\Mapa Premios.html"
+  "Docs\cobertura-sorteos.png"          = "Docs\cobertura-sorteos.png"
   "videos\loteria-nacional-explicado\renders\video.mp4" = "video\explicador.mp4"
 }
 
