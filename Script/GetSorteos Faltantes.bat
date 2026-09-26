@@ -102,7 +102,8 @@ Exit 0
 goto :eof
 
 :ObtieneFecha
-	for /f "tokens=2 delims==" %%a in ('wmic OS Get localdatetime /value') do set "dt=%%a"
+	rem wmic ya no existe en Windows 11 24H2+ (fallaba desde 2026-09-09); PowerShell emite el mismo formato yyyyMMddHHmmss.ffffff.
+	for /f "usebackq delims=" %%a in (`powershell -NoProfile -Command "Get-Date -Format yyyyMMddHHmmss.ffffff"`) do set "dt=%%a"
 	set "YY=%dt:~2,2%" & set "YYYY=%dt:~0,4%" & set "MM=%dt:~4,2%" & set "DD=%dt:~6,2%"
 	set "HH24=%dt:~8,2%" & set "MIN=%dt:~10,2%" & set "SEG=%dt:~12,2%" & set "CENT=%dt:~15,2%" & set "MIL=%dt:~15,3%"
 

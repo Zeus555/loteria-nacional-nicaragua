@@ -77,7 +77,7 @@ function Esc([string]$t) { "'" + $t.Replace("'", "''") + "'" }
 # ==================== 1. SINCRONIZACION ====================
 Log "== 1. Sincronizacion con el sitio web =="
 & "$DirRaiz\Script\GetSorteos.bat" 2>&1 | ForEach-Object { Add-Content $FchLog "    $_" -Encoding ascii }
-if ($LASTEXITCODE -ne 0) { Falla "sync" "GetSorteos.bat salio con codigo $LASTEXITCODE (posible cambio de estructura del sitio)" }
+if ($LASTEXITCODE -ne 0) { Falla "sync" "GetSorteos.bat salio con codigo $LASTEXITCODE (ver su salida arriba en este log: puede ser cambio de estructura del sitio o un error del entorno, p.ej. comando ausente)" }
 
 # ==================== 2. EXTRACCION INCREMENTAL ====================
 Log "== 2. Extraccion de PDFs nuevos =="
