@@ -1,6 +1,6 @@
 {
- "sorteos": 746,
- "mayor_contra_nota": 740,
+ "sorteos": 750,
+ "mayor_contra_nota": 745,
  "caja_sobre_cuadricula": 734,
  "correcciones_auto": 5241,
  "revision_manual": [
@@ -252,6 +252,118 @@
   [
    2293,
    "60954",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2294,
+   "46369",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2294,
+   "35378",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2294,
+   "60996",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2295,
+   "14731",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2295,
+   "33653",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2295,
+   "60696",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2296,
+   "44523",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2296,
+   "39860",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2296,
+   "60994",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2297,
+   "20779",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2297,
+   "20783",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2297,
+   "33592",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2297,
+   "60975",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2298,
+   "05757",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2298,
+   "34628",
+   "MAYOR",
+   "Destacado",
+   "REVISAR: mayor falso, nivel real por determinar"
+  ],
+  [
+   2298,
+   "60949",
    "MAYOR",
    "Destacado",
    "REVISAR: mayor falso, nivel real por determinar"
