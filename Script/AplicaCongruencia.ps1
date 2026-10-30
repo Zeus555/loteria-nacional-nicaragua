@@ -6,7 +6,7 @@
 param([string]$Fichero = "D:\PRC Loteria Nacional\Resultados\CongruenciaCorrecciones.csv")
 
 $ErrorActionPreference = "Stop"
-$Semillas = @("192.168.1.190", "192.168.1.124", "192.168.1.69", "192.168.1.252")
+$Semillas = @("192.168.0.34", "192.168.0.154", "192.168.0.231", "192.168.0.166")
 
 function DescubreLider {
   foreach ($ip in $Semillas) {

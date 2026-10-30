@@ -5,7 +5,7 @@
 param(
   [string[]]$Etapas = @("verifica"),
   [string]$DirRaiz = "D:\PRC Loteria Nacional",
-  [string[]]$Semillas = @("192.168.1.190","192.168.1.124","192.168.1.69","192.168.1.252"),
+  [string[]]$Semillas = @("192.168.0.34","192.168.0.154","192.168.0.231","192.168.0.166"),
   [int]$TamLote = 1000
 )
 
@@ -20,7 +20,7 @@ function Get-RqliteUrl {
   foreach ($ip in $Semillas) {
     try {
       $st = Invoke-RestMethod "http://${ip}:4001/status" -TimeoutSec 6
-      $raft = $st.store.leader.addr           # ej: 192.168.1.124:4002
+      $raft = $st.store.leader.addr           # ej: 192.168.0.154:4002
       $lider = ($raft -split ":")[0]
       Write-Host "Lider rqlite: $lider (via semilla $ip)"
       return "http://${lider}:4001"

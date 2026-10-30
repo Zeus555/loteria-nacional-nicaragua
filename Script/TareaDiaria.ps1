@@ -15,7 +15,7 @@
 $ErrorActionPreference = "Continue"
 $DirRaiz = "D:\PRC Loteria Nacional"
 $Python = "D:\Herramientas\Python\python.exe"
-$Semillas = @("192.168.1.190", "192.168.1.124", "192.168.1.69", "192.168.1.252")
+$Semillas = @("192.168.0.34", "192.168.0.154", "192.168.0.231", "192.168.0.166")
 
 $marca = Get-Date -Format "yyyyMMdd_HHmmss"
 $FchLog = "$DirRaiz\Log\${marca}_TareaDiaria.log"
