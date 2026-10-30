@@ -10,7 +10,9 @@
 
 BEGIN{
 	OFS="@"
-	Dominio="https://www\\.loterianacional\\.com\\.ni"
+	# Sin grupo de captura ([w.]* y no (www\.)?) para no correr los indices m[1]/m[2]
+	# de los match() de abajo. El www desaparecio del sitio el 2026-10-02.
+	Dominio="https://[w.]*loterianacional\\.com\\.ni"
 }
 {
 	# PDFs de listas: pueden venir varios en una misma linea.

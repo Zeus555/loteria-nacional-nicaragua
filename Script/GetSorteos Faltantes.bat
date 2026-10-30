@@ -24,7 +24,8 @@ set path=%path%;D:\Herramientas\GAWK\bin
 set Proxy=192.168.55.10:3128
 
 :: Sitio web donde esta publicado listado de sorteos.
-set URL_Raiz=https://www.loterianacional.com.ni
+:: Desde 2026-10-02 el sitio redirige www -> sin www y /lista-sorteos/ -> /lista-sorteos-old/; por eso curl usa -L.
+set URL_Raiz=https://loterianacional.com.ni
 set URL_ListaSorteos=%URL_Raiz%/lista-sorteos/
 
 :: Fichero de salida HTML con listado de Sorteos.
@@ -65,7 +66,7 @@ for /L %%c in (2185,1,2198) do (
 			:: Descargar PDF.
 			if not exist "%DirDatos%!NumSorteo!.pdf" (
 				set SearchPDF=%URL_Raiz%/wp-content/uploads/!sYYYY!/!sMM!/Lista-!NumSorteo!.pdf
-				curl -s -f !SearchPDF! -o "%DirDatos%!NumSorteo!.pdf" -A "%UserAgent%"
+				curl -s -f -L !SearchPDF! -o "%DirDatos%!NumSorteo!.pdf" -A "%UserAgent%"
 				if !errorlevel! EQU 23 (
 					echo Sorteo !NumSorteo!.pdf para el mes !sYYYY!!sMM! descargado con exito.
 					set /a aa=1
@@ -75,7 +76,7 @@ for /L %%c in (2185,1,2198) do (
 			:: Descargar Imagen.
 			if not exist "%DirDatos%!NumSorteo!.jpg" (
 				set SearchImg=%URL_Raiz%/wp-content/uploads/!sYYYY!/!sMM!/!NumSorteo!.jpg
-				curl -s -f !SearchImg! -o "%DirDatos%!NumSorteo!.jpg" -A "%UserAgent%"
+				curl -s -f -L !SearchImg! -o "%DirDatos%!NumSorteo!.jpg" -A "%UserAgent%"
 				if !errorlevel! EQU 23 (
 					echo Imagen !NumSorteo!.jpg para el mes !sYYYY!!sMM! descargado con exito.
 					set /a aa=2

@@ -24,7 +24,8 @@ set path=%path%;D:\Herramientas\GAWK\bin
 set Proxy=192.168.55.10:3128
 
 :: Sitio web donde esta publicado listado de sorteos.
-set URL_Raiz=https://www.loterianacional.com.ni
+:: Desde 2026-10-02 el sitio redirige www -> sin www y /lista-sorteos/ -> /lista-sorteos-old/; por eso curl usa -L.
+set URL_Raiz=https://loterianacional.com.ni
 set URL_ListaSorteos=%URL_Raiz%/lista-sorteos/
 
 :: Fichero de salida HTML con listado de Sorteos.
@@ -47,7 +48,7 @@ echo [%YYYYMMDD_HH24_MI_SS%] ... ... descargar sorteos desde la web.
 
 :: Obtiene HTML donde esta el listado de Sorteos.
 call :ObtieneFecha && echo [%YYYYMMDD_HH24_MI_SS%] ... obtener listado de sorteos.
-curl -s %URL_ListaSorteos% -o "%FchListaSorteosHtml%" -A "%UserAgent%"
+curl -s -L -f %URL_ListaSorteos% -o "%FchListaSorteosHtml%" -A "%UserAgent%"
 IF ERRORLEVEL 1 ( goto :Error_Extrae_Lista_Sorteos )
 
 :: Obtenemos listado de Sorteos en CSV.
@@ -79,7 +80,7 @@ for /f "tokens=* delims=@" %%k in (%FchListaSorteosCSV%) do (
 	if !DescargaPDF! EQU 1 (
 		call :ObtieneFecha && echo [%YYYYMMDD_HH24_MI_SS%] ... ... descargamos PDF desde la web para sorteo !NumSorteo!.
 							  echo [%YYYYMMDD_HH24_MI_SS%] ... ... ... "%DirDatos%!NumSorteo!.pdf"
-		curl -f -s --retry 3 "!urlPDF!" -o "%DirDatos%!NumSorteo!.pdf" -A "%UserAgent%"
+		curl -f -s -L --retry 3 "!urlPDF!" -o "%DirDatos%!NumSorteo!.pdf" -A "%UserAgent%"
 		if ERRORLEVEL 1 ( echo [%YYYYMMDD_HH24_MI_SS%] ... ... ... Error: fallo descarga PDF sorteo !NumSorteo!. )
 	)
 
@@ -90,7 +91,7 @@ for /f "tokens=* delims=@" %%k in (%FchListaSorteosCSV%) do (
 	if !DescargaImg! EQU 1 (
 		call :ObtieneFecha && echo [%YYYYMMDD_HH24_MI_SS%] ... ... descargamos Imagen del sorteo desde la web para sorteo !NumSorteo!.
 							  echo [%YYYYMMDD_HH24_MI_SS%] ... ... ... "%DirImg%!NumSorteo!.jpg"
-		curl -f -s --retry 3 "!urlImg!" -o "%DirImg%!NumSorteo!.jpg" -A "%UserAgent%"
+		curl -f -s -L --retry 3 "!urlImg!" -o "%DirImg%!NumSorteo!.jpg" -A "%UserAgent%"
 		if ERRORLEVEL 1 ( echo [%YYYYMMDD_HH24_MI_SS%] ... ... ... Error: fallo descarga Imagen sorteo !NumSorteo!. )
 	)
 )
