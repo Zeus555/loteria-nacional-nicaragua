@@ -7,20 +7,18 @@ param([string]$Fichero = "D:\PRC Loteria Nacional\Resultados\CongruenciaCorrecci
 
 $ErrorActionPreference = "Stop"
 $Semillas = @("192.168.0.34", "192.168.0.154", "192.168.0.231", "192.168.0.166")
+# Credenciales de rqlite (loteria.curlrc) e Invoke-RqRest / Find-RqLider.
+. (Join-Path $PSScriptRoot "RqliteAuth.ps1")
 
-function DescubreLider {
-  foreach ($ip in $Semillas) {
-    try {
-      $st = Invoke-RestMethod "http://${ip}:4001/status" -TimeoutSec 6
-      $l = ($st.store.leader.addr -split ":")[0]
-      if ($l) { return $l }
-    } catch { continue }
-  }
-  return $null
-}
+function DescubreLider { return (Find-RqLider $Semillas) }
 
 $script:lider = DescubreLider
-if (-not $script:lider) { throw "ningun nodo rqlite responde" }
+if (-not $script:lider) {
+  $motivo = Get-RqMotivoRechazo
+  if ($motivo) { Write-Host "ERROR: $motivo"; throw $motivo }
+  throw "ningun nodo rqlite responde"
+}
+if ($script:RqRechazo.Count) { Write-Host "Aviso: $(Get-RqMotivoRechazo)" }
 
 # Con reintentos: el cluster de telefonos pierde el lider transitoriamente.
 function Ejecuta([string[]]$stmts) {
@@ -28,13 +26,17 @@ function Ejecuta([string[]]$stmts) {
   for ($intento = 1; $intento -le 6; $intento++) {
     try {
       if (-not $script:lider) { $script:lider = DescubreLider }
-      if (-not $script:lider) { throw "sin lider" }
-      $r = Invoke-RestMethod -Method Post -Uri "http://$($script:lider):4001/db/execute?transaction" -Body $json -ContentType "application/json" -TimeoutSec 300
+      if (-not $script:lider) {
+        if (Get-RqMotivoRechazo) { throw $RqMsg401 }
+        throw "sin lider"
+      }
+      $r = Invoke-RqRest -Method Post -Uri "http://$($script:lider):4001/db/execute?transaction" -Body $json -ContentType "application/json" -TimeoutSec 300
       $tot = 0
       foreach ($res in $r.results) { if ($res.error) { throw "rqlite: $($res.error)" }; $tot += $res.rows_affected }
       return $tot
     } catch {
-      if ($_.Exception.Message -match 'rqlite:') { throw }
+      # Un error de SQL o un 401 no se arreglan reintentando.
+      if ($_.Exception.Message -match 'rqlite:' -or (Test-RqRechazo $_)) { throw }
       $script:lider = $null
       Start-Sleep -Seconds (3 * $intento)
     }

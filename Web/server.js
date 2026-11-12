@@ -5,6 +5,7 @@
 
 const http = require("http");
 const fs = require("fs");
+const os = require("os");
 const path = require("path");
 
 const PORT = Number(process.env.LOTERIA_PORT) || 3020;
@@ -12,21 +13,47 @@ const RAIZ = path.resolve(__dirname, "..");
 const DOCS = path.join(RAIZ, "Docs");
 const HTML = path.join(DOCS, "Dashboard Estado de Datos.html");
 const MAPA = path.join(DOCS, "Mapa Premios.html");
-// IPs semilla del cluster rqlite. Cambialas con LOTERIA_SEMILLAS=ip1,ip2,...
+// IPs semilla del cluster rqlite (las mismas que TareaDiaria.ps1 y CargaRqlite.ps1).
+// Cambialas con LOTERIA_SEMILLAS=ip1,ip2,...
 const SEMILLAS = (process.env.LOTERIA_SEMILLAS ||
-  "192.168.1.190,192.168.1.124,192.168.1.69,192.168.1.250").split(",");
+  "192.168.0.34,192.168.0.154,192.168.0.231,192.168.0.166").split(",");
 let liderCache = null;
+
+// Credenciales de rqlite: %USERPROFILE%\.config\rqlite\loteria.curlrc, una linea
+// user = "loteria:<clave>" (el mismo fichero que los .ps1). La cabecera Basic se arma
+// en memoria y solo va a rqlite. Sin fichero no hay cabecera, como siempre: un
+// rqlited sin -auth la ignora. Se relee en cada consulta: crear el fichero no pide
+// reiniciar el proceso de pm2.
+const CRED = path.join(process.env.USERPROFILE || os.homedir(), ".config", "rqlite", "loteria.curlrc");
+const RE_CRED = /^\s*user\s*=\s*"([^:"]+):([^"]*)"\s*$/;
+// Con -auth, rqlite rechaza con 401 y cuerpo vacio: se reconoce por el codigo.
+const MSG_401 = "rqlite rechaza las credenciales de loteria (401)";
+
+function cabeceraRqlite() {
+  let txt;
+  try { txt = fs.readFileSync(CRED, "utf8"); } catch (e) { return {}; }
+  for (const lin of txt.replace(/^\uFEFF/, "").split(/\r?\n/)) {
+    const m = RE_CRED.exec(lin);
+    if (m) return { Authorization: "Basic " + Buffer.from(m[1] + ":" + m[2], "utf8").toString("base64") };
+  }
+  return {};
+}
 
 async function lider() {
   if (liderCache) return liderCache;
+  const headers = cabeceraRqlite();
+  let rechazo = false;
   for (const ip of SEMILLAS) {
     try {
-      const r = await fetch(`http://${ip}:4001/status`, { signal: AbortSignal.timeout(4000) });
+      const r = await fetch(`http://${ip}:4001/status`, { headers, signal: AbortSignal.timeout(4000) });
+      if (r.status === 401) { rechazo = true; continue; }
       const j = await r.json();
       const l = (j.store && j.store.leader && j.store.leader.addr || "").split(":")[0];
       if (l) { liderCache = l; return l; }
     } catch (e) { /* siguiente semilla */ }
   }
+  // Que un rechazo de credenciales no se pinte como "cluster sin lider".
+  if (rechazo) throw new Error(MSG_401);
   return null;
 }
 
@@ -34,7 +61,8 @@ async function consulta(sql) {
   const l = await lider();
   if (!l) throw new Error("cluster sin lider");
   const u = `http://${l}:4001/db/query?level=none&q=${encodeURIComponent(sql)}`;
-  const r = await fetch(u, { signal: AbortSignal.timeout(8000) });
+  const r = await fetch(u, { headers: cabeceraRqlite(), signal: AbortSignal.timeout(8000) });
+  if (r.status === 401) throw new Error(MSG_401);
   const j = await r.json();
   if (j.results[0].error) throw new Error(j.results[0].error);
   return j.results[0].values || [];

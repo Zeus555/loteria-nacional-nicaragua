@@ -5,7 +5,8 @@
 #   4. Recalcula calidad (premios_extraidos + score)
 #   5. Regenera notas del mayor y la prediccion del proximo sorteo
 #   6. Registra la corrida; si algo fallo, termina con error visible
-# Autocontenido: no depende de otros .ps1. ASCII puro (PS 5.1).
+# Carga con punto RqliteAuth.ps1 (credenciales de rqlite, comun con CargaRqlite y
+# AplicaCongruencia, que se lanzan como procesos aparte). ASCII puro (PS 5.1).
 #
 # El paso "espejo a D:\Loteria Nacional" se retiro el 2026-07-26. Era un
 # robocopy /E /XO de seis carpetas al mismo disco: verificado que las dos
@@ -16,6 +17,8 @@ $ErrorActionPreference = "Continue"
 $DirRaiz = "D:\PRC Loteria Nacional"
 $Python = "D:\Herramientas\Python\python.exe"
 $Semillas = @("192.168.0.34", "192.168.0.154", "192.168.0.231", "192.168.0.166")
+# Credenciales de rqlite (loteria.curlrc) e Invoke-RqRest / Find-RqLider.
+. "$DirRaiz\Script\RqliteAuth.ps1"
 
 $marca = Get-Date -Format "yyyyMMdd_HHmmss"
 $FchLog = "$DirRaiz\Log\${marca}_TareaDiaria.log"
@@ -36,12 +39,10 @@ function Falla([string]$paso, [string]$detalle) {
 
 # ---------- rqlite ----------
 function Get-RqliteUrl {
-  foreach ($ip in $Semillas) {
-    try {
-      $st = Invoke-RestMethod "http://${ip}:4001/status" -TimeoutSec 6
-      $lider = ($st.store.leader.addr -split ":")[0]
-      if ($lider) { return "http://${lider}:4001" }
-    } catch { continue }
+  $lider = Find-RqLider $Semillas
+  if ($lider) {
+    if ($script:RqRechazo.Count) { Log "aviso: $(Get-RqMotivoRechazo) (lider hallado via $script:RqViaSemilla)" }
+    return "http://${lider}:4001"
   }
   return $null
 }
@@ -59,12 +60,16 @@ function Invoke-Rq([string[]]$Sentencias) {
   for ($intento = 1; $intento -le 6; $intento++) {
     try {
       if (-not $script:RqUrl) { $script:RqUrl = Get-RqliteUrl }
-      if (-not $script:RqUrl) { throw "sin lider" }
-      $r = Invoke-RestMethod -Method Post -Uri "$script:RqUrl/db/execute?transaction" -Body $sb.ToString() -ContentType "application/json; charset=utf-8" -TimeoutSec 300
+      if (-not $script:RqUrl) {
+        if (Get-RqMotivoRechazo) { throw $RqMsg401 }
+        throw "sin lider"
+      }
+      $r = Invoke-RqRest -Method Post -Uri "$script:RqUrl/db/execute?transaction" -Body $sb.ToString() -ContentType "application/json; charset=utf-8" -TimeoutSec 300
       foreach ($res in $r.results) { if ($res.error) { throw "rqlite: $($res.error)" } }
       return
     } catch {
-      if ($_.Exception.Message -match 'rqlite:') { throw }
+      # Un error de SQL o un 401 no se arreglan reintentando.
+      if ($_.Exception.Message -match 'rqlite:' -or (Test-RqRechazo $_)) { throw }
       $script:RqUrl = $null
       Start-Sleep -Seconds (3 * $intento)
     }
@@ -93,9 +98,11 @@ Log "   sorteos nuevos: $(if ($nuevos.Count) { $nuevos -join ', ' } else { 'ning
 # ==================== 3. CARGA A RQLITE ====================
 $script:RqUrl = Get-RqliteUrl
 if (-not $script:RqUrl) {
-  Falla "rqlite" "ningun nodo semilla responde; se omite carga/calidad/prediccion en BD"
+  $motivo = Get-RqMotivoRechazo
+  if (-not $motivo) { $motivo = "ningun nodo semilla responde" }
+  Falla "rqlite" "$motivo; se omite carga/calidad/prediccion en BD"
 } else {
-  Log "== 3. Carga a rqlite ($script:RqUrl) =="
+  Log "== 3. Carga a rqlite ($script:RqUrl, $RqCredEstado) =="
   if ($nuevos.Count) {
     try {
       $setN = ($nuevos -join ",")

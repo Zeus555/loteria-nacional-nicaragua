@@ -15,18 +15,21 @@ $script:FilasTotales = 0
 # Con -File los parametros llegan como un solo string: "esquema,verifica".
 $Etapas = @($Etapas | ForEach-Object { $_ -split "," } | Where-Object { $_ })
 
+# Credenciales de rqlite (loteria.curlrc) e Invoke-RqRest / Find-RqLider.
+. (Join-Path $PSScriptRoot "RqliteAuth.ps1")
+
 # ---------- descubrir lider ----------
 function Get-RqliteUrl {
-  foreach ($ip in $Semillas) {
-    try {
-      $st = Invoke-RestMethod "http://${ip}:4001/status" -TimeoutSec 6
-      $raft = $st.store.leader.addr           # ej: 192.168.0.154:4002
-      $lider = ($raft -split ":")[0]
-      Write-Host "Lider rqlite: $lider (via semilla $ip)"
-      return "http://${lider}:4001"
-    } catch { continue }
+  # store.leader.addr es la direccion Raft, ej: 192.168.0.154:4002
+  $lider = Find-RqLider $Semillas
+  if ($lider) {
+    Write-Host "Lider rqlite: $lider (via semilla $script:RqViaSemilla, $RqCredEstado)"
+    if ($script:RqRechazo.Count) { Write-Host "Aviso: $(Get-RqMotivoRechazo)" }
+    return "http://${lider}:4001"
   }
-  throw "Ningun nodo semilla de rqlite responde."
+  $motivo = Get-RqMotivoRechazo
+  if ($motivo) { Write-Host "ERROR: $motivo"; throw $motivo }
+  throw "Ningun nodo semilla de rqlite responde (o ninguno conoce al lider)."
 }
 
 # ---------- ejecutar lote de sentencias ----------
@@ -40,7 +43,7 @@ function Invoke-Rq([string[]]$Sentencias, [switch]$Transaccion) {
   }
   [void]$sb.Append("]")
   $q = if ($Transaccion) { "?transaction" } else { "" }
-  $r = Invoke-RestMethod -Method Post -Uri "$script:RqUrl/db/execute$q" -Body $sb.ToString() -ContentType "application/json; charset=utf-8" -TimeoutSec 300
+  $r = Invoke-RqRest -Method Post -Uri "$script:RqUrl/db/execute$q" -Body $sb.ToString() -ContentType "application/json; charset=utf-8" -TimeoutSec 300
   foreach ($res in $r.results) {
     if ($res.error) { throw "rqlite: $($res.error)" }
   }
@@ -48,7 +51,7 @@ function Invoke-Rq([string[]]$Sentencias, [switch]$Transaccion) {
 }
 
 function Invoke-RqQuery([string]$Sql, [string]$Nivel = "weak") {
-  $r = Invoke-RestMethod -Method Get -Uri "$script:RqUrl/db/query?level=$Nivel&q=$([uri]::EscapeDataString($Sql))" -TimeoutSec 60
+  $r = Invoke-RqRest -Method Get -Uri "$script:RqUrl/db/query?level=$Nivel&q=$([uri]::EscapeDataString($Sql))" -TimeoutSec 60
   if ($r.results[0].error) { throw "rqlite: $($r.results[0].error)" }
   return $r.results[0]
 }

@@ -145,7 +145,7 @@ Detalle robusto: el clúster de teléfonos pierde el líder Raft transitoriament
 | `corrida` | Auditoría de cada ejecución del pipeline |
 | `no_encontrado` | Correcciones manuales documentadas |
 
-> **Nota de seguridad, por honestidad:** este clúster corre **sin autenticación**, por HTTP plano y en una LAN doméstica — las IPs semilla que verás en los scripts son direcciones privadas (`192.168.x`), inalcanzables desde internet. Es una decisión deliberada para un laboratorio casero, **no** una configuración apta para producción. Si reproducís este montaje en una red que no controlás por completo, activá autenticación y TLS en rqlite antes de cargar nada.
+> **Nota de seguridad, por honestidad:** desde noviembre de 2026 este clúster pide usuario y contraseña (`-auth` de rqlite). Los scripts se identifican como `loteria` con `Script\RqliteAuth.ps1`, que lee `%USERPROFILE%\.config\rqlite\loteria.curlrc`; ese fichero no está en el repo. Pero todo va por HTTP plano en una LAN doméstica, así que la contraseña viaja sin cifrar, y el puerto Raft (4002) no la pide. Las IPs semilla que verás en los scripts son direcciones privadas (`192.168.x`), inalcanzables desde internet. Es un laboratorio casero, **no** una configuración apta para producción. Si reproducís este montaje en una red que no controlás por completo, activá también TLS en rqlite antes de cargar nada.
 
 ## Hallazgos estadísticos
 
@@ -215,8 +215,9 @@ Y la garantía de fondo: **la base de datos entera es re-derivable desde el arch
 - `CargaRqlite.ps1` no hace falta editarlo: acepta `-DirRaiz <ruta>` como parámetro.
 
 ```powershell
-# 1. Crear el esquema en rqlite
-#    (POST del contenido de Script\EsquemaRqlite.sql a http://<lider>:4001/db/execute)
+# 1. Crear el esquema en rqlite: busca el líder entre las semillas (-Semillas) y aplica
+#    Script\EsquemaRqlite.sql. Si existe loteria.curlrc manda la credencial; si no, va sin clave
+powershell -ExecutionPolicy Bypass -File "Script\CargaRqlite.ps1" -Etapas esquema
 
 # 2. Corrida diaria completa (sync -> extrae -> carga -> calidad -> predicción -> espejo)
 powershell -ExecutionPolicy Bypass -File "Script\TareaDiaria.ps1"
@@ -227,8 +228,9 @@ python Script\AnalisisRepetidos.py      # ganadores repetidos
 python Script\SistemaPredictivo.py      # predicción honesta
 
 # 4. Consultar el clúster
+. .\Script\RqliteAuth.ps1    # pone la credencial de loteria.curlrc si existe
 $sql = "SELECT tipo_premio, numero, monto FROM premio WHERE num_sorteo=2287 ORDER BY monto DESC LIMIT 5"
-Invoke-RestMethod "http://<nodo>:4001/db/query?q=$([uri]::EscapeDataString($sql))"
+Invoke-RqRest -Uri "http://<nodo>:4001/db/query?q=$([uri]::EscapeDataString($sql))"
 
 # 5. Opcional: dashboard con la franja EN VIVO contra el clúster
 node Web\server.js     # http://localhost:3020

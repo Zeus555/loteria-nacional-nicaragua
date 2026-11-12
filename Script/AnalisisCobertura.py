@@ -14,6 +14,7 @@ X = 2 x precio.
 
 Salida: Resultados/CoberturaReporte.json
 """
+import base64
 import csv
 import json
 import math
@@ -21,12 +22,21 @@ import os
 import re
 import subprocess
 import tempfile
+import urllib.error
+import urllib.parse
 import urllib.request
 from collections import defaultdict
 
 RAIZ = r"D:\PRC Loteria Nacional"
 PDFTOTEXT = r"C:\Program Files\Git\mingw64\bin\pdftotext.exe"
-SEMILLAS = ["192.168.1.190", "192.168.1.124", "192.168.1.69", "192.168.1.250"]
+# Las mismas semillas que TareaDiaria.ps1 y CargaRqlite.ps1.
+SEMILLAS = ["192.168.0.34", "192.168.0.154", "192.168.0.231", "192.168.0.166"]
+# Credenciales de rqlite: %USERPROFILE%\.config\rqlite\loteria.curlrc, una linea
+# user = "loteria:<clave>" (el mismo fichero que los .ps1). Sin fichero no se
+# manda cabecera, como siempre: un rqlited sin -auth la ignora.
+RE_CRED = re.compile(r'^\s*user\s*=\s*"([^:"]+):([^"]*)"\s*$')
+# Con -auth, rqlite rechaza con 401 y cuerpo vacio.
+MSG_401 = "rqlite rechaza las credenciales de loteria (401)"
 SAL = os.path.join(RAIZ, "Resultados", "CoberturaReporte.json")
 PRECIOS = os.path.join(RAIZ, "Resultados", "PreciosBillete.csv")
 MASA_TERMINACIONES = 0.225
@@ -34,21 +44,49 @@ MASA_TERMINACIONES = 0.225
 NOTA_PRECIO = re.compile(r"EN\s+\d\s+GANAN\s+C?\$?\s*([\d,]+)", re.I)
 
 
+def cabecera_rqlite():
+    """Cabecera Authorization Basic desde loteria.curlrc ({} si no hay)."""
+    casa = os.environ.get("USERPROFILE") or os.path.expanduser("~")
+    cred = os.path.join(casa, ".config", "rqlite", "loteria.curlrc")
+    try:
+        with open(cred, encoding="utf-8-sig") as fh:
+            for lin in fh:
+                m = RE_CRED.match(lin.rstrip("\r\n"))
+                if m:
+                    par = ("%s:%s" % (m.group(1), m.group(2))).encode("utf-8")
+                    return {"Authorization":
+                            "Basic " + base64.b64encode(par).decode("ascii")}
+    except (OSError, UnicodeDecodeError):
+        pass
+    return {}
+
+
 def consulta(sql):
+    cab = cabecera_rqlite()
+    rechazo = False
     for ip in SEMILLAS:
         try:
-            with urllib.request.urlopen(
-                    "http://%s:4001/status" % ip, timeout=5) as r:
+            pet = urllib.request.Request(
+                "http://%s:4001/status" % ip, headers=cab)
+            with urllib.request.urlopen(pet, timeout=5) as r:
                 lider = json.load(r)["store"]["leader"]["addr"].split(":")[0]
             if not lider:
                 continue
             u = ("http://%s:4001/db/query?level=none&q=%s"
                  % (lider, urllib.parse.quote(sql)))
-            with urllib.request.urlopen(u, timeout=60) as r:
+            with urllib.request.urlopen(
+                    urllib.request.Request(u, headers=cab), timeout=60) as r:
                 j = json.load(r)
             return j["results"][0].get("values", [])
+        except urllib.error.HTTPError as e:
+            # Un 401 no es "cluster inaccesible": que no se confunda.
+            if e.code == 401:
+                rechazo = True
+            continue
         except Exception:
             continue
+    if rechazo:
+        raise RuntimeError(MSG_401)
     raise RuntimeError("cluster inaccesible")
 
 
